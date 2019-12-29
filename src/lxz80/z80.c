@@ -25,7 +25,7 @@
 
 #include <sys/time.h>
 
-#include "lx80.h"
+#include "lxz80.h"
 #include "z80-helper.h"
 
 
@@ -88,7 +88,7 @@ int z80_run ( ) {
 		
 		clock_gettime(CLOCK_REALTIME,&tpstart);
 		
-		while(1) {
+		while( z80.status.HALT != Z80_TRUE ) {
 			if ( z80.status.RST == Z80_TRUE ) 	{ z80_reset(); }
 			
 			/* non mask interrupt */
@@ -109,13 +109,8 @@ int z80_run ( ) {
 				}
 			}
 			
-			/* fetch or halt */
-			if ( z80.status.HALT == Z80_TRUE ) 	{
-				z80.status.REGINST = 0x00;
-			}
-			else {	
-				_Z80_FETCH_INST;
-			}
+			/* decode instruction */
+			_Z80_FETCH_INST;
 			
 			/* Decode */
 			z80_decoding();

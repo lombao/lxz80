@@ -114,5 +114,5 @@ dkms.conf
 
 
 # 
-src/lxzasm/src/lxzasm
-src/cpc6128/src/lxcpc6128
+src/lxzasm/lxzasm
+src/lxzrun/lxzrun

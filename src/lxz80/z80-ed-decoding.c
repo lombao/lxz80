@@ -20,7 +20,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "lx80.h"
+#include "lxz80.h"
 #include "z80-helper.h"
 
 /**********************************************************************/

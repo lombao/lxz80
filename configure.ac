@@ -28,6 +28,6 @@ AC_TYPE_UINT8_T
 # Checks for library functions.
 
 AM_INIT_AUTOMAKE([1.11 -Wall -Werror foreign])
-AC_CONFIG_FILES([src/lxz80/Makefile src/lxzasm/Makefile Makefile])
+AC_CONFIG_FILES([src/lxz80/Makefile src/lxzasm/Makefile src/lxzrun/Makefile Makefile])
 LT_INIT([shared disable-static])
 AC_OUTPUT

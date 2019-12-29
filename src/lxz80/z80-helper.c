@@ -22,7 +22,7 @@
 #include <stdio.h>
 
 #include "z80-helper.h"
-#include "lx80.h"
+#include "lxz80.h"
 
 /**********************************************************************/
 /* EXTERNALLY DEFINED VARIABLES										  */

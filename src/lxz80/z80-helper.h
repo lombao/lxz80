@@ -19,7 +19,7 @@
 #ifndef _Z80_HELPER_H
 #define _Z80_HELPER_H
 
-#include "lx80.h"
+#include "lxz80.h"
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
