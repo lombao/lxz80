@@ -1,0 +1,48 @@
+The LX Z80 Assembler
+====================
+
+Usage: lxzasm [-v] [ -h] [ -l] [ -o <filename> ] inputfile 
+	v:  Show Version
+	h:  Show Help ( this help )
+	l:  Generate an ASCII lst output
+	p:  Pad with zeroes from 0000 until the first opcode
+	o <file>:  Use <file> as the output name
+
+This is a simple, almost naive, assembler.
+
+* Most basic example. This example will generate a binary file
+containing the compiled program. The default name is a.z80 
+
+ lxzasm program.asm
+
+* Deciding the name of the output file. Should you want to 
+compile the code into an specific file name.
+
+ lxzasm -o myprogram program.asm
+
+* In case you want to generate a LIST file, which is an ASCII file
+with the opcoodes and the assembler lines. The list file will be 
+named "output.lst". At the present version this name cannot be changed.
+
+ lxzasm -l program.asm
+
+
+* Controlling the size of the binary ouput. If you want to control
+the size of the output or the start/end you can use the Assembler directives
+ORG and LIMIT and use , perhaps the switch -p. For instance, imagine you
+have in your code
+ ORG &4000 
+ LIMIT &5000
+ ...
+So, when you compile with 
+lxzasm program.asm
+you will get a 4096 bytes file that will contain from the address 4000 up to
+the 5000 ( hexadecimal ).
+
+However, if you want to have a flat file starting always from byte 0 , 
+disregarding the ORG directive, you can use the switch -p. This will create
+a file with 0 until the 4000 address.
+
+
+* MACROS
+This feature is not yet implemented, but I plan to
