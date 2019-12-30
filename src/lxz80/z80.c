@@ -114,6 +114,7 @@ int z80_run ( ) {
 			
 			/* Decode */
 			z80_decoding();
+			z80.status.totalts += z80.status.ts;
 			
 			/* wait or not wait */
 			virtualclock += z80.status.ts *  (1000 / z80.clock );
@@ -144,7 +145,8 @@ void z80_reset () {
 	z80.status.NMI  		= Z80_FALSE;
 	z80.status.RST  		= Z80_FALSE;
 	z80.status.INT  		= Z80_FALSE;
-	z80.status.IMODE		= Z80_IM0;		
+	z80.status.IMODE		= Z80_IM0;
+	z80.status.totalts		= 0;			
 }
 
 
@@ -155,3 +157,19 @@ void z80_signal_rst() 	{ z80.status.RST = Z80_TRUE; }
 void z80_signal_halt() 	{ z80.status.HALT = Z80_TRUE; }
 void z80_signal_int() 	{ z80.status.INT = Z80_TRUE; }
 void z80_signal_nmi() 	{ z80.status.NMI = Z80_TRUE; }
+
+
+//----------------------------------------------------------------------
+
+uint16_t z80_show_af() { return (z80.regs[AF].REG16); }
+uint16_t z80_show_bc() { return (z80.regs[BC].REG16); }
+uint16_t z80_show_de() { return (z80.regs[DE].REG16); }
+uint16_t z80_show_hl() { return (z80.regs[HL].REG16); }
+uint16_t z80_show_ix() { return (z80.regs[IX].REG16); }
+uint16_t z80_show_iy() { return (z80.regs[IY].REG16); }
+
+uint64_t z80_show_totalts() { return (z80.status.totalts); }
+
+
+//----------------------------------------------------------------------
+void z80_write_reg_a(uint8_t v) { z80.regs[AF].H = v; }

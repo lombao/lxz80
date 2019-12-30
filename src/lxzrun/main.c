@@ -29,6 +29,11 @@
 
 uint8_t ram[64 * 1024];
 
+struct {
+	uint8_t regA;
+	uint8_t flagA;
+} init = { 0,0 };
+
 
 /**********************************************************************/
 /* Internally defined functions */
@@ -45,9 +50,10 @@ void write_io(const uint16_t addr);
 /* Print usage                                                        */
 void showUsage() {
 	 fprintf(stderr,"LXZ80 Run. Version %s\n\n",VERSION); 
-	 fprintf(stderr,"Usage: lxzrun [-v] [ -h] objectfile \n");
+	 fprintf(stderr,"Usage: lxzrun [-v] [ -h] [ -a <val> ] objectfile \n");
 	 fprintf(stderr,"	v:  Show Version\n");
 	 fprintf(stderr,"	h:  Show Help ( this help )\n");
+ 	 fprintf(stderr,"	a:  Preload reg A with <val>\n");
 	 fprintf(stderr,"	objectfile:  File to be run\n");
 }
 
@@ -63,8 +69,12 @@ void parseParameters(int argc, char *argv[], char * objectfile) {
 		exit(EXIT_FAILURE);
 	}
   
-	while ((opt = getopt(argc, argv, ":lh")) != -1) {
+	while ((opt = getopt(argc, argv, "a:lh")) != -1) {
 		switch (opt) {
+			case 'a':
+				init.regA = atoi(optarg);
+				init.flagA = 1;
+				break;
 			case 'v':
 				showUsage();
 				exit(EXIT_SUCCESS);
@@ -130,10 +140,25 @@ int main(int argc, char *argv[])
 	
 	/* 4Mhz , and the callbacks declared */
 	z80_init( 4, read_io, write_io, read_ram , write_ram );
+	printf("RUNNING....\n");
+	if (init.flagA) {	
+		printf ("REG A Initialized to %2x\n",init.regA);
+		z80_write_reg_a(init.regA);	
+	}
 	
 	/* Here we go */
 	/* this will keep running until a HALT instruction */
 	z80_run();
+	
+	printf("\nDONE.. OUPUT:\n");
+	printf("----------------------\n");
+	printf("Total TS Cycles: %li\n",z80_show_totalts());
+	printf("REG AF: %04xH\n",z80_show_af());
+	printf("REG BC: %04xH\n",z80_show_bc());
+	printf("REG DE: %04xH\n",z80_show_de());
+	printf("REG HL: %04xH\n",z80_show_hl());
+	printf("REG IX: %04xH\n",z80_show_ix());
+	printf("REG IY: %04xH\n",z80_show_iy());
 	
 	
 	

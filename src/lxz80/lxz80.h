@@ -123,6 +123,7 @@ typedef struct {
 		int ts;							/* number of tstates of the last instruction */
 		int sz;							/* number of bytes of the last instruction */
 		char dasm[MAX_ASM_LINE]; 		/* text, assembler line of last instruction */
+		uint64_t totalts;				/* the total of tstates since the start */
 		
 	} status;
 	
@@ -158,6 +159,18 @@ void z80_signal_rst();
 void z80_signal_halt(); 
 void z80_signal_int(); 	
 void z80_signal_nmi(); 	
+
+uint16_t z80_show_af();
+uint16_t z80_show_bc();
+uint16_t z80_show_de();
+uint16_t z80_show_hl();
+uint16_t z80_show_ix();
+uint16_t z80_show_iy();
+uint64_t z80_show_totalts();
+
+void z80_write_reg_a(uint8_t v);
+
+
 
 
 /**********************************************************************/
