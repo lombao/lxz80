@@ -59,21 +59,21 @@ void z80_decoding() {
 			
 			case 0x27:	z80_alu_daa();				break;
 	
-			case 0xDB:	_Z80_FETCH_BYTE; z80.read_io(((z80.regs[AF].H << 8) | z80.regs[WZ].L ),&z80.regs[AF].H); _Z80_ITS_1(11,2,"IN A,(%02Xh)",(uint8_t)z80.regs[WZ].L); break;
-			case 0xD3:	_Z80_FETCH_BYTE; z80.write_io(((z80.regs[AF].H << 8) | z80.regs[WZ].L )); _Z80_ITS_1(11,2,"OUT (%02Xh),A",(uint8_t)z80.regs[WZ].L); break;
+			case 0xDB:	_Z80_FETCH_BYTE; z80.read_io(((z80.regs[AF].H << 8) | z80.regs[WZ].L ),&z80.regs[AF].H); _Z80_ITS(11,2,"IN A,(%02Xh)"); break;
+			case 0xD3:	_Z80_FETCH_BYTE; z80.write_io(((z80.regs[AF].H << 8) | z80.regs[WZ].L )); _Z80_ITS(11,2,"OUT (%02Xh),A"); break;
 					
-			case 0x01:	_Z80_FETCH_WORD_REG(z80.regs[BC]); _Z80_ITS_1(10,3,"LD BC, %04Xh",z80.regs[BC].REG16); break; 
-			case 0x11:	_Z80_FETCH_WORD_REG(z80.regs[DE]); _Z80_ITS_1(10,3,"LD DE, %04Xh",z80.regs[DE].REG16); break; 
-			case 0x21:	_Z80_FETCH_WORD_REG(z80.regs[HL]); _Z80_ITS_1(10,3,"LD HL, %04Xh",z80.regs[HL].REG16); break; 
-			case 0x31:	_Z80_FETCH_WORD_REG(z80.regs[SP]); _Z80_ITS_1(10,3,"LD SP, %04Xh",z80.regs[SP].REG16); break; 
+			case 0x01:	_Z80_FETCH_WORD_REG(z80.regs[BC]); _Z80_ITS(10,3,"LD BC, %04Xh"); break; 
+			case 0x11:	_Z80_FETCH_WORD_REG(z80.regs[DE]); _Z80_ITS(10,3,"LD DE, %04Xh"); break; 
+			case 0x21:	_Z80_FETCH_WORD_REG(z80.regs[HL]); _Z80_ITS(10,3,"LD HL, %04Xh"); break; 
+			case 0x31:	_Z80_FETCH_WORD_REG(z80.regs[SP]); _Z80_ITS(10,3,"LD SP, %04Xh"); break; 
 
-			case 0x3E:	_Z80_FETCH_BYTE; z80.regs[AF].H = z80.regs[WZ].L; _Z80_ITS_1(7,2,"LD A, %02Xh",z80.regs[WZ].L); break; 
-			case 0x06:	_Z80_FETCH_BYTE; z80.regs[BC].H = z80.regs[WZ].L; _Z80_ITS_1(7,2,"LD B, %02Xh",z80.regs[WZ].L); break; 
-			case 0x0E:	_Z80_FETCH_BYTE; z80.regs[BC].L = z80.regs[WZ].L; _Z80_ITS_1(7,2,"LD C, %02Xh",z80.regs[WZ].L); break; 
-			case 0x16:	_Z80_FETCH_BYTE; z80.regs[DE].H = z80.regs[WZ].L; _Z80_ITS_1(7,2,"LD D, %02Xh",z80.regs[WZ].L); break; 
-			case 0x1E:	_Z80_FETCH_BYTE; z80.regs[DE].L = z80.regs[WZ].L; _Z80_ITS_1(7,2,"LD E, %02Xh",z80.regs[WZ].L); break; 
-			case 0x26:	_Z80_FETCH_BYTE; z80.regs[HL].H = z80.regs[WZ].L; _Z80_ITS_1(7,2,"LD H, %02Xh",z80.regs[WZ].L); break; 
-			case 0x2E:	_Z80_FETCH_BYTE; z80.regs[HL].L = z80.regs[WZ].L; _Z80_ITS_1(7,2,"LD L, %02Xh",z80.regs[WZ].L); break; 
+			case 0x3E:	_Z80_FETCH_BYTE; z80.regs[AF].H = z80.regs[WZ].L; _Z80_ITS(7,2,"LD A, %02Xh"); break; 
+			case 0x06:	_Z80_FETCH_BYTE; z80.regs[BC].H = z80.regs[WZ].L; _Z80_ITS(7,2,"LD B, %02Xh"); break; 
+			case 0x0E:	_Z80_FETCH_BYTE; z80.regs[BC].L = z80.regs[WZ].L; _Z80_ITS(7,2,"LD C, %02Xh"); break; 
+			case 0x16:	_Z80_FETCH_BYTE; z80.regs[DE].H = z80.regs[WZ].L; _Z80_ITS(7,2,"LD D, %02Xh"); break; 
+			case 0x1E:	_Z80_FETCH_BYTE; z80.regs[DE].L = z80.regs[WZ].L; _Z80_ITS(7,2,"LD E, %02Xh"); break; 
+			case 0x26:	_Z80_FETCH_BYTE; z80.regs[HL].H = z80.regs[WZ].L; _Z80_ITS(7,2,"LD H, %02Xh"); break; 
+			case 0x2E:	_Z80_FETCH_BYTE; z80.regs[HL].L = z80.regs[WZ].L; _Z80_ITS(7,2,"LD L, %02Xh"); break; 
 
 			case 0x7F:	_Z80_ITS(4,1,"LD A,A"); break;
 			case 0x78:	z80.regs[AF].H = z80.regs[BC].H; _Z80_ITS(4,1,"LD A,B"); break;
@@ -131,11 +131,10 @@ void z80_decoding() {
 			case 0x6C:	z80.regs[HL].L = z80.regs[HL].H; _Z80_ITS(4,1,"LD L,H"); break;
 			case 0x6D:	_Z80_ITS(4,1,"LD L,L"); break;
 			
-
 			case 0x02: 	_Z80_WRITE_BYTE( z80.regs[BC].REG16, z80.regs[AF].H ); _Z80_ITS(7,1,"LD (BC),A"); break;
 			case 0x12: 	_Z80_WRITE_BYTE( z80.regs[DE].REG16, z80.regs[AF].H ); _Z80_ITS(7,1,"LD (DE),A"); break;
 
-			case 0x36:	_Z80_FETCH_BYTE; _Z80_WRITE_BYTE( z80.regs[HL].REG16, z80.regs[WZ].L) ; _Z80_ITS_1(10,2,"LD (HL),%02Xh",z80.regs[WZ].L); break;
+			case 0x36:	_Z80_FETCH_BYTE; _Z80_WRITE_BYTE( z80.regs[HL].REG16, z80.regs[WZ].L) ; _Z80_ITS(10,2,"LD (HL),%02Xh"); break;
 
 			case 0x77:	_Z80_WRITE_BYTE( z80.regs[HL].REG16, z80.regs[AF].H); _Z80_ITS(7,1,"LD (HL),A"); break;
 			case 0x70:	_Z80_WRITE_BYTE( z80.regs[HL].REG16, z80.regs[BC].H); _Z80_ITS(7,1,"LD (HL),B"); break;
@@ -145,12 +144,12 @@ void z80_decoding() {
 			case 0x74:	_Z80_WRITE_BYTE( z80.regs[HL].REG16, z80.regs[HL].H); _Z80_ITS(7,1,"LD (HL),H"); break;
 			case 0x75:	_Z80_WRITE_BYTE( z80.regs[HL].REG16, z80.regs[HL].L); _Z80_ITS(7,1,"LD (HL),L"); break;
 
-			case 0x3A:	_Z80_FETCH_WORD; _Z80_READ_RAM( z80.regs[WZ].REG16, z80.regs[AF].H); _Z80_ITS_1(13,3,"LD A,(%04Xh)",z80.regs[WZ].REG16); break;
-			case 0x32:	_Z80_FETCH_WORD; _Z80_WRITE_RAM(z80.regs[WZ].REG16, z80.regs[AF].H); _Z80_ITS_1(13,3,"LD (%04Xh),A",z80.regs[WZ].REG16); break;
-			case 0x22:	_Z80_FETCH_WORD; _Z80_WRITE_REG16(z80.regs[WZ].REG16, HL); _Z80_ITS_1(16,3,"LD (%04Xh),HL",z80.regs[WZ].REG16); break;
+			case 0x3A:	_Z80_FETCH_WORD; _Z80_READ_RAM( z80.regs[WZ].REG16, z80.regs[AF].H); _Z80_ITS(13,3,"LD A,(%04Xh)"); break;
+			case 0x32:	_Z80_FETCH_WORD; _Z80_WRITE_RAM(z80.regs[WZ].REG16, z80.regs[AF].H); _Z80_ITS(13,3,"LD (%04Xh),A"); break;
+			case 0x22:	_Z80_FETCH_WORD; _Z80_WRITE_REG16(z80.regs[WZ].REG16, HL); _Z80_ITS(16,3,"LD (%04Xh),HL"); break;
 			case 0x0A:  _Z80_READ_RAM(z80.regs[BC].REG16,z80.regs[AF].H); _Z80_ITS(7,1,"LD A,(BC)"); break;
 			case 0x1A:  _Z80_READ_RAM(z80.regs[DE].REG16,z80.regs[AF].H); _Z80_ITS(7,1,"LD A,(DE)"); break;
-			case 0x2A:	_Z80_FETCH_WORD; _Z80_READ_REG16( z80.regs[WZ].REG16 , HL ) ; _Z80_ITS_1(16,3,"LD HL, (%04Xh)",z80.regs[WZ].REG16); break;
+			case 0x2A:	_Z80_FETCH_WORD; _Z80_READ_REG16( z80.regs[WZ].REG16 , HL ) ; _Z80_ITS(16,3,"LD HL, (%04Xh)"); break;
 			
 			case 0xF9: 	z80.regs[SP].REG16 = z80.regs[HL].REG16; _Z80_ITS(6,1,"LD SP,HL"); break;
 			
@@ -166,7 +165,6 @@ void z80_decoding() {
 			case 0x3F:	z80.regs[AF].CFLAG = (z80.regs[AF].CFLAG == 0); z80.regs[AF].NFLAG = 0; _Z80_ITS(4,1,"CCF"); break;
 			case 0x2F:	z80.regs[AF].H = ~z80.regs[AF].H; z80.regs[AF].HFLAG = 1; z80.regs[AF].NFLAG = 1; _Z80_ITS(4,1,"CPL"); break;
 			
-			
 			case 0xF3:	z80.status.IFF1 = 0; z80.status.IFF2 = 0; _Z80_ITS(4,1,"DI"); break;
 			case 0xFB:	z80.status.IFF1 = 1; z80.status.IFF2 = 1; _Z80_ITS(4,1,"EI"); break; 
 			
@@ -179,7 +177,7 @@ void z80_decoding() {
 						z80.regs[WZ].REG16 = z80.regs[HL].REG16; z80.regs[HL].REG16 = z80.regs[HLPLUS].REG16; z80.regs[HLPLUS].REG16 = z80.regs[WZ].REG16;
 						_Z80_ITS(4,1,"EXX"); break;
 
-			case 0xCE:  _Z80_FETCH_BYTE; ALU_ADC(z80.regs[WZ].L); _Z80_ITS_1(7,2,"ADC A,%02Xh",z80.regs[WZ].L); break;
+			case 0xCE:  _Z80_FETCH_BYTE; ALU_ADC(z80.regs[WZ].L); _Z80_ITS(7,2,"ADC A,%02Xh"); break;
 			case 0x88:  ALU_ADC(z80.regs[BC].H); _Z80_ITS(4,1,"ADC A,B"); break;
 			case 0x89:  ALU_ADC(z80.regs[BC].L); _Z80_ITS(4,1,"ADC A,C"); break;
 			case 0x8A:  ALU_ADC(z80.regs[DE].H); _Z80_ITS(4,1,"ADC A,D"); break;
@@ -189,7 +187,7 @@ void z80_decoding() {
 			case 0x8F:  ALU_ADC(z80.regs[AF].H); _Z80_ITS(4,1,"ADC A,A"); break;
 			case 0x8E:	_Z80_READ_RAM( z80.regs[HL].REG16, z80.regs[WZ].L); ALU_ADC(z80.regs[WZ].L); _Z80_ITS(7,1,"ADC A,(HL)");break;
 		
-			case 0xDE:  _Z80_FETCH_BYTE; ALU_SBC(z80.regs[WZ].L); _Z80_ITS_1(7,2,"SBC A,%02Xh",z80.regs[WZ].L); break;
+			case 0xDE:  _Z80_FETCH_BYTE; ALU_SBC(z80.regs[WZ].L); _Z80_ITS(7,2,"SBC A,%02Xh"); break;
 			case 0x98:  ALU_SBC(z80.regs[BC].H); _Z80_ITS(4,1,"SBC A,B"); break;
 			case 0x99:  ALU_SBC(z80.regs[BC].L); _Z80_ITS(4,1,"SBC A,C"); break;
 			case 0x9A:  ALU_SBC(z80.regs[DE].H); _Z80_ITS(4,1,"SBC A,D"); break;
@@ -201,7 +199,7 @@ void z80_decoding() {
 		
 			
 			case 0x86:	_Z80_READ_RAM( z80.regs[HL].REG16, z80.regs[WZ].L); ALU_ADD(z80.regs[WZ].L); _Z80_ITS(7,1,"ADD A,(HL)");break;
-			case 0xC6:  _Z80_FETCH_BYTE; ALU_ADD(z80.regs[WZ].L); _Z80_ITS_1(7,2,"ADD A,%02Xh",z80.regs[WZ].L);break;
+			case 0xC6:  _Z80_FETCH_BYTE; ALU_ADD(z80.regs[WZ].L); _Z80_ITS(7,2,"ADD A,%02Xh");break;
 			case 0x80:  ALU_ADD(z80.regs[BC].H); _Z80_ITS(4,1,"ADD A,B");break;
 			case 0x81:  ALU_ADD(z80.regs[BC].L); _Z80_ITS(4,1,"ADD A,C");break;
 			case 0x82:  ALU_ADD(z80.regs[DE].H); _Z80_ITS(4,1,"ADD A,D");break;
@@ -217,7 +215,7 @@ void z80_decoding() {
 			
 			
 			case 0x96:	_Z80_READ_RAM( z80.regs[HL].REG16, z80.regs[WZ].L); ALU_SUB(z80.regs[WZ].L); _Z80_ITS(7,1,"SUB A,(HL)");break;
-			case 0xD6:  _Z80_FETCH_BYTE; ALU_SUB(z80.regs[WZ].L); _Z80_ITS_1(7,2,"SUB A,%02Xh",(uint8_t)z80.regs[WZ].L);break;
+			case 0xD6:  _Z80_FETCH_BYTE; ALU_SUB(z80.regs[WZ].L); _Z80_ITS(7,2,"SUB A,%02Xh");break;
 			case 0x90:  ALU_SUB(z80.regs[BC].H); _Z80_ITS(4,1,"SUB A,B");break;
 			case 0x91:  ALU_SUB(z80.regs[BC].L); _Z80_ITS(4,1,"SUB A,C");break;
 			case 0x92:  ALU_SUB(z80.regs[DE].H); _Z80_ITS(4,1,"SUB A,D");break;
@@ -264,7 +262,7 @@ void z80_decoding() {
 						ALU_AND( z80.regs[WZ].L );
 						_Z80_ITS(7,1,"AND A,(HL)");
 						break;
-			case 0xE6:  _Z80_FETCH_BYTE; ALU_AND( z80.regs[WZ].L ); _Z80_ITS_1(7,2,"AND A,%02Xh",z80.regs[WZ].L); break;
+			case 0xE6:  _Z80_FETCH_BYTE; ALU_AND( z80.regs[WZ].L ); _Z80_ITS(7,2,"AND A,%02Xh"); break;
 			case 0xA0:  ALU_AND( z80.regs[BC].H ); _Z80_ITS(4,1,"AND A,B");break;
 			case 0xA1:  ALU_AND( z80.regs[BC].L ); _Z80_ITS(4,1,"AND A,C");break;
 			case 0xA2:  ALU_AND( z80.regs[DE].H ); _Z80_ITS(4,1,"AND A,D");break;
@@ -276,7 +274,7 @@ void z80_decoding() {
 			case 0xB6:	_Z80_READ_RAM( z80.regs[HL].REG16, z80.regs[WZ].L); 
 						ALU_OR( z80.regs[WZ].L );
 						_Z80_ITS(7,1,"OR A,(HL)");break;
-			case 0xF6:  _Z80_FETCH_BYTE; ALU_OR( z80.regs[WZ].L ); _Z80_ITS_1(7,2,"OR A,%02Xh",z80.regs[WZ].L);break;
+			case 0xF6:  _Z80_FETCH_BYTE; ALU_OR( z80.regs[WZ].L ); _Z80_ITS(7,2,"OR A,%02Xh");break;
 			case 0xB0:  ALU_OR( z80.regs[BC].H ); _Z80_ITS(4,1,"OR A,B");break;
 			case 0xB1:  ALU_OR( z80.regs[BC].L ); _Z80_ITS(4,1,"OR A,C");break;
 			case 0xB2:  ALU_OR( z80.regs[DE].H ); _Z80_ITS(4,1,"OR A,D");break;
@@ -289,7 +287,7 @@ void z80_decoding() {
 			case 0xAE:	_Z80_READ_RAM( z80.regs[HL].REG16, z80.regs[WZ].L); 
 						ALU_XOR( z80.regs[WZ].L );
 						_Z80_ITS(7,1,"XOR A,(HL)");break;
-			case 0xEE:  _Z80_FETCH_BYTE; ALU_XOR( z80.regs[WZ].L ); _Z80_ITS_1(7,2,"XOR A,%02Xh",z80.regs[WZ].L);break;
+			case 0xEE:  _Z80_FETCH_BYTE; ALU_XOR( z80.regs[WZ].L ); _Z80_ITS(7,2,"XOR A,%02Xh");break;
 			case 0xA8:  ALU_XOR( z80.regs[BC].H ); _Z80_ITS(4,1,"XOR A,B");break;
 			case 0xA9:  ALU_XOR( z80.regs[BC].L ); _Z80_ITS(4,1,"XOR A,C");break;
 			case 0xAA:  ALU_XOR( z80.regs[DE].H ); _Z80_ITS(4,1,"XOR A,D");break;
@@ -303,7 +301,7 @@ void z80_decoding() {
 						ALU_CP( z80.regs[WZ].L );
 						_Z80_ITS(7,1,"CP (HL)");
 						break;
-			case 0xFE:  _Z80_FETCH_BYTE; ALU_CP( z80.regs[WZ].L ); _Z80_ITS_1(7,2,"CP %02Xh",z80.regs[WZ].L);break;
+			case 0xFE:  _Z80_FETCH_BYTE; ALU_CP( z80.regs[WZ].L ); _Z80_ITS(7,2,"CP %02Xh");break;
 			case 0xB8:  ALU_CP( z80.regs[BC].H ); _Z80_ITS(4,1,"CP B");break;
 			case 0xB9:  ALU_CP( z80.regs[BC].L ); _Z80_ITS(4,1,"CP C");break;
 			case 0xBA:  ALU_CP( z80.regs[DE].H ); _Z80_ITS(4,1,"CP D");break;
@@ -314,37 +312,37 @@ void z80_decoding() {
 					
 
 			case 0x10:	_Z80_FETCH_BYTE; 
-						if ( --z80.regs[BC].H != 0 ) { z80.regs[PC].REG16 += (int8_t) z80.regs[WZ].L; _Z80_ITS_1(13,2,"DJNZ %04Xh",z80.regs[PC].REG16);}
-						else { _Z80_ITS_1(7,2,"DJNZ %04Xh",z80.regs[PC].REG16 + (int8_t) z80.regs[WZ].L); }
+						if ( --z80.regs[BC].H != 0 ) { z80.regs[PC].REG16 += (int8_t) z80.regs[WZ].L; _Z80_ITS(13,2,"DJNZ %04Xh");}
+						else { _Z80_ITS(7,2,"DJNZ %04Xh"); }
 						break;
 						
-			case 0xC4:	_Z80_FETCH_WORD; if ( ! z80.regs[AF].ZFLAG ) { _Z80_PUSH_REG16(PC); z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS_1(17,3,"CALL NZ, %04Xh",z80.regs[WZ].REG16); } else { _Z80_ITS_1(10,3,"CALL NZ, %04Xh",z80.regs[WZ].REG16); } ;  break;
-			case 0xCC:  _Z80_FETCH_WORD; if (   z80.regs[AF].ZFLAG ) { _Z80_PUSH_REG16(PC); z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS_1(17,3,"CALL Z, %04Xh",z80.regs[WZ].REG16); } else { _Z80_ITS_1(10,3,"CALL Z, %04Xh",z80.regs[WZ].REG16); } ; break;
-			case 0xD4:	_Z80_FETCH_WORD; if ( ! z80.regs[AF].CFLAG ) { _Z80_PUSH_REG16(PC); z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS_1(17,3,"CALL NC, %04Xh",z80.regs[WZ].REG16); } else { _Z80_ITS_1(10,3,"CALL NC, %04Xh",z80.regs[WZ].REG16); } ; break;
-			case 0xDC:	_Z80_FETCH_WORD; if (   z80.regs[AF].CFLAG ) { _Z80_PUSH_REG16(PC); z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS_1(17,3,"CALL Z, %04Xh",z80.regs[WZ].REG16); } else { _Z80_ITS_1(10,3,"CALL Z, %04Xh",z80.regs[WZ].REG16); } ;  break;
-			case 0xE4:	_Z80_FETCH_WORD; if ( ! z80.regs[AF].PFLAG ) { _Z80_PUSH_REG16(PC); z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS_1(17,3,"CALL PO, %04Xh",z80.regs[WZ].REG16); } else { _Z80_ITS_1(10,3,"CALL PO, %04Xh",z80.regs[WZ].REG16); } ; break;
-			case 0xEC:	_Z80_FETCH_WORD; if (   z80.regs[AF].PFLAG ) { _Z80_PUSH_REG16(PC); z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS_1(17,3,"CALL PE, %04Xh",z80.regs[WZ].REG16); } else { _Z80_ITS_1(10,3,"CALL PE, %04Xh",z80.regs[WZ].REG16); } ; break;
-			case 0xF4:	_Z80_FETCH_WORD; if ( ! z80.regs[AF].SFLAG ) { _Z80_PUSH_REG16(PC); z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS_1(17,3,"CALL P, %04Xh",z80.regs[WZ].REG16); } else { _Z80_ITS_1(10,3,"CALL P, %04Xh",z80.regs[WZ].REG16); } ;  break;
-			case 0xFC:  _Z80_FETCH_WORD; if (   z80.regs[AF].SFLAG ) { _Z80_PUSH_REG16(PC); z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS_1(17,3,"CALL M, %04Xh",z80.regs[WZ].REG16); } else { _Z80_ITS_1(10,3,"CALL M, %04Xh",z80.regs[WZ].REG16); } ;  break;
-			case 0xCD:  _Z80_FETCH_WORD; _Z80_PUSH_REG16(PC); z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS_1(17,3,"CALL %04Xh",z80.regs[WZ].REG16); break;
+			case 0xC4:	_Z80_FETCH_WORD; if ( ! z80.regs[AF].ZFLAG ) { _Z80_PUSH_REG16(PC); z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS(17,3,"CALL NZ, %04Xh"); } else { _Z80_ITS(10,3,"CALL NZ, %04Xh"); } ;  break;
+			case 0xCC:  _Z80_FETCH_WORD; if (   z80.regs[AF].ZFLAG ) { _Z80_PUSH_REG16(PC); z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS(17,3,"CALL Z, %04Xh"); } else { _Z80_ITS(10,3,"CALL Z, %04Xh"); } ; break;
+			case 0xD4:	_Z80_FETCH_WORD; if ( ! z80.regs[AF].CFLAG ) { _Z80_PUSH_REG16(PC); z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS(17,3,"CALL NC, %04Xh"); } else { _Z80_ITS(10,3,"CALL NC, %04Xh"); } ; break;
+			case 0xDC:	_Z80_FETCH_WORD; if (   z80.regs[AF].CFLAG ) { _Z80_PUSH_REG16(PC); z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS(17,3,"CALL Z, %04Xh"); } else { _Z80_ITS(10,3,"CALL Z, %04Xh"); } ;  break;
+			case 0xE4:	_Z80_FETCH_WORD; if ( ! z80.regs[AF].PFLAG ) { _Z80_PUSH_REG16(PC); z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS(17,3,"CALL PO, %04Xh"); } else { _Z80_ITS(10,3,"CALL PO, %04Xh"); } ; break;
+			case 0xEC:	_Z80_FETCH_WORD; if (   z80.regs[AF].PFLAG ) { _Z80_PUSH_REG16(PC); z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS(17,3,"CALL PE, %04Xh"); } else { _Z80_ITS(10,3,"CALL PE, %04Xh"); } ; break;
+			case 0xF4:	_Z80_FETCH_WORD; if ( ! z80.regs[AF].SFLAG ) { _Z80_PUSH_REG16(PC); z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS(17,3,"CALL P, %04Xh"); } else { _Z80_ITS(10,3,"CALL P, %04Xh"); } ;  break;
+			case 0xFC:  _Z80_FETCH_WORD; if (   z80.regs[AF].SFLAG ) { _Z80_PUSH_REG16(PC); z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS(17,3,"CALL M, %04Xh"); } else { _Z80_ITS(10,3,"CALL M, %04Xh"); } ;  break;
+			case 0xCD:  _Z80_FETCH_WORD; _Z80_PUSH_REG16(PC); z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS(17,3,"CALL %04Xh"); break;
 
-			case 0xC2:	_Z80_FETCH_WORD; if ( ! z80.regs[AF].ZFLAG ) { z80.regs[PC].REG16 = z80.regs[WZ].REG16; } _Z80_ITS_1(10,3,"JP NZ %04Xh",z80.regs[WZ].REG16); break;
-			case 0xCA:  _Z80_FETCH_WORD; if (   z80.regs[AF].ZFLAG ) { z80.regs[PC].REG16 = z80.regs[WZ].REG16; } _Z80_ITS_1(10,3,"JP Z %04Xh",z80.regs[WZ].REG16); break;
-			case 0xD2:	_Z80_FETCH_WORD; if ( ! z80.regs[AF].CFLAG ) { z80.regs[PC].REG16 = z80.regs[WZ].REG16; } _Z80_ITS_1(10,3,"JP NC %04Xh",z80.regs[WZ].REG16); break;
-			case 0xDA:	_Z80_FETCH_WORD; if (   z80.regs[AF].CFLAG ) { z80.regs[PC].REG16 = z80.regs[WZ].REG16; } _Z80_ITS_1(10,3,"JP C %04Xh",z80.regs[WZ].REG16);  break;
-			case 0xE2:	_Z80_FETCH_WORD; if ( ! z80.regs[AF].PFLAG ) { z80.regs[PC].REG16 = z80.regs[WZ].REG16; } _Z80_ITS_1(10,3,"JP PO $%04Xh",z80.regs[WZ].REG16); break;
-			case 0xEA:	_Z80_FETCH_WORD; if (   z80.regs[AF].PFLAG ) { z80.regs[PC].REG16 = z80.regs[WZ].REG16; } _Z80_ITS_1(10,3,"JP PE %04Xh",z80.regs[WZ].REG16);  break;
-			case 0xF2:	_Z80_FETCH_WORD; if ( ! z80.regs[AF].SFLAG ) { z80.regs[PC].REG16 = z80.regs[WZ].REG16; } _Z80_ITS_1(10,3,"JP P %04Xh",z80.regs[WZ].REG16); break;
-			case 0xFA:  _Z80_FETCH_WORD; if (   z80.regs[AF].SFLAG ) { z80.regs[PC].REG16 = z80.regs[WZ].REG16; } _Z80_ITS_1(10,3,"JP M %04Xh",z80.regs[WZ].REG16); break;
-			case 0xC3:  _Z80_FETCH_WORD; z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS_1(10,3,"JP %04Xh",z80.regs[WZ].REG16); break;
+			case 0xC2:	_Z80_FETCH_WORD; if ( ! z80.regs[AF].ZFLAG ) { z80.regs[PC].REG16 = z80.regs[WZ].REG16; } _Z80_ITS(10,3,"JP NZ %04Xh"); break;
+			case 0xCA:  _Z80_FETCH_WORD; if (   z80.regs[AF].ZFLAG ) { z80.regs[PC].REG16 = z80.regs[WZ].REG16; } _Z80_ITS(10,3,"JP Z %04Xh"); break;
+			case 0xD2:	_Z80_FETCH_WORD; if ( ! z80.regs[AF].CFLAG ) { z80.regs[PC].REG16 = z80.regs[WZ].REG16; } _Z80_ITS(10,3,"JP NC %04Xh"); break;
+			case 0xDA:	_Z80_FETCH_WORD; if (   z80.regs[AF].CFLAG ) { z80.regs[PC].REG16 = z80.regs[WZ].REG16; } _Z80_ITS(10,3,"JP C %04Xh");  break;
+			case 0xE2:	_Z80_FETCH_WORD; if ( ! z80.regs[AF].PFLAG ) { z80.regs[PC].REG16 = z80.regs[WZ].REG16; } _Z80_ITS(10,3,"JP PO $%04Xh"); break;
+			case 0xEA:	_Z80_FETCH_WORD; if (   z80.regs[AF].PFLAG ) { z80.regs[PC].REG16 = z80.regs[WZ].REG16; } _Z80_ITS(10,3,"JP PE %04Xh");  break;
+			case 0xF2:	_Z80_FETCH_WORD; if ( ! z80.regs[AF].SFLAG ) { z80.regs[PC].REG16 = z80.regs[WZ].REG16; } _Z80_ITS(10,3,"JP P %04Xh"); break;
+			case 0xFA:  _Z80_FETCH_WORD; if (   z80.regs[AF].SFLAG ) { z80.regs[PC].REG16 = z80.regs[WZ].REG16; } _Z80_ITS(10,3,"JP M %04Xh"); break;
+			case 0xC3:  _Z80_FETCH_WORD; z80.regs[PC].REG16 = z80.regs[WZ].REG16; _Z80_ITS(10,3,"JP %04Xh"); break;
 		
 			case 0xE9:	z80.regs[PC].REG16 = z80.regs[HL].REG16; _Z80_ITS(4,1,"JP (HL)"); break;
 			
-			case 0x20:	_Z80_FETCH_BYTE; if ( ! ZX ) { z80.regs[PC].REG16 += (int8_t)z80.regs[WZ].L; _Z80_ITS_1(12,2,"JR NZ %04Xh",z80.regs[PC].REG16); } else { _Z80_ITS_1(7,2,"JR NZ %04Xh",z80.regs[PC].REG16 + (int8_t)z80.regs[WZ].L); } ; break;
-			case 0x28:	_Z80_FETCH_BYTE; if (   ZX ) { z80.regs[PC].REG16 += (int8_t)z80.regs[WZ].L; _Z80_ITS_1(12,2,"JR Z %04Xh",z80.regs[PC].REG16); } else { _Z80_ITS_1(7,2,"JR Z %04Xh",z80.regs[PC].REG16 + (int8_t)z80.regs[WZ].L); } ; break;
-			case 0x30:	_Z80_FETCH_BYTE; if ( ! CX ) { z80.regs[PC].REG16 += (int8_t)z80.regs[WZ].L; _Z80_ITS_1(12,2,"JR NC %04Xh",z80.regs[PC].REG16); } else { _Z80_ITS_1(7,2,"JR NC %04Xh",z80.regs[PC].REG16 + (int8_t)z80.regs[WZ].L); } ; break;
-			case 0x38:	_Z80_FETCH_BYTE; if (   CX ) { z80.regs[PC].REG16 += (int8_t)z80.regs[WZ].L; _Z80_ITS_1(12,2,"JR C %04Xh",z80.regs[PC].REG16); } else { _Z80_ITS_1(7,2,"JR C %04Xh",z80.regs[PC].REG16 + (int8_t)z80.regs[WZ].L); } ; break;
-			case 0x18:	_Z80_FETCH_BYTE; z80.regs[PC].REG16 += (int8_t)z80.regs[WZ].L; _Z80_ITS_1(12,2,"JR %04Xh",z80.regs[PC].REG16); break;
+			case 0x20:	_Z80_FETCH_BYTE; if ( ! ZX ) { z80.regs[PC].REG16 += (int8_t)z80.regs[WZ].L; _Z80_ITS(12,2,"JR NZ %04Xh"); } else { _Z80_ITS(7,2,"JR NZ %04Xh"); } ; break;
+			case 0x28:	_Z80_FETCH_BYTE; if (   ZX ) { z80.regs[PC].REG16 += (int8_t)z80.regs[WZ].L; _Z80_ITS(12,2,"JR Z %04Xh"); } else { _Z80_ITS(7,2,"JR Z %04Xh"); } ; break;
+			case 0x30:	_Z80_FETCH_BYTE; if ( ! CX ) { z80.regs[PC].REG16 += (int8_t)z80.regs[WZ].L; _Z80_ITS(12,2,"JR NC %04Xh"); } else { _Z80_ITS(7,2,"JR NC %04Xh"); } ; break;
+			case 0x38:	_Z80_FETCH_BYTE; if (   CX ) { z80.regs[PC].REG16 += (int8_t)z80.regs[WZ].L; _Z80_ITS(12,2,"JR C %04Xh"); } else { _Z80_ITS(7,2,"JR C %04Xh"); } ; break;
+			case 0x18:	_Z80_FETCH_BYTE; z80.regs[PC].REG16 += (int8_t)z80.regs[WZ].L; _Z80_ITS(12,2,"JR %04Xh"); break;
 			
 			case 0xC5:	_Z80_PUSH_REG16(BC); _Z80_ITS(11,1,"PUSH BC"); break;
 			case 0xD5:	_Z80_PUSH_REG16(DE); _Z80_ITS(11,1,"PUSH DE"); break;

@@ -42,10 +42,7 @@
 #define _Z80_PUSH_REG16(x)		_Z80_WRITE_BYTE( --z80.regs[SP].REG16, z80.regs[x].H ); _Z80_WRITE_BYTE( --z80.regs[SP].REG16, z80.regs[x].L )
 #define _Z80_POP_REG16(x)		_Z80_READ_BYTE( z80.regs[SP].REG16++, z80.regs[x].L ); _Z80_READ_BYTE( z80.regs[SP].REG16++, z80.regs[x].H )
 
-#define _Z80_ITS(x,y,z)				z80.status.ts=x; z80.status.sz=y; strcpy(z80.status.dasm,z)
-#define _Z80_ITS_1(x,y,z,p1)		z80.status.ts=x; z80.status.sz=y; sprintf(z80.status.dasm,z,p1)
-#define _Z80_ITS_2(x,y,z,p1,p2)		z80.status.ts=x; z80.status.sz=y; sprintf(z80.status.dasm,z,p1,p2)
-#define _Z80_ITS_3(x,y,z,p1,p2,p3)	z80.status.ts=x; z80.status.sz=y; sprintf(z80.status.dasm,z,p1,p2,p3)
+#define _Z80_ITS(x,y,z)				z80.status.ts=x; 
 
 void z80_error ( t_z80_errors e );
 uint8_t z80_alu_check_parity( uint8_t input );

@@ -176,15 +176,15 @@ void z80_ed_decoding (  ) {
 					}
 					break;
 										
-		case 0x4B:	_Z80_FETCH_WORD; _Z80_READ_REG16( z80.regs[WZ].REG16, BC); _Z80_ITS_1(20,4,"LD BC,(%04Xh)",z80.regs[WZ].REG16); break; 
-		case 0x5B:	_Z80_FETCH_WORD; _Z80_READ_REG16( z80.regs[WZ].REG16, DE); _Z80_ITS_1(20,4,"LD DE,(%04Xh)",z80.regs[WZ].REG16); break; 
-		case 0x6B:	_Z80_FETCH_WORD; _Z80_READ_REG16( z80.regs[WZ].REG16, HL); _Z80_ITS_1(20,4,"LD HL,(%04Xh)",z80.regs[WZ].REG16); break; 
-		case 0x7B:	_Z80_FETCH_WORD; _Z80_READ_REG16( z80.regs[WZ].REG16, SP); _Z80_ITS_1(20,4,"LD SP,(%04Xh)",z80.regs[WZ].REG16); break; 
+		case 0x4B:	_Z80_FETCH_WORD; _Z80_READ_REG16( z80.regs[WZ].REG16, BC); _Z80_ITS(20,4,"LD BC,(%04Xh)"); break; 
+		case 0x5B:	_Z80_FETCH_WORD; _Z80_READ_REG16( z80.regs[WZ].REG16, DE); _Z80_ITS(20,4,"LD DE,(%04Xh)"); break; 
+		case 0x6B:	_Z80_FETCH_WORD; _Z80_READ_REG16( z80.regs[WZ].REG16, HL); _Z80_ITS(20,4,"LD HL,(%04Xh)"); break; 
+		case 0x7B:	_Z80_FETCH_WORD; _Z80_READ_REG16( z80.regs[WZ].REG16, SP); _Z80_ITS(20,4,"LD SP,(%04Xh)"); break; 
 		
-		case 0x43:	_Z80_FETCH_WORD; _Z80_WRITE_REG16( z80.regs[WZ].REG16, BC); _Z80_ITS_1(20,4,"LD (%04Xh),BC",z80.regs[WZ].REG16); break; 
-		case 0x53:	_Z80_FETCH_WORD; _Z80_WRITE_REG16( z80.regs[WZ].REG16, DE); _Z80_ITS_1(20,4,"LD (%04Xh),DE",z80.regs[WZ].REG16); break; 
-		case 0x63:	_Z80_FETCH_WORD; _Z80_WRITE_REG16( z80.regs[WZ].REG16, HL); _Z80_ITS_1(20,4,"LD (%04Xh),HL",z80.regs[WZ].REG16); break; 
-		case 0x73:	_Z80_FETCH_WORD; _Z80_WRITE_REG16( z80.regs[WZ].REG16, SP); _Z80_ITS_1(20,4,"LD (%04Xh),SP",z80.regs[WZ].REG16); break; 
+		case 0x43:	_Z80_FETCH_WORD; _Z80_WRITE_REG16( z80.regs[WZ].REG16, BC); _Z80_ITS(20,4,"LD (%04Xh),BC"); break; 
+		case 0x53:	_Z80_FETCH_WORD; _Z80_WRITE_REG16( z80.regs[WZ].REG16, DE); _Z80_ITS(20,4,"LD (%04Xh),DE"); break; 
+		case 0x63:	_Z80_FETCH_WORD; _Z80_WRITE_REG16( z80.regs[WZ].REG16, HL); _Z80_ITS(20,4,"LD (%04Xh),HL"); break; 
+		case 0x73:	_Z80_FETCH_WORD; _Z80_WRITE_REG16( z80.regs[WZ].REG16, SP); _Z80_ITS(20,4,"LD (%04Xh),SP"); break; 
 		
 		case 0x57:	z80.regs[AF].H = z80.regs[IR].H; NX = 0; HX = 0; SX = (z80.regs[AF].H >> 7); ZX = (z80.regs[AF].H == 0); PX = z80.status.IFF2; _Z80_ITS(9,2,"LD A,I"); break;    
 		case 0x47:	z80.regs[IR].H = z80.regs[AF].H; _Z80_ITS(9,2,"LD I,A"); break;

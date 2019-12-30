@@ -117,12 +117,10 @@ typedef struct {
 		uint8_t  			IFF2;		
 		
 		t_interrupt_mode	IMODE;		/* interrupt mode ONLY IMPLEMENTED MODE 1*/
-		
+			
 		uint8_t  			REGINST; 	/* do not confuse with IR register */
 		
 		int ts;							/* number of tstates of the last instruction */
-		int sz;							/* number of bytes of the last instruction */
-		char dasm[MAX_ASM_LINE]; 		/* text, assembler line of last instruction */
 		uint64_t totalts;				/* the total of tstates since the start */
 		
 	} status;
@@ -169,9 +167,8 @@ uint16_t z80_show_iy();
 uint64_t z80_show_totalts();
 
 void z80_write_reg_a(uint8_t v);
-
-
-
+void z80_write_reg_b(uint8_t v);
+void z80_write_reg_c(uint8_t v);
 
 /**********************************************************************/
 

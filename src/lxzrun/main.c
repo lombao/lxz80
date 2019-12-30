@@ -24,6 +24,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <unistd.h>
+#include <time.h>
+
 
 #define VERSION "0.0.4"
 
@@ -32,7 +34,11 @@ uint8_t ram[64 * 1024];
 struct {
 	uint8_t regA;
 	uint8_t flagA;
-} init = { 0,0 };
+	uint8_t regB;
+	uint8_t flagB;
+
+	uint8_t clock;
+} init = { 0,0,0,0,1 };
 
 
 /**********************************************************************/
@@ -50,10 +56,12 @@ void write_io(const uint16_t addr);
 /* Print usage                                                        */
 void showUsage() {
 	 fprintf(stderr,"LXZ80 Run. Version %s\n\n",VERSION); 
-	 fprintf(stderr,"Usage: lxzrun [-v] [ -h] [ -a <val> ] objectfile \n");
+	 fprintf(stderr,"Usage: lxzrun [-v] [ -h] [ -c] [ -A <val> ] [ -B <val> ] objectfile \n");
 	 fprintf(stderr,"	v:  Show Version\n");
 	 fprintf(stderr,"	h:  Show Help ( this help )\n");
- 	 fprintf(stderr,"	a:  Preload reg A with <val>\n");
+	 fprintf(stderr,"	c:  Clock in Mhz ( default is 1 Mhz )\n");
+ 	 fprintf(stderr,"	A:  Preload reg A with <val>\n");
+ 	 fprintf(stderr,"	B:  Preload reg B with <val>\n"); 
 	 fprintf(stderr,"	objectfile:  File to be run\n");
 }
 
@@ -69,15 +77,22 @@ void parseParameters(int argc, char *argv[], char * objectfile) {
 		exit(EXIT_FAILURE);
 	}
   
-	while ((opt = getopt(argc, argv, "a:lh")) != -1) {
+	while ((opt = getopt(argc, argv, "A:B:c:lh")) != -1) {
 		switch (opt) {
-			case 'a':
+			case 'A':
 				init.regA = atoi(optarg);
 				init.flagA = 1;
+				break;
+			case 'B':
+				init.regB = atoi(optarg);
+				init.flagB = 1;
 				break;
 			case 'v':
 				showUsage();
 				exit(EXIT_SUCCESS);
+				break;  
+			case 'c':
+				init.clock = atoi(optarg);
 				break;  
 			case 'h': /* Show version and quit */
 				showUsage();
@@ -113,6 +128,24 @@ void uploadRam(char * file) {
 }	
 
 /**********************************************************************/
+/* Initialize Z80 Registers if requested							  */
+/* this must be executed AFTER the z80 init                           */
+void initializeRegisters() {
+
+	if (init.flagA) {	
+		printf ("REG A Initialized to %2x\n",init.regA);
+		z80_write_reg_a(init.regA);	
+	}
+	if (init.flagB) {	
+		printf ("REG B Initialized to %2x\n",init.regB);
+		z80_write_reg_b(init.regB);	
+	}
+	
+}
+
+
+/**********************************************************************/
+/* Mandatory setup of the Z80 Library                                 */
 void read_ram(const uint16_t addr, uint8_t * v) {
 	*v = ram[addr];
 }
@@ -124,9 +157,12 @@ void write_ram(const uint16_t addr, const uint8_t * v) {
 /* We do not do anything with I/O */
 /* but we create the callback just in case */
 void read_io(const uint16_t addr, uint8_t * v) {
+	printf(":: Warning, detected IO Read to address: %04Xh\n",addr);
+	*v = 0;	
 }
 
 void write_io(const uint16_t addr) {
+	printf(":: Warning, detected IO Write to address: %04Xh\n",addr);
 }
 
 /*** MAIN *************************/ 
@@ -134,32 +170,43 @@ int main(int argc, char *argv[])
 {
 
   char objectfile[500];
-  
+  struct timespec tpstart;
+  struct timespec tpend;
+ 
+	/* Prepare */
 	parseParameters(argc,argv,objectfile);
 	uploadRam(objectfile);
 	
-	/* 4Mhz , and the callbacks declared */
-	z80_init( 4, read_io, write_io, read_ram , write_ram );
-	printf("RUNNING....\n");
-	if (init.flagA) {	
-		printf ("REG A Initialized to %2x\n",init.regA);
-		z80_write_reg_a(init.regA);	
-	}
+	/* Init Z80 */
+	z80_init( init.clock, read_io, write_io, read_ram , write_ram );
 	
+	/* preset some Registers if defined */
+	initializeRegisters();
+	
+
 	/* Here we go */
 	/* this will keep running until a HALT instruction */
+	clock_gettime(CLOCK_REALTIME,&tpstart);	
 	z80_run();
-	
-	printf("\nDONE.. OUPUT:\n");
-	printf("----------------------\n");
-	printf("Total TS Cycles: %li\n",z80_show_totalts());
-	printf("REG AF: %04xH\n",z80_show_af());
-	printf("REG BC: %04xH\n",z80_show_bc());
-	printf("REG DE: %04xH\n",z80_show_de());
-	printf("REG HL: %04xH\n",z80_show_hl());
-	printf("REG IX: %04xH\n",z80_show_ix());
-	printf("REG IY: %04xH\n",z80_show_iy());
-	
-	
+	clock_gettime(CLOCK_REALTIME,&tpend);
+
+	/* Print Execution Report */
+	printf("\nOUPUT:\n");
+	printf("--------------------------------------------\n");
+	printf("| Total TS Cycles: %ld with a Clock at %d Mhz \n",z80_show_totalts(),init.clock);
+	printf("| Real time:       %ld seconds %ld miliseconds\n",tpend.tv_sec - tpstart.tv_sec, (tpend.tv_nsec - tpstart.tv_nsec)/1000000 );
+	printf("-------------------------\n");
+	printf("| A | F | B | C |  H L  |\n");
+	printf("|-------|-------|-------|\n");
+	printf("| %04Xh | %04Xh | %04Xh |\n",z80_show_af(),z80_show_bc(),z80_show_hl());
+	printf("|-------|-------|-------|\n");
+	printf("        | D | E |  I X  |\n");
+	printf("        |-------|-------|\n");
+	printf("        | %04Xh | %04Xh |\n",z80_show_de(),z80_show_ix());
+	printf("        |-------|-------|\n");
+	printf("                |  I Y  |\n");
+	printf("                |-------|\n");
+	printf("                | %04Xh |\n",z80_show_iy());
+	printf("                |-------|\n");
 	
 } 

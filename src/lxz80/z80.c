@@ -169,8 +169,11 @@ uint16_t z80_show_hl() { return (z80.regs[HL].REG16); }
 uint16_t z80_show_ix() { return (z80.regs[IX].REG16); }
 uint16_t z80_show_iy() { return (z80.regs[IY].REG16); }
 
+//----------------------------------------------------------------------
 uint64_t z80_show_totalts() { return (z80.status.totalts); }
 
 
 //----------------------------------------------------------------------
 void z80_write_reg_a(uint8_t v) { z80.regs[AF].H = v; }
+void z80_write_reg_b(uint8_t v) { z80.regs[BC].H = v; }
+void z80_write_reg_c(uint8_t v) { z80.regs[BC].L = v; }
