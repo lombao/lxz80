@@ -122,9 +122,10 @@ int z80_run ( ) {
 			realclock += tpend.tv_nsec - tpstart.tv_nsec;
 			tpstart = tpend;
 			
+			/* printf("TS Status: %d, Virtual clock: %d   Real Clock: %d\n",z80.status.ts,virtualclock,realclock); */
 			if ( virtualclock > realclock ) {
-				virtualclock = 0 ; realclock = 0;
 				sleep.tv_nsec = virtualclock - realclock;
+				virtualclock = 0 ; realclock = 0;
 				nanosleep(&sleep,NULL);
 			}
 		
