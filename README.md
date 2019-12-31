@@ -1,41 +1,44 @@
-# lx80
+## LXZ80
 Z80 Emulator suite
-- A z80 emulator as a shared library
-- A Z80 assembler
+- A Z80 emulator as a shared library 	( liblxz80.so )
+- A Z80 assembler  			( lxzasm )
+- A Z80 run engine			( lxzrun )
 
-# IMPORTANT !! STATUS: THIS IS A WORK IN PROGRESS
-- Z80 emulator. It is almost complete. Beta status.
-- Z80 assembler. It is working altough I want to refactor some of the code
-
-# HOW TO COMPILE IT
+# HOW TO COMPILE
 Classical autotools
 
+./autogen.sh
 ./configure
 make
 sudo make install
 
-The default PREFIX is /usr/local
+( note: the default PREFIX is /usr/local , but you can change it with the --prefix switch )
 
 The resulting objects are
-- /usr/local/bin/lxzasm     ( The assembler )
-- /usr/local/lib/lx80.so    ( The z80 emulator )
-- /usr/local/include/lx80.h ( Thhe header for the shared library )
+- $prefix/bin/lxzasm     
+- $prefix/bin/lxzrun
+- $prefix/lib64/lx80.so    
+- $prefix/include/lxz80.h 
+- $prefix/share/lxz80/examples ( some .asm files to test and try both lxzasm and lxzrun )
 
+The build requirements are:
+- Obviously, autoconf and automake
+- flex and bison
+- any non-prehistoric glibc will suffice
 
-# Requirements
-* Flex and Bison for the Assembler
-
-# BSD and other *UX Compatibility
-LX80 has been developed on Linux platforms, but ideally it should run 
-on *BSD systems. I've not been very careful about portability but I am 
-willing to accept patches and suggestions to improve that aspect. 
+# BSD and other Compatibility
+LXZ80 has been developed on Linux platforms, but ideally it should run 
+on BSD systems with minor or none changes at all, I did not test that myself.
+Should anyone wants to send me any pacth or suggestion for improvement I will 
+gladly accepted it. The same applies for OSX.
+Other OS are out of my interest or scope and they will not be supported.
 
 # Bugs, suggestions and comments
-Please , send them to me cesar dot lombao at gmail dot com . As I do
+Please , send them to me: cesar dot lombao at gmail dot com . As I do
 not expect being bombarded by emails I will probably answer them all.
 
 # Documentation
-Please see the /doc folder
+Additional documentation in the /doc folder
 
 # TO DO
 - Create a pkg config file for the project

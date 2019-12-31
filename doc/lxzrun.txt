@@ -1,0 +1,78 @@
+HOW TO USE LXZRUN
+=================
+
+This is a convenience tool to get a Z80 object file and run it using the 
+emulator in a quick and convenient way. It can be used for debugging and
+test of small portions or soubroutines
+
+I will show one simple case using one the pre-loaded examples, the 
+Fibonacci sequence calculator
+
+( we will assume you have installed in the /usr/local/share path )
+
+First, compile the example:
+- lxzasm /usr/local/share/lxz80/examples/fib.asm
+
+
+This will create a file called a.z80, which is the binary object
+file that can be used by the lxzrun. Now you can 
+
+- lxzrun -A 10 a.z80
+
+And you will get an ouput like the one below. The 10th Fibonacci value
+has been calculated ( A was loaded with the value 10 ) and the result 
+is stored in the D register ( 22h ) :
+
+--------------------------------------------------------------------
+REG A Initialized to 0Ah
+
+OUPUT:
+--------------------------------------------
+| Total TS Cycles: 8578 with a Clock at 1 Mhz 
+| Real time:       0 seconds 7 miliseconds
+-------------------------
+| A | F | B | C |  H L  |
+|-------|-------|-------|
+| 0220h | 0200h | 0000h |
+|-------|-------|-------|
+        | D | E |  I X  |
+        |-------|-------|
+        | 2200h | 0000h |
+        |-------|-------|
+                |  I Y  |
+                |-------|
+                | 0000h |
+                |-------|
+---------------------------------------------------------------------
+
+Please, see lxzrun -h to see the different options. For instance
+, how to preset the Z80 registers to simulate entry parameters. In
+this example we have "pre-loaded" the A register with the value 10, but
+we can do the same with other registers like C, B, and so on.
+
+IMPORTANT USE HALT INSTRUCTION in your .asm files
+-------------------------------------------------
+The Z80 emulator will keep on running until it finds a HALT instruction, 
+if you forget that the lxzrun will keep on running forever.
+
+CLOCK AND TIMINGS
+-------------------------------------------------
+The end report says the number of T states that were executed 
+in total ( clock cycles ) , and the clock frequency used ( 1Mhz by default )
+.You can specify a different one with the switch -c ( -c 4 for 4Mhz ).
+In this example you see that the execution got 8578 TS cycles , using a 1Mhz
+clock, which means 8578 microseconds, or 8.6 miliseconds. 
+Just below you can see the real time that the program took, it says in this
+case 7 miliseconds. This shows the lack of precission in the emulation. The
+program run faster that actually should. This problem lies in the liblxz80
+library ( the z80 emulator ) . There is still work to do to improve that
+area.
+
+
+
+
+
+
+
+
+
