@@ -27,7 +27,7 @@
 #include <time.h>
 
 
-#define VERSION "0.0.4"
+#define LXZ80_VERSION LXZ80VERSION
 
 uint8_t ram[64 * 1024];
 
@@ -73,7 +73,7 @@ void write_io(const uint16_t addr);
 /**********************************************************************/
 /* Print usage                                                        */
 void showUsage() {
-	 fprintf(stderr,"LXZ80 Run. Version %s\n\n",VERSION); 
+	 fprintf(stderr,"LXZ80 Run. Version %s\n\n",LXZ80_VERSION); 
 	 fprintf(stderr,"Usage: lxzrun [-v] [ -h] [ -c] [ -<REG> <val> ] objectfile \n");
 	 fprintf(stderr,"	v:  Show Version\n");
 	 fprintf(stderr,"	h:  Show Help ( this help )\n");

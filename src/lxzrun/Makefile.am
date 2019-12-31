@@ -1,4 +1,4 @@
-AM_CFLAGS = -g  -Wall -Wextra -O2
+AM_CFLAGS = -g  -Wall -Wextra -O2 -DLXZ80VERSION="\"$(VERSION)\""
 AM_LDFLAGS = -llxz80
 
 

@@ -23,6 +23,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define LXZ80_VERSION LXZ80VERSION
+
 /* The possible type of errors */	
 typedef enum { 
 		ERROR_UNKNOWN_OPCODE,  	/* Opcode has not been recognized */

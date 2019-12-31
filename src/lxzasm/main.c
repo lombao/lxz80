@@ -57,7 +57,7 @@ int condStatus = -1; 	/* IF directive control */
 
 /* Print usage */
 void showUsage() {
-	 fprintf(stderr,"LXZ Assembler. Version %s\n\n",LXZ_VERSION); 
+	 fprintf(stderr,"LXZ Assembler. Version %s\n\n",LXZ80_VERSION); 
 	 fprintf(stderr,"Usage: lxzasm [-v] [ -h] [ -l] [ -o <filename> ] inputfile \n");
 	 fprintf(stderr,"	v:  Show Version\n");
 	 fprintf(stderr,"	h:  Show Help ( this help )\n");

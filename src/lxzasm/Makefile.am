@@ -1,6 +1,6 @@
 BUILT_SOURCES = grammar.h
 
-AM_CFLAGS = -g  -Wall -Wextra -O2
+AM_CFLAGS = -g  -Wall -Wextra -O2 -DLXZ80VERSION="\"$(VERSION)\""
 AM_YFLAGS = -d
 
 bin_PROGRAMS = lxzasm
