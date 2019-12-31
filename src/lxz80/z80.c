@@ -42,7 +42,7 @@ extern void z80_decoding();
 
 
 //----------------------------------------------------------------------
-t_z80 * z80_init( const int clock, t_callback_readio read_io , t_callback_writeio write_io ,  t_callback_readram read_ram , t_callback_writeram write_ram   ) {
+void z80_init( const int clock, t_callback_readio read_io , t_callback_writeio write_io ,  t_callback_readram read_ram , t_callback_writeram write_ram   ) {
 	
 	z80.clock = clock;
 	
@@ -71,7 +71,6 @@ t_z80 * z80_init( const int clock, t_callback_readio read_io , t_callback_writei
 		}
 	}
 	z80_reset();
-	return &z80;
 }
 
 
@@ -170,10 +169,13 @@ uint16_t z80_show_ix() { return (z80.regs[IX].REG16); }
 uint16_t z80_show_iy() { return (z80.regs[IY].REG16); }
 
 //----------------------------------------------------------------------
-uint64_t z80_show_totalts() { return (z80.status.totalts); }
-
-
-//----------------------------------------------------------------------
 void z80_write_reg_a(uint8_t v) { z80.regs[AF].H = v; }
 void z80_write_reg_b(uint8_t v) { z80.regs[BC].H = v; }
 void z80_write_reg_c(uint8_t v) { z80.regs[BC].L = v; }
+void z80_write_reg_d(uint8_t v) { z80.regs[DE].H = v; }
+void z80_write_reg_e(uint8_t v) { z80.regs[DE].L = v; }
+void z80_write_reg_h(uint8_t v) { z80.regs[HL].H = v; }
+void z80_write_reg_l(uint8_t v) { z80.regs[HL].L = v; }
+
+//----------------------------------------------------------------------
+uint64_t z80_show_totalts() { return (z80.status.totalts); }

@@ -150,8 +150,13 @@ typedef struct {
 
 /**********************************************************************/
 /* API FUNCTIONS													  */
-t_z80 * z80_init( const int clock, t_callback_readio read_io , t_callback_writeio write_io ,  t_callback_readram read_ram , t_callback_writeram write_ram   );
-int z80_run   ();
+void z80_init( const int clock, 
+		t_callback_readio read_io ,
+		t_callback_writeio write_io ,
+		t_callback_readram read_ram ,
+		t_callback_writeram write_ram  );
+		
+int z80_run ();
 
 void z80_signal_rst(); 	
 void z80_signal_halt(); 
@@ -164,11 +169,16 @@ uint16_t z80_show_de();
 uint16_t z80_show_hl();
 uint16_t z80_show_ix();
 uint16_t z80_show_iy();
-uint64_t z80_show_totalts();
 
 void z80_write_reg_a(uint8_t v);
 void z80_write_reg_b(uint8_t v);
 void z80_write_reg_c(uint8_t v);
+void z80_write_reg_d(uint8_t v);
+void z80_write_reg_e(uint8_t v);
+void z80_write_reg_h(uint8_t v);
+void z80_write_reg_l(uint8_t v);
+
+uint64_t z80_show_totalts();
 
 /**********************************************************************/
 

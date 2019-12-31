@@ -34,11 +34,27 @@ uint8_t ram[64 * 1024];
 struct {
 	uint8_t regA;
 	uint8_t flagA;
+	
 	uint8_t regB;
 	uint8_t flagB;
-
+	
+	uint8_t regC;
+	uint8_t flagC;
+	
+	uint8_t regD;
+	uint8_t flagD;
+	
+	uint8_t regE;
+	uint8_t flagE;
+	
+	uint8_t regH;
+	uint8_t flagH;
+	
+	uint8_t regL;
+	uint8_t flagL;
+	
 	uint8_t clock;
-} init = { 0,0,0,0,1 };
+} init = { 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0 ,1 };
 
 
 /**********************************************************************/
@@ -46,6 +62,8 @@ struct {
 void showUsage();
 void parseParameters(int argc, char *argv[], char * objectfile);
 void uploadRam(char * file);
+void initializeRegisters();
+
 void read_ram(const uint16_t addr, uint8_t * v);
 void write_ram(const uint16_t addr, const uint8_t * v);
 void read_io(const uint16_t addr, uint8_t * v);
@@ -56,12 +74,17 @@ void write_io(const uint16_t addr);
 /* Print usage                                                        */
 void showUsage() {
 	 fprintf(stderr,"LXZ80 Run. Version %s\n\n",VERSION); 
-	 fprintf(stderr,"Usage: lxzrun [-v] [ -h] [ -c] [ -A <val> ] [ -B <val> ] objectfile \n");
+	 fprintf(stderr,"Usage: lxzrun [-v] [ -h] [ -c] [ -<REG> <val> ] objectfile \n");
 	 fprintf(stderr,"	v:  Show Version\n");
 	 fprintf(stderr,"	h:  Show Help ( this help )\n");
 	 fprintf(stderr,"	c:  Clock in Mhz ( default is 1 Mhz )\n");
  	 fprintf(stderr,"	A:  Preload reg A with <val>\n");
  	 fprintf(stderr,"	B:  Preload reg B with <val>\n"); 
+ 	 fprintf(stderr,"	C:  Preload reg C with <val>\n");
+ 	 fprintf(stderr,"	D:  Preload reg D with <val>\n"); 
+ 	 fprintf(stderr,"	E:  Preload reg E with <val>\n");
+ 	 fprintf(stderr,"	H:  Preload reg H with <val>\n"); 
+ 	 fprintf(stderr,"	L:  Preload reg L with <val>\n"); 
 	 fprintf(stderr,"	objectfile:  File to be run\n");
 }
 
@@ -77,7 +100,7 @@ void parseParameters(int argc, char *argv[], char * objectfile) {
 		exit(EXIT_FAILURE);
 	}
   
-	while ((opt = getopt(argc, argv, "A:B:c:lh")) != -1) {
+	while ((opt = getopt(argc, argv, "A:B:C:D:E:H:L:c:vh")) != -1) {
 		switch (opt) {
 			case 'A':
 				init.regA = atoi(optarg);
@@ -86,6 +109,26 @@ void parseParameters(int argc, char *argv[], char * objectfile) {
 			case 'B':
 				init.regB = atoi(optarg);
 				init.flagB = 1;
+				break;
+			case 'C':
+				init.regC = atoi(optarg);
+				init.flagC = 1;
+				break;
+			case 'D':
+				init.regD = atoi(optarg);
+				init.flagD = 1;
+				break;
+			case 'E':
+				init.regE = atoi(optarg);
+				init.flagE = 1;
+				break;
+			case 'H':
+				init.regH = atoi(optarg);
+				init.flagH = 1;
+				break;
+			case 'L':
+				init.regL = atoi(optarg);
+				init.flagL = 1;
 				break;
 			case 'v':
 				showUsage();
@@ -133,14 +176,33 @@ void uploadRam(char * file) {
 void initializeRegisters() {
 
 	if (init.flagA) {	
-		printf ("REG A Initialized to %2x\n",init.regA);
+		printf ("REG A Initialized to %02Xh\n",init.regA);
 		z80_write_reg_a(init.regA);	
 	}
 	if (init.flagB) {	
-		printf ("REG B Initialized to %2x\n",init.regB);
+		printf ("REG B Initialized to %02Xh\n",init.regB);
 		z80_write_reg_b(init.regB);	
 	}
-	
+	if (init.flagC) {	
+		printf ("REG C Initialized to %02Xh\n",init.regC);
+		z80_write_reg_c(init.regC);	
+	}
+	if (init.flagD) {	
+		printf ("REG D Initialized to %02Xh\n",init.regD);
+		z80_write_reg_d(init.regD);	
+	}
+	if (init.flagE) {	
+		printf ("REG E Initialized to %02Xh\n",init.regE);
+		z80_write_reg_e(init.regE);	
+	}
+	if (init.flagH) {	
+		printf ("REG H Initialized to %02Xh\n",init.regH);
+		z80_write_reg_h(init.regH);	
+	}
+	if (init.flagL) {	
+		printf ("REG L Initialized to %02Xh\n",init.regL);
+		z80_write_reg_l(init.regL);	
+	}
 }
 
 
@@ -183,7 +245,6 @@ int main(int argc, char *argv[])
 	/* preset some Registers if defined */
 	initializeRegisters();
 	
-
 	/* Here we go */
 	/* this will keep running until a HALT instruction */
 	clock_gettime(CLOCK_REALTIME,&tpstart);	
