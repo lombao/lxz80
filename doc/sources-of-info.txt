@@ -7,3 +7,12 @@ http://www.z80.info
 * Undocumented Z80
 http://z80.info/zip/z80-documented.pdf The undocumented Z80 by Sean Young
 http://www.worldofspectrum.org/z88forever/dn327/z80undoc.htm  Undocumented 
+
+* Other Z80 emu
+http://www.mathematik.uni-ulm.de/users/ag/yaze-ag/
+http://fms.komkon.org/
+https://floooh.github.io/2017/12/10/z80-emu-evolution.html
+
+
+* tests
+http://www.jeffavery.ca/computers/macintosh_z80exerciser.html
