@@ -1,0 +1,22 @@
+These are things that I plan to do in the near future
+=====================================================
+
+To be able to assemble, run and use the http://mdfs.net/Software/Z80/Exerciser/
+Z80 exercisers ZEXALL and ZEXDOC. At this moment lxzasm cannot deal with them
+because Macros are not supported and perhaps a few additional directives. This could
+be a good tester for the whole kit. So I have work for the next couple of weeks
+
+Assembler:
+   To add the include  directive
+   To support MACROS
+   Implement INTEL/HEX output for the assembler
+   Consider the LIST NOLIST directives
+   Consider the ASEG CSEG directives
+   I have 3 reduce/reduce conflicts in the grammar due to LD xx,( expr ) instructions. I need to sort out this.
+      
+Emulator: 
+   Add support for more undocumented features, some already implemented.
+   Missing IM 2.
+   Review behaviour of I and R registers
+
+

@@ -1,0 +1,9 @@
+This is a collection of online sources of info I've found about the Z80
+
+* General Z80
+http://www.z80.info
+
+
+* Undocumented Z80
+http://z80.info/zip/z80-documented.pdf The undocumented Z80 by Sean Young
+http://www.worldofspectrum.org/z88forever/dn327/z80undoc.htm  Undocumented 
