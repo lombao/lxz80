@@ -25,6 +25,7 @@
 #include <stdint.h>
 #include <unistd.h>
 #include <time.h>
+#include <sys/time.h>
 
 
 #define LXZ80_VERSION LXZ80VERSION
@@ -255,7 +256,7 @@ int main(int argc, char *argv[])
 	printf("\nOUPUT:\n");
 	printf("--------------------------------------------\n");
 	printf("| Total TS Cycles: %ld with a Clock at %d Mhz \n",z80_show_totalts(),init.clock);
-	printf("| Real time:       %ld seconds %ld miliseconds\n",tpend.tv_sec - tpstart.tv_sec, (tpend.tv_nsec - tpstart.tv_nsec)/1000000 );
+	printf("| Real time:       %ld seconds %ld microseconds\n",tpend.tv_sec - tpstart.tv_sec, (tpend.tv_nsec - tpstart.tv_nsec)/1000 );
 	printf("-------------------------\n");
 	printf("| A | F | B | C |  H L  |\n");
 	printf("|-------|-------|-------|\n");
@@ -269,5 +270,11 @@ int main(int argc, char *argv[])
 	printf("                |-------|\n");
 	printf("                | %04Xh |\n",z80_show_iy());
 	printf("                |-------|\n");
+	
+	
+	clock_gettime(CLOCK_REALTIME,&tpstart);	
+	clock_gettime(CLOCK_REALTIME,&tpend);
+    printf("Calcuate the clock in this computer takes %ld seconds %ld nanooseconds\n",tpend.tv_sec - tpstart.tv_sec, (tpend.tv_nsec - tpstart.tv_nsec));
+	
 	
 } 

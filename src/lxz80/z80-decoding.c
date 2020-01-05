@@ -67,13 +67,13 @@ void z80_decoding() {
 			case 0x21:	_Z80_FETCH_WORD_REG(z80.regs[HL]); _Z80_ITS(10,3,"LD HL, %04Xh"); break; 
 			case 0x31:	_Z80_FETCH_WORD_REG(z80.regs[SP]); _Z80_ITS(10,3,"LD SP, %04Xh"); break; 
 
-			case 0x3E:	_Z80_FETCH_BYTE; z80.regs[AF].H = z80.regs[WZ].L; _Z80_ITS(7,2,"LD A, %02Xh"); break; 
-			case 0x06:	_Z80_FETCH_BYTE; z80.regs[BC].H = z80.regs[WZ].L; _Z80_ITS(7,2,"LD B, %02Xh"); break; 
-			case 0x0E:	_Z80_FETCH_BYTE; z80.regs[BC].L = z80.regs[WZ].L; _Z80_ITS(7,2,"LD C, %02Xh"); break; 
-			case 0x16:	_Z80_FETCH_BYTE; z80.regs[DE].H = z80.regs[WZ].L; _Z80_ITS(7,2,"LD D, %02Xh"); break; 
-			case 0x1E:	_Z80_FETCH_BYTE; z80.regs[DE].L = z80.regs[WZ].L; _Z80_ITS(7,2,"LD E, %02Xh"); break; 
-			case 0x26:	_Z80_FETCH_BYTE; z80.regs[HL].H = z80.regs[WZ].L; _Z80_ITS(7,2,"LD H, %02Xh"); break; 
-			case 0x2E:	_Z80_FETCH_BYTE; z80.regs[HL].L = z80.regs[WZ].L; _Z80_ITS(7,2,"LD L, %02Xh"); break; 
+			case 0x3E:	_Z80_FETCH_RAM(z80.regs[AF].H); _Z80_ITS(7,2,"LD A, %02Xh"); break; 
+			case 0x06:	_Z80_FETCH_RAM(z80.regs[BC].H); _Z80_ITS(7,2,"LD B, %02Xh"); break; 
+			case 0x0E:	_Z80_FETCH_RAM(z80.regs[BC].L); _Z80_ITS(7,2,"LD C, %02Xh"); break; 
+			case 0x16:	_Z80_FETCH_RAM(z80.regs[DE].H); _Z80_ITS(7,2,"LD D, %02Xh"); break; 
+			case 0x1E:	_Z80_FETCH_RAM(z80.regs[DE].L); _Z80_ITS(7,2,"LD E, %02Xh"); break; 
+			case 0x26:	_Z80_FETCH_RAM(z80.regs[HL].H); _Z80_ITS(7,2,"LD H, %02Xh"); break; 
+			case 0x2E:	_Z80_FETCH_RAM(z80.regs[HL].L); _Z80_ITS(7,2,"LD L, %02Xh"); break; 
 
 			case 0x7F:	_Z80_ITS(4,1,"LD A,A"); break;
 			case 0x78:	z80.regs[AF].H = z80.regs[BC].H; _Z80_ITS(4,1,"LD A,B"); break;

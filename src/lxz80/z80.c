@@ -79,15 +79,16 @@ int z80_run ( ) {
 
  struct timespec tpstart;
  struct timespec tpend;
- struct timespec sleep;
- int virtualclock=0; 	/* in nanoseconds */
- int realclock=0; /* in nanoseconds */
+  
+ struct timespec thesleep;
+ long int virtualclock=0; 	/* in nanoseconds */
+ long int realclock=0; /* in nanoseconds */
  	
-		sleep.tv_sec = 0;
-		
+		thesleep.tv_sec = 0;
 		clock_gettime(CLOCK_REALTIME,&tpstart);
 		
 		while( z80.status.HALT != Z80_TRUE ) {
+			
 			if ( z80.status.RST == Z80_TRUE ) 	{ z80_reset(); }
 			
 			/* non mask interrupt */
@@ -117,19 +118,17 @@ int z80_run ( ) {
 			
 			/* wait or not wait */
 			virtualclock += z80.status.ts *  (1000 / z80.clock );
-			clock_gettime(CLOCK_REALTIME,&tpend);
-			realclock += tpend.tv_nsec - tpstart.tv_nsec;
-			tpstart = tpend;
+			clock_gettime(CLOCK_REALTIME,&tpend);	
+			realclock = (tpend.tv_nsec - tpstart.tv_nsec) +  ((tpend.tv_sec - tpstart.tv_sec)*1000000000L); 
 			
-			/* printf("TS Status: %d, Virtual clock: %d   Real Clock: %d\n",z80.status.ts,virtualclock,realclock); */
+			/* this is never accurate, the nanosleep resolution is far from perfect */
 			if ( virtualclock > realclock ) {
-				sleep.tv_nsec = virtualclock - realclock;
-				virtualclock = 0 ; realclock = 0;
-				nanosleep(&sleep,NULL);
+				thesleep.tv_nsec = ((virtualclock - realclock));				
+				clock_nanosleep(CLOCK_REALTIME,0,&thesleep,NULL);
 			}
-		
 		}		
-		
+	
+
 	return EXIT_SUCCESS;
 }
 
