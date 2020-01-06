@@ -1,3 +1,8 @@
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = lxz80.pc
+
+EXTRA_DIST = lxz80.pc.in
+
 AM_CFLAGS = -g  -Wall -fPIC -Wextra -O2 -DLXZ80VERSION="\"$(VERSION)\""
 
 lib_LTLIBRARIES = liblxz80.la

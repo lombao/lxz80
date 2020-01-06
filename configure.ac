@@ -29,5 +29,14 @@ AC_TYPE_UINT8_T
 
 AM_INIT_AUTOMAKE([1.11 -Wall -Werror foreign])
 AC_CONFIG_FILES([src/lxz80/Makefile src/lxzasm/Makefile src/lxzrun/Makefile examples/Makefile Makefile])
+AC_CONFIG_FILES([src/lxz80/lxz80.pc])
 LT_INIT([shared disable-static])
 AC_OUTPUT
+
+echo "
+	LXZ80 ${VERSION} has been configured
+	PREFIX: ${prefix}
+	You can know do
+	make
+	sudo make install
+"
