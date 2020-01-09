@@ -25,7 +25,7 @@
 
 #include <sys/time.h>
 
-#include "lxz80.h"
+#include "z80.h"
 #include "z80-helper.h"
 
 
@@ -42,15 +42,10 @@ extern void z80_decoding();
 
 
 //----------------------------------------------------------------------
-void z80_init( const int clock, t_callback_readio read_io , t_callback_writeio write_io ,  t_callback_readram read_ram , t_callback_writeram write_ram   ) {
+void z80_init( struct z80interface * interface ) {
 	
-	z80.clock = clock;
-	
-	/* set I/O and RAM callbacks */
-	z80.read_io = read_io;
-	z80.write_io = write_io;
-	z80.read_ram = read_ram;
-	z80.write_ram = write_ram;
+	/* set the interface */
+	z80.interface = interface;
 	
 	for(int a=0;a<Z80_NUM_REGS;a++) {
 		switch(a) {
@@ -117,7 +112,7 @@ int z80_run ( ) {
 			z80.status.totalts += z80.status.ts;
 			
 			/* wait or not wait */
-			virtualclock += z80.status.ts *  (1000 / z80.clock );
+			virtualclock += z80.status.ts *  (1000 / z80.interface->clock );
 			clock_gettime(CLOCK_REALTIME,&tpend);	
 			realclock = (tpend.tv_nsec - tpstart.tv_nsec) +  ((tpend.tv_sec - tpstart.tv_sec)*1000000000L); 
 			

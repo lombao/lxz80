@@ -28,8 +28,6 @@
 #include <sys/time.h>
 
 
-#define LXZ80_VERSION LXZ80VERSION
-
 uint8_t ram[64 * 1024];
 
 struct {
@@ -65,10 +63,7 @@ void parseParameters(int argc, char *argv[], char * objectfile);
 void uploadRam(char * file);
 void initializeRegisters();
 
-void read_ram(const uint16_t addr, uint8_t * v);
-void write_ram(const uint16_t addr, const uint8_t * v);
-void read_io(const uint16_t addr, uint8_t * v);
-void write_io(const uint16_t addr);
+void io(struct z80interface * interface);
 
 
 /**********************************************************************/
@@ -209,24 +204,21 @@ void initializeRegisters() {
 
 /**********************************************************************/
 /* Mandatory setup of the Z80 Library                                 */
-void read_ram(const uint16_t addr, uint8_t * v) {
-	*v = ram[addr];
+void io (struct z80interface * interface) {
+		
+		switch(interface->type) {
+			case 0: interface->busdata = ram[interface->busaddr];
+					break;
+			case 1: ram[ interface->busaddr ] = interface->busdata;
+					break;
+			case 2: printf(":: Warning, detected IO Read to address: %04Xh\n",interface->busaddr);
+					break;
+			case 3: printf(":: Warning, detected IO Write to address: %04Xh\n",interface->busaddr);
+					break;
+		}
 }
 
-void write_ram(const uint16_t addr, const uint8_t * v) {
-	ram[addr] = *v;
-}
 
-/* We do not do anything with I/O */
-/* but we create the callback just in case */
-void read_io(const uint16_t addr, uint8_t * v) {
-	printf(":: Warning, detected IO Read to address: %04Xh\n",addr);
-	*v = 0;	
-}
-
-void write_io(const uint16_t addr) {
-	printf(":: Warning, detected IO Write to address: %04Xh\n",addr);
-}
 
 /*** MAIN *************************/ 
 int main(int argc, char *argv[])
@@ -235,13 +227,17 @@ int main(int argc, char *argv[])
   char objectfile[500];
   struct timespec tpstart;
   struct timespec tpend;
- 
+  struct z80interface interface;
+  
 	/* Prepare */
 	parseParameters(argc,argv,objectfile);
 	uploadRam(objectfile);
 	
 	/* Init Z80 */
-	z80_init( init.clock, read_io, write_io, read_ram , write_ram );
+	interface.clock = init.clock;
+	interface.io    = io;
+	
+	z80_init( &interface );
 	
 	/* preset some Registers if defined */
 	initializeRegisters();

@@ -125,10 +125,10 @@ int main(int argc, char *argv[])
 	yyparse();
 	fclose(yyin);
         
-        /*        
+ /*              
         printf("Pass 1 completed\n");
         printf("Defined Labels: \n %s\n",getDefinedLabels());
-        */
+ */       
         
 	reset_lexer();
 	pc = previouspc = pppc;

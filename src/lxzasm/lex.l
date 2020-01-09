@@ -62,6 +62,7 @@ int from_hexa(const char * s) {
 \.TITLE               { return TITLE; }
 TITLE                 { return TITLE; }
 title			{ return TITLE; }
+\.title			{ return TITLE; }
 FNAME                 { return FNAME; }
 IF                    { return IF; }
 IFDEF                 { return IFDEF; }

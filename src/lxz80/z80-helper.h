@@ -19,30 +19,39 @@
 #ifndef _Z80_HELPER_H
 #define _Z80_HELPER_H
 
-#include "lxz80.h"
+#include "z80.h"
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
-#define _Z80_READ_RAM(d,x)	 z80.read_ram(d,&x)
-#define _Z80_READ_BYTE(d,x)	 _Z80_READ_RAM(d,x)
-#define _Z80_READ_REG16(d,x) _Z80_READ_RAM(d, z80.regs[x].L ); _Z80_READ_RAM(d + 1, z80.regs[x].H);
 
-#define _Z80_WRITE_RAM(d,x)		z80.write_ram(d,&(x))
-#define _Z80_WRITE_BYTE(d,x)	_Z80_WRITE_RAM(d,x)
+/* ACCESS TO RAM */
+#define _Z80_READ_RAM(d,x)		z80.interface->type = 0; z80.interface->busaddr = d; z80.interface->io( z80.interface ); x = z80.interface->busdata;
+#define _Z80_READ_BYTE(d,x)		_Z80_READ_RAM(d,x)
+#define _Z80_READ_REG16(d,x) 	_Z80_READ_RAM(d, z80.regs[x].L ); _Z80_READ_RAM(d + 1, z80.regs[x].H);
+
+#define _Z80_WRITE_RAM(d,x)		z80.interface->type = 1; z80.interface->busaddr = d; z80.interface->busdata = x; z80.interface->io( z80.interface ); 
+#define _Z80_WRITE_BYTE(d,x)    _Z80_WRITE_RAM(d,x)
 #define _Z80_WRITE_REG16(d,x)	_Z80_WRITE_RAM(d, z80.regs[x].L ); _Z80_WRITE_RAM(d + 1, z80.regs[x].H);
 
-#define _Z80_FETCH_RAM(x)			_Z80_READ_RAM(z80.regs[PC].REG16++,x)
-#define _Z80_FETCH_WORD   			_Z80_FETCH_RAM(z80.regs[WZ].L); _Z80_FETCH_RAM(z80.regs[WZ].H);  
-#define _Z80_FETCH_BYTE	  			_Z80_FETCH_RAM(z80.regs[WZ].L);  
-#define _Z80_FETCH_INST   			(z80.status.HALT == Z80_TRUE)? z80.status.REGINST=0x0 : _Z80_FETCH_RAM(z80.status.REGINST); 
-#define _Z80_FETCH_WORD_REG(x)   	_Z80_FETCH_RAM(x.L); _Z80_FETCH_RAM(x.H);  
+#define _Z80_FETCH_RAM(x)		_Z80_READ_RAM(z80.regs[PC].REG16++,x)
+#define _Z80_FETCH_WORD   		_Z80_FETCH_RAM(z80.regs[WZ].L); _Z80_FETCH_RAM(z80.regs[WZ].H);  
+#define _Z80_FETCH_BYTE	  		_Z80_FETCH_RAM(z80.regs[WZ].L);  
+#define _Z80_FETCH_INST   		_Z80_FETCH_RAM(z80.status.REGINST); 
+#define _Z80_FETCH_WORD_REG(x)   _Z80_FETCH_RAM(x.L); _Z80_FETCH_RAM(x.H);  
 
-#define _Z80_PUSH_REG16(x)		_Z80_WRITE_BYTE( --z80.regs[SP].REG16, z80.regs[x].H ); _Z80_WRITE_BYTE( --z80.regs[SP].REG16, z80.regs[x].L )
-#define _Z80_POP_REG16(x)		_Z80_READ_BYTE( z80.regs[SP].REG16++, z80.regs[x].L ); _Z80_READ_BYTE( z80.regs[SP].REG16++, z80.regs[x].H )
+#define _Z80_PUSH_REG16(x)		_Z80_WRITE_RAM( --z80.regs[SP].REG16, z80.regs[x].H ); _Z80_WRITE_RAM( --z80.regs[SP].REG16, z80.regs[x].L )
+#define _Z80_POP_REG16(x)		_Z80_READ_RAM( z80.regs[SP].REG16++, z80.regs[x].L ); _Z80_READ_RAM( z80.regs[SP].REG16++, z80.regs[x].H )
 
 #define _Z80_ITS(x,y,z)				z80.status.ts=x; 
+
+/* I/O */
+#define _Z80_READ_IO(d,x)		z80.interface->type = 2; z80.interface->busaddr = d; z80.interface->io( z80.interface ); x = z80.interface->busdata;
+#define _Z80_WRITE_IO(d)		z80.interface->type = 3; z80.interface->busaddr = d; z80.interface->io( z80.interface ); 
+
+
+/*********************/
 
 void z80_error ( t_z80_errors e );
 uint8_t z80_alu_check_parity( uint8_t input );

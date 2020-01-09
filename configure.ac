@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([lxz80], [0.0.7], [cesar.lombao@gmail.com])
+AC_INIT([lxz80], [0.0.8], [cesar.lombao@gmail.com])
 AC_CONFIG_SRCDIR([src/lxz80/z80.c])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_HEADERS([config.h])
@@ -30,6 +30,7 @@ AC_TYPE_UINT8_T
 AM_INIT_AUTOMAKE([1.11 -Wall -Werror foreign])
 AC_CONFIG_FILES([src/lxz80/Makefile src/lxzasm/Makefile src/lxzrun/Makefile examples/Makefile Makefile])
 AC_CONFIG_FILES([src/lxz80/lxz80.pc])
+AC_CONFIG_FILES([src/lxz80/lxz80.h])
 LT_INIT([shared disable-static])
 AC_OUTPUT
 

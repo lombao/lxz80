@@ -17,7 +17,6 @@
  */
 
 
-#include "lxz80.h"
 #include "z80-helper.h"
 
 
@@ -59,8 +58,8 @@ void z80_decoding() {
 			
 			case 0x27:	z80_alu_daa();				break;
 	
-			case 0xDB:	_Z80_FETCH_BYTE; z80.read_io(((z80.regs[AF].H << 8) | z80.regs[WZ].L ),&z80.regs[AF].H); _Z80_ITS(11,2,"IN A,(%02Xh)"); break;
-			case 0xD3:	_Z80_FETCH_BYTE; z80.write_io(((z80.regs[AF].H << 8) | z80.regs[WZ].L )); _Z80_ITS(11,2,"OUT (%02Xh),A"); break;
+			case 0xDB:	_Z80_FETCH_BYTE; _Z80_READ_IO(((z80.regs[AF].H << 8) | z80.regs[WZ].L ),z80.regs[AF].H); _Z80_ITS(11,2,"IN A,(%02Xh)"); break;
+			case 0xD3:	_Z80_FETCH_BYTE; _Z80_WRITE_IO(((z80.regs[AF].H << 8) | z80.regs[WZ].L )); _Z80_ITS(11,2,"OUT (%02Xh),A"); break;
 					
 			case 0x01:	_Z80_FETCH_WORD_REG(z80.regs[BC]); _Z80_ITS(10,3,"LD BC, %04Xh"); break; 
 			case 0x11:	_Z80_FETCH_WORD_REG(z80.regs[DE]); _Z80_ITS(10,3,"LD DE, %04Xh"); break; 

@@ -20,7 +20,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "lxz80.h"
 #include "z80-helper.h"
 
 /**********************************************************************/
@@ -98,25 +97,25 @@ void z80_ed_decoding (  ) {
 		case 0x5E:	z80.status.IMODE = Z80_IM2; _Z80_ITS(8,2,"IM 2"); break;
 		
 		/* The HFLAG is missing in IN , how to calculate it? No idea */
-		case 0x40:	z80.read_io(z80.regs[BC].REG16,&z80.regs[BC].H); NX = 0; SX = (z80.regs[BC].H >> 7); ZX = ( z80.regs[BC].H==0); PX=z80_alu_check_parity(z80.regs[BC].H); _Z80_ITS(12,2,"IN B,(C)"); break;
-		case 0x48:	z80.read_io(z80.regs[BC].REG16,&z80.regs[BC].L); NX = 0; SX = (z80.regs[BC].L >> 7); ZX = ( z80.regs[BC].L==0); PX=z80_alu_check_parity(z80.regs[BC].L); _Z80_ITS(12,2,"IN C,(C)"); break;
-		case 0x50:	z80.read_io(z80.regs[BC].REG16,&z80.regs[DE].H); NX = 0; SX = (z80.regs[DE].H >> 7); ZX = ( z80.regs[DE].H==0); PX=z80_alu_check_parity(z80.regs[DE].H); _Z80_ITS(12,2,"IN D,(C)"); break;
-		case 0x58:	z80.read_io(z80.regs[BC].REG16,&z80.regs[DE].L); NX = 0; SX = (z80.regs[DE].L >> 7); ZX = ( z80.regs[DE].L==0); PX=z80_alu_check_parity(z80.regs[DE].L); _Z80_ITS(12,2,"IN E,(C)"); break;
-		case 0x60:	z80.read_io(z80.regs[BC].REG16,&z80.regs[HL].H); NX = 0; SX = (z80.regs[HL].H >> 7); ZX = ( z80.regs[HL].H==0); PX=z80_alu_check_parity(z80.regs[HL].H); _Z80_ITS(12,2,"IN H,(C)"); break;
-		case 0x68:	z80.read_io(z80.regs[BC].REG16,&z80.regs[HL].L); NX = 0; SX = (z80.regs[HL].L >> 7); ZX = ( z80.regs[HL].L==0); PX=z80_alu_check_parity(z80.regs[HL].L); _Z80_ITS(12,2,"IN L,(C)"); break;
-		case 0x78:	z80.read_io(z80.regs[BC].REG16,&z80.regs[AF].H); NX = 0; SX = (z80.regs[AF].H >> 7); ZX = ( z80.regs[AF].H==0); PX=z80_alu_check_parity(z80.regs[AF].H); _Z80_ITS(12,2,"IN A,(C)"); break;
+		case 0x40:	_Z80_READ_IO(z80.regs[BC].REG16,z80.regs[BC].H); NX = 0; SX = (z80.regs[BC].H >> 7); ZX = ( z80.regs[BC].H==0); PX=z80_alu_check_parity(z80.regs[BC].H); _Z80_ITS(12,2,"IN B,(C)"); break;
+		case 0x48:	_Z80_READ_IO(z80.regs[BC].REG16,z80.regs[BC].L); NX = 0; SX = (z80.regs[BC].L >> 7); ZX = ( z80.regs[BC].L==0); PX=z80_alu_check_parity(z80.regs[BC].L); _Z80_ITS(12,2,"IN C,(C)"); break;
+		case 0x50:	_Z80_READ_IO(z80.regs[BC].REG16,z80.regs[DE].H); NX = 0; SX = (z80.regs[DE].H >> 7); ZX = ( z80.regs[DE].H==0); PX=z80_alu_check_parity(z80.regs[DE].H); _Z80_ITS(12,2,"IN D,(C)"); break;
+		case 0x58:	_Z80_READ_IO(z80.regs[BC].REG16,z80.regs[DE].L); NX = 0; SX = (z80.regs[DE].L >> 7); ZX = ( z80.regs[DE].L==0); PX=z80_alu_check_parity(z80.regs[DE].L); _Z80_ITS(12,2,"IN E,(C)"); break;
+		case 0x60:	_Z80_READ_IO(z80.regs[BC].REG16,z80.regs[HL].H); NX = 0; SX = (z80.regs[HL].H >> 7); ZX = ( z80.regs[HL].H==0); PX=z80_alu_check_parity(z80.regs[HL].H); _Z80_ITS(12,2,"IN H,(C)"); break;
+		case 0x68:	_Z80_READ_IO(z80.regs[BC].REG16,z80.regs[HL].L); NX = 0; SX = (z80.regs[HL].L >> 7); ZX = ( z80.regs[HL].L==0); PX=z80_alu_check_parity(z80.regs[HL].L); _Z80_ITS(12,2,"IN L,(C)"); break;
+		case 0x78:	_Z80_READ_IO(z80.regs[BC].REG16,z80.regs[AF].H); NX = 0; SX = (z80.regs[AF].H >> 7); ZX = ( z80.regs[AF].H==0); PX=z80_alu_check_parity(z80.regs[AF].H); _Z80_ITS(12,2,"IN A,(C)"); break;
 
-		case 0x41:	z80.write_io((z80.regs[BC].REG16 & 0xFF00) | z80.regs[BC].H ); _Z80_ITS(12,2,"OUT (C),B"); break;
-		case 0x49:	z80.write_io(z80.regs[BC].REG16); _Z80_ITS(12,2,"OUT (C),C"); break;
-		case 0x51:	z80.write_io((z80.regs[BC].REG16 & 0xFF00) | z80.regs[DE].H ); _Z80_ITS(12,2,"OUT (C),D"); break;
-		case 0x59:	z80.write_io((z80.regs[BC].REG16 & 0xFF00) | z80.regs[DE].L ); _Z80_ITS(12,2,"OUT (C),E"); break;
-		case 0x61:	z80.write_io((z80.regs[BC].REG16 & 0xFF00) | z80.regs[HL].H ); _Z80_ITS(12,2,"OUT (C),H"); break;
-		case 0x69:	z80.write_io((z80.regs[BC].REG16 & 0xFF00) | z80.regs[HL].L ); _Z80_ITS(12,2,"OUT (C),L"); break;
-		case 0x79:	z80.write_io((z80.regs[BC].REG16 & 0xFF00) | z80.regs[AF].H ); _Z80_ITS(12,2,"OUT (C),A"); break;
+		case 0x41:	_Z80_WRITE_IO((z80.regs[BC].REG16 & 0xFF00) | z80.regs[BC].H ); _Z80_ITS(12,2,"OUT (C),B"); break;
+		case 0x49:	_Z80_WRITE_IO(z80.regs[BC].REG16); _Z80_ITS(12,2,"OUT (C),C"); break;
+		case 0x51:	_Z80_WRITE_IO((z80.regs[BC].REG16 & 0xFF00) | z80.regs[DE].H ); _Z80_ITS(12,2,"OUT (C),D"); break;
+		case 0x59:	_Z80_WRITE_IO((z80.regs[BC].REG16 & 0xFF00) | z80.regs[DE].L ); _Z80_ITS(12,2,"OUT (C),E"); break;
+		case 0x61:	_Z80_WRITE_IO((z80.regs[BC].REG16 & 0xFF00) | z80.regs[HL].H ); _Z80_ITS(12,2,"OUT (C),H"); break;
+		case 0x69:	_Z80_WRITE_IO((z80.regs[BC].REG16 & 0xFF00) | z80.regs[HL].L ); _Z80_ITS(12,2,"OUT (C),L"); break;
+		case 0x79:	_Z80_WRITE_IO((z80.regs[BC].REG16 & 0xFF00) | z80.regs[AF].H ); _Z80_ITS(12,2,"OUT (C),A"); break;
 
 
 		case 0xAB:	_Z80_READ_BYTE( z80.regs[HL].REG16, z80.regs[WZ].L);
-					z80.write_io( z80.regs[BC].REG16 );
+					_Z80_WRITE_IO( z80.regs[BC].REG16 );
 					z80.regs[HL].REG16--; z80.regs[BC].H--;
 					z80.regs[AF].ZFLAG = ( z80.regs[BC].H == 0 );
 					z80.regs[AF].NFLAG = 1;
@@ -124,7 +123,7 @@ void z80_ed_decoding (  ) {
 					break;
 						
 		case 0xA3:	_Z80_READ_BYTE(z80.regs[HL].REG16, z80.regs[WZ].L);
-					z80.write_io( z80.regs[BC].REG16 );
+					_Z80_WRITE_IO( z80.regs[BC].REG16 );
 					z80.regs[HL].REG16++; z80.regs[BC].H--;
 					z80.regs[AF].ZFLAG = ( z80.regs[BC].H == 0 );
 					z80.regs[AF].NFLAG = 1;
@@ -132,7 +131,7 @@ void z80_ed_decoding (  ) {
 					break;
 		
 
-		case 0xAA:	z80.read_io( z80.regs[BC].REG16, &z80.regs[WZ].L);
+		case 0xAA:	_Z80_READ_IO( z80.regs[BC].REG16, z80.regs[WZ].L);
 					_Z80_WRITE_BYTE( z80.regs[HL].REG16, z80.regs[WZ].L);
 					z80.regs[HL].REG16--; z80.regs[BC].H--;
 					z80.regs[AF].ZFLAG = ( z80.regs[BC].H == 0 );
@@ -140,7 +139,7 @@ void z80_ed_decoding (  ) {
 					_Z80_ITS(16,2,"IND");
 					break;
 						
-		case 0xA2:	z80.read_io( z80.regs[BC].REG16, &z80.regs[WZ].L);
+		case 0xA2:	_Z80_READ_IO( z80.regs[BC].REG16, z80.regs[WZ].L);
 					_Z80_WRITE_BYTE( z80.regs[HL].REG16, z80.regs[WZ].L);
 					z80.regs[HL].REG16++; z80.regs[BC].H--;
 					z80.regs[AF].ZFLAG = ( z80.regs[BC].H == 0 );
@@ -148,7 +147,7 @@ void z80_ed_decoding (  ) {
 					_Z80_ITS(16,2,"INI");
 					break;
 					
-		case 0xBA:	z80.read_io( z80.regs[BC].REG16, &z80.regs[WZ].L);
+		case 0xBA:	_Z80_READ_IO( z80.regs[BC].REG16, z80.regs[WZ].L);
 					_Z80_WRITE_BYTE(z80.regs[HL].REG16--, z80.regs[WZ].L);
 					z80.regs[HL].REG16--; z80.regs[BC].H--;
 					z80.regs[AF].NFLAG = 1;
@@ -162,7 +161,7 @@ void z80_ed_decoding (  ) {
 					}
 					break;
 
-		case 0xB2:	z80.read_io( z80.regs[BC].REG16, &z80.regs[WZ].L);
+		case 0xB2:	_Z80_READ_IO( z80.regs[BC].REG16, z80.regs[WZ].L);
 					_Z80_WRITE_BYTE( z80.regs[HL].REG16--, z80.regs[WZ].L);
 					z80.regs[HL].REG16++; z80.regs[BC].H--;
 					z80.regs[AF].NFLAG = 1;
@@ -224,7 +223,7 @@ void z80_ed_decoding (  ) {
 					break;
 					
 		case 0xBB:	_Z80_READ_BYTE( z80.regs[HL].REG16,z80.regs[WZ].L);
-					z80.write_io( z80.regs[BC].REG16 );
+					_Z80_WRITE_IO( z80.regs[BC].REG16 );
 					z80.regs[BC].H--;
 					z80.regs[HL].REG16--;
 					z80.regs[AF].NFLAG = 1;
@@ -239,7 +238,7 @@ void z80_ed_decoding (  ) {
 					break;
 		
 		case 0xB3:	_Z80_READ_BYTE(z80.regs[HL].REG16, z80.regs[WZ].L);
-					z80.write_io( z80.regs[BC].REG16 );
+					_Z80_WRITE_IO( z80.regs[BC].REG16 );
 					z80.regs[BC].H--;
 					z80.regs[HL].REG16++;
 					z80.regs[AF].NFLAG = 1;

@@ -1,4 +1,4 @@
-HOW TO USE LX80 EMULATOR
+HOW TO USE LXZ80 EMULATOR
 ========================
 
 The emulator is a shared library, so you can add it to your code
@@ -7,76 +7,46 @@ as any other shared library.
 If you want to look for an example, see the code of lxzrun, which 
 uses this library to simulate a basic Z80
 
-Linking
-========
-LDFLAGS ===>  -llxz80
 
-Headers
-=======
-lxz80.h
+Compiling using the library
+===========================
+The LDFLAGS is  -llxz80 and the CFLAGS -Ilxz80.h
+There is a pkgconfig file installed by default ( lxz80 )
 
 
 API
 ====
+There are two basic functions you must use 
 
-There are two basic functions you must use ( see the definition in the
-lxz80.h file )
-
-* z80_init( clock, callback io_read, callback io_write, callback read_mem, callback write_mem )
+* z80_init( struct z80interface * interface )
 * z80_run()
 
+There is an structure you must fill in to call z80 init
 
-The z80_init
-============
-This function is the initialization of the Z80. You must provide the
-callbacks for I/O and RAM Access. The Z80 emulation does not have a RAM 
-module in itself and you must provide for it. 
-Also the clock in Mhz ( typically, 1, 2 , 3 or 4 ) to set the speed of the
-CPU. The registers will be set to have the default values at start of the
-Z80, there are several documents over there that describe that initial
-state.
+struct z80interface {
+	float clock; /* in Mhz, typically 1, 2, 3, 4 */
+	void (*io)(struct z80interface *);
+	int type;		/* 0: read ram, 1: write ram, 2: read io, 3: write io */
+    	uint16_t busaddr;
+    	uint8_t  busdata;
+};
+
+You must provide a callback function to handle the ram and io requests.
+void io ( struct z80interface * interface );
+
+This function will receive the same struct of z80 interface, but with the
+type element indicating the function ( ram or io, read or write )
+
+See the code of lxzrun ( main.c ) for an example 
+
 
 The z80_run
 ===========
-Once everything is ready, you call this function, adn this function WILL
-NEVER RETURN until it finds a HALT signal/instruction. If the code running
-executes a HALT instruction or you send the signal HALT the emulation will
-end. The z80_run will try to run every instruction at the same speed as
+Once z80 init is done, you call this function ONLY ONCE.
+This function WILL NEVER RETURN until it finds a HALT signal/instruction. 
+If the code running executes a HALT instruction or you send 
+the signal HALT the emulation will end. The z80_run will try to run every instruction at the same speed as
 it is supposed to be, but currently there is work to do in that area.
-
-
-The simplest structure
-=======================
-/**********************************************************************/
-
-void read_ram(const uint16_t addr, uint8_t * v) { *v = ram[addr];  }
-void write_ram(const uint16_t addr, const uint8_t * v) { ram[addr] = *v; }
-void read_io(const uint16_t addr, uint8_t * v) {  /* do stuff */ }
-void write_io(const uint16_t addr) { /* do stuff */ }
-
-....
-z80_init( 1, read_io, write_io, read_ram , write_ram );
-.....
-        
-z80_run();
-....
-
-/**********************************************************************/
-
-I gues that you might want to run the z80_run in a different thread, so
-you can also integrate other components. That's up to you.
-
-Also, see in this example we are using a simple RAM structure, which is an 
-array named ram[] . If you want to complicate things and handle wait states
-, several ram banks and other stuff you can do that in the read_ram and
-write_ram ( and possibly you will have to handle the IO callbacks as well )
-
-
-Accesing internal registers
----------------------------
-If you take a look into the lxz80.h file you will see some functions you
-can use to read the contents of the registers or even alter them. Please
-read the lxz80.h file for more functions.
 
 
 

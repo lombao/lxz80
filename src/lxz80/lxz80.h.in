@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define LXZ80_VERSION "0.0.8"
+#define LXZ80_VERSION "@PACKAGE_VERSION@"
 
 
 struct z80interface {

@@ -45,7 +45,6 @@ autom4te.cache
 # Other stuff
 *~
 *.log
-*.in
 .deps/
 .libs/
 
