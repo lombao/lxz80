@@ -53,10 +53,7 @@
 
 /*********************/
 
-void z80_error ( t_z80_errors e );
 uint8_t z80_alu_check_parity( uint8_t input );
-
-
 
 
 #define GET_ZFLAG(x) ( x == 0 )

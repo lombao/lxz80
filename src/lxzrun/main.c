@@ -172,32 +172,25 @@ void uploadRam(char * file) {
 void initializeRegisters() {
 
 	if (init.flagA) {	
-		printf ("REG A Initialized to %02Xh\n",init.regA);
-		z80_write_reg_a(init.regA);	
+		z80_init_reg_a(init.regA);	
 	}
 	if (init.flagB) {	
-		printf ("REG B Initialized to %02Xh\n",init.regB);
-		z80_write_reg_b(init.regB);	
+		z80_init_reg_b(init.regB);	
 	}
 	if (init.flagC) {	
-		printf ("REG C Initialized to %02Xh\n",init.regC);
-		z80_write_reg_c(init.regC);	
+		z80_init_reg_c(init.regC);	
 	}
 	if (init.flagD) {	
-		printf ("REG D Initialized to %02Xh\n",init.regD);
-		z80_write_reg_d(init.regD);	
+		z80_init_reg_d(init.regD);	
 	}
 	if (init.flagE) {	
-		printf ("REG E Initialized to %02Xh\n",init.regE);
-		z80_write_reg_e(init.regE);	
+		z80_init_reg_e(init.regE);	
 	}
 	if (init.flagH) {	
-		printf ("REG H Initialized to %02Xh\n",init.regH);
-		z80_write_reg_h(init.regH);	
+		z80_init_reg_h(init.regH);	
 	}
 	if (init.flagL) {	
-		printf ("REG L Initialized to %02Xh\n",init.regL);
-		z80_write_reg_l(init.regL);	
+		z80_init_reg_l(init.regL);	
 	}
 }
 
@@ -248,29 +241,30 @@ int main(int argc, char *argv[])
 	z80_run();
 	clock_gettime(CLOCK_REALTIME,&tpend);
 
+	/* error checking */
+	if ( interface.error.number != 0 ) {
+		printf("Detected a problem: Error %d\n",interface.error.number);
+		printf("         PC: %04Xh\n",interface.error.pc);
+	}
+	
+	/* read the values of the registers */
+	z80_readstatus();
+	
+	
 	/* Print Execution Report */
-	printf("\nOUPUT:\n");
+	printf("\n");
 	printf("--------------------------------------------\n");
-	printf("| Total TS Cycles: %ld with a Clock at %d Mhz \n",z80_show_totalts(),init.clock);
+	printf("| Total TS Cycles: %ld with a Clock at %d Mhz \n",interface.totalts,init.clock);
 	printf("| Real time:       %ld seconds %ld microseconds\n",tpend.tv_sec - tpstart.tv_sec, (tpend.tv_nsec - tpstart.tv_nsec)/1000 );
-	printf("-------------------------\n");
-	printf("| A | F | B | C |  H L  |\n");
-	printf("|-------|-------|-------|\n");
-	printf("| %04Xh | %04Xh | %04Xh |\n",z80_show_af(),z80_show_bc(),z80_show_hl());
-	printf("|-------|-------|-------|\n");
-	printf("        | D | E |  I X  |\n");
-	printf("        |-------|-------|\n");
-	printf("        | %04Xh | %04Xh |\n",z80_show_de(),z80_show_ix());
-	printf("        |-------|-------|\n");
-	printf("                |  I Y  |\n");
-	printf("                |-------|\n");
-	printf("                | %04Xh |\n",z80_show_iy());
-	printf("                |-------|\n");
+	printf("--------------------------------------------\n");
 	
-	
-	clock_gettime(CLOCK_REALTIME,&tpstart);	
-	clock_gettime(CLOCK_REALTIME,&tpend);
-    printf("Calcuate the clock in this computer takes %ld seconds %ld nanooseconds\n",tpend.tv_sec - tpstart.tv_sec, (tpend.tv_nsec - tpstart.tv_nsec));
+	printf(" AF: %04Xh 	BCPLUS: %04Xh \n",interface.registers.AF,interface.registers.AFPLUS);
+	printf(" BC: %04Xh 	BCPLUS: %04Xh \n",interface.registers.BC,interface.registers.BCPLUS);
+	printf(" DE: %04Xh 	DEPLUS: %04Xh \n",interface.registers.DE,interface.registers.DEPLUS);
+	printf(" HL: %04Xh 	HLPLUS: %04Xh \n",interface.registers.HL,interface.registers.HLPLUS);
+	printf(" IX: %04Xh \n",interface.registers.IX);
+	printf(" IY: %04Xh \n",interface.registers.IY);
+	printf(" SP: %04Xh 	PC: %04Xh \n",interface.registers.SP,interface.registers.PC);
 	
 	
 } 

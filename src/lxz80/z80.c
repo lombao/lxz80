@@ -23,20 +23,17 @@
 #include <signal.h>
 #include <time.h>
 
-#include <sys/time.h>
-
 #include "z80.h"
 #include "z80-helper.h"
 
 
 /**********************************************************************/
 /* THE z80 															  */
-
 t_z80 z80;
 /**********************************************************************/
 
 /**********************************************************************/
-void z80_reset ();
+/* EXTERNALLY DEFINED FUNCTIONS										  */
 extern void z80_decoding();
 /**********************************************************************/		
 
@@ -46,25 +43,6 @@ void z80_init( struct z80interface * interface ) {
 	
 	/* set the interface */
 	z80.interface = interface;
-	
-	for(int a=0;a<Z80_NUM_REGS;a++) {
-		switch(a) {
-			case AF:		strcpy(z80.nameregs[a],"AF"); break;
-			case AFPLUS:	strcpy(z80.nameregs[a],"AF'");break;
-			case BC:		strcpy(z80.nameregs[a],"BC"); break;
-			case DE:		strcpy(z80.nameregs[a],"DE"); break;
-			case HL:		strcpy(z80.nameregs[a],"HL"); break;
-			case BCPLUS:	strcpy(z80.nameregs[a],"BC'"); break;
-			case DEPLUS:	strcpy(z80.nameregs[a],"DE'"); break;
-			case HLPLUS:	strcpy(z80.nameregs[a],"HL'"); break;
-			case IX:		strcpy(z80.nameregs[a],"IX"); break;
-			case IY:		strcpy(z80.nameregs[a],"IY"); break;
-			case SP:		strcpy(z80.nameregs[a],"SP"); break;
-			case WZ:		strcpy(z80.nameregs[a],"WZ"); break;
-			case PC:		strcpy(z80.nameregs[a],"PC"); break;
-			case IR:		strcpy(z80.nameregs[a],"IR"); break;
-		}
-	}
 	z80_reset();
 }
 
@@ -82,25 +60,25 @@ int z80_run ( ) {
 		thesleep.tv_sec = 0;
 		clock_gettime(CLOCK_REALTIME,&tpstart);
 		
-		while( z80.status.HALT != Z80_TRUE ) {
+		while( (z80.interface->signals.HALT != Z80_TRUE) && ( z80.interface->error.number == 0 ) ) {
 			
-			if ( z80.status.RST == Z80_TRUE ) 	{ z80_reset(); }
+			if ( z80.interface->signals.RST == Z80_TRUE ) 	{ z80_reset(); }
 			
 			/* non mask interrupt */
-			if ( z80.status.NMI == Z80_TRUE ) {
+			if ( z80.interface->signals.NMI == Z80_TRUE ) {
 				_Z80_PUSH_REG16 ( PC );
 				z80.regs[PC].REG16 = 0x0066;
 				z80.status.IFF2 = z80.status.IFF1;
 				z80.status.IFF1 = 0;
-				z80.status.NMI = Z80_FALSE;
+				z80.interface->signals.NMI = Z80_FALSE;
 			}
 			else {
 				/* masked int, only supported MODE 1 *****/
 				/* there is a little problem with checking if last intruction was EI */
-				if ( z80.status.INT == Z80_TRUE && z80.status.IFF1 == 1 && z80.status.REGINST != 0xFB ) {
+				if ( z80.interface->signals.INT == Z80_TRUE && z80.status.IFF1 == 1 && z80.status.REGINST != 0xFB ) {
 					_Z80_PUSH_REG16 ( PC );
 					z80.regs[PC].REG16 = 0x0038;
-					z80.status.INT = Z80_FALSE;	
+					z80.interface->signals.INT = Z80_FALSE;	
 				}
 			}
 			
@@ -109,7 +87,7 @@ int z80_run ( ) {
 			
 			/* Decode */
 			z80_decoding();
-			z80.status.totalts += z80.status.ts;
+			z80.interface->totalts += z80.status.ts;
 			
 			/* wait or not wait */
 			virtualclock += z80.status.ts *  (1000 / z80.interface->clock );
@@ -127,6 +105,64 @@ int z80_run ( ) {
 	return EXIT_SUCCESS;
 }
 
+
+//----------------------------------------------------------------------
+// Signals
+void z80_signal_rst() 	{ z80.interface->signals.RST 	= Z80_TRUE; }
+void z80_signal_halt() 	{ z80.interface->signals.HALT 	= Z80_TRUE; }
+void z80_signal_int() 	{ z80.interface->signals.INT 	= Z80_TRUE; }
+void z80_signal_nmi() 	{ z80.interface->signals.NMI 	= Z80_TRUE; }
+
+
+//----------------------------------------------------------------------
+// read registers into the z80interface struct
+void z80_readstatus() {
+	
+	z80.interface->registers.AF = z80.regs[AF].REG16; 
+	z80.interface->registers.BC = z80.regs[BC].REG16;
+	z80.interface->registers.DE = z80.regs[DE].REG16; 
+	z80.interface->registers.HL = z80.regs[HL].REG16;
+	z80.interface->registers.AFPLUS = z80.regs[AFPLUS].REG16;
+	z80.interface->registers.BCPLUS = z80.regs[BCPLUS].REG16;
+	z80.interface->registers.DEPLUS = z80.regs[DEPLUS].REG16; 
+	z80.interface->registers.HLPLUS = z80.regs[HLPLUS].REG16;
+	z80.interface->registers.IX = z80.regs[IX].REG16;
+	z80.interface->registers.IY = z80.regs[IY].REG16; 
+	z80.interface->registers.SP = z80.regs[SP].REG16;
+	z80.interface->registers.PC = z80.regs[PC].REG16; 
+	
+}
+
+//----------------------------------------------------------------------
+// change value of internal registers
+void z80_init_reg_a(const uint8_t v) { z80.regs[AF].H = v; }
+void z80_init_reg_b(const uint8_t v) { z80.regs[BC].H = v; }
+void z80_init_reg_c(const uint8_t v) { z80.regs[BC].L = v; }
+void z80_init_reg_d(const uint8_t v) { z80.regs[DE].H = v; }
+void z80_init_reg_e(const uint8_t v) { z80.regs[DE].L = v; }
+void z80_init_reg_h(const uint8_t v) { z80.regs[HL].H = v; }
+void z80_init_reg_l(const uint8_t v) { z80.regs[HL].L = v; }
+void z80_init_reg_f(const uint8_t v) { z80.regs[AF].L = v; }
+void z80_init_reg_bc(const uint16_t v) { z80.regs[BC].REG16 = v; }
+void z80_init_reg_de(const uint16_t v) { z80.regs[DE].REG16 = v; }
+void z80_init_reg_hl(const uint16_t v) { z80.regs[HL].REG16 = v; }
+void z80_init_reg_ix(const uint16_t v) { z80.regs[IX].REG16 = v; }
+void z80_init_reg_iy(const uint16_t v) { z80.regs[IY].REG16 = v; }
+void z80_init_reg_pc(const uint16_t v) { z80.regs[PC].REG16 = v; }
+
+
+// NON API functions
+
+//----------------------------------------------------------------------
+//* Error handler.
+void z80_error ( int e ) {
+
+	z80.interface->error.number = e;
+	z80.interface->error.pc		= z80.regs[PC].REG16;
+	
+}
+
+
 //----------------------------------------------------------------------
 void z80_reset () {
 	z80.regs[PC].REG16 		= 0;
@@ -135,41 +171,20 @@ void z80_reset () {
 	z80.status.IFF2 		= 0;
 	z80.regs[AF].REG16 		= 0xFFFF;
 	z80.regs[SP].REG16		= 0xFFFF;   
-	z80.status.HALT  		= Z80_FALSE;
-	z80.status.NMI  		= Z80_FALSE;
-	z80.status.RST  		= Z80_FALSE;
-	z80.status.INT  		= Z80_FALSE;
-	z80.status.IMODE		= Z80_IM0;
-	z80.status.totalts		= 0;			
+	z80.interface->signals.HALT  	= Z80_FALSE;
+	z80.interface->signals.NMI  		= Z80_FALSE;
+	z80.interface->signals.RST  		= Z80_FALSE;
+	z80.interface->signals.INT  		= Z80_FALSE;
+	z80.status.IMODE		= 0;
+	z80.interface->totalts	= 0;			
+	z80.interface->error.number	=	0;
 }
 
-
-
 //----------------------------------------------------------------------
-// Signals
-void z80_signal_rst() 	{ z80.status.RST = Z80_TRUE; }
-void z80_signal_halt() 	{ z80.status.HALT = Z80_TRUE; }
-void z80_signal_int() 	{ z80.status.INT = Z80_TRUE; }
-void z80_signal_nmi() 	{ z80.status.NMI = Z80_TRUE; }
-
-
-//----------------------------------------------------------------------
-
-uint16_t z80_show_af() { return (z80.regs[AF].REG16); }
-uint16_t z80_show_bc() { return (z80.regs[BC].REG16); }
-uint16_t z80_show_de() { return (z80.regs[DE].REG16); }
-uint16_t z80_show_hl() { return (z80.regs[HL].REG16); }
-uint16_t z80_show_ix() { return (z80.regs[IX].REG16); }
-uint16_t z80_show_iy() { return (z80.regs[IY].REG16); }
-
-//----------------------------------------------------------------------
-void z80_write_reg_a(uint8_t v) { z80.regs[AF].H = v; }
-void z80_write_reg_b(uint8_t v) { z80.regs[BC].H = v; }
-void z80_write_reg_c(uint8_t v) { z80.regs[BC].L = v; }
-void z80_write_reg_d(uint8_t v) { z80.regs[DE].H = v; }
-void z80_write_reg_e(uint8_t v) { z80.regs[DE].L = v; }
-void z80_write_reg_h(uint8_t v) { z80.regs[HL].H = v; }
-void z80_write_reg_l(uint8_t v) { z80.regs[HL].L = v; }
-
-//----------------------------------------------------------------------
-uint64_t z80_show_totalts() { return (z80.status.totalts); }
+// I honestly this should be improved
+uint8_t z80_alu_check_parity( uint8_t input ) {
+	
+  input =  input ^ ( input >>  4 );
+  input =  input ^ ( input >>  2 );  
+  return ( input ^ ( input >>  1 ) ) & 0x1;
+}

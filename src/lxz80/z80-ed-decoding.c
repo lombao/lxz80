@@ -92,9 +92,9 @@ void z80_ed_decoding (  ) {
 					}
 					break;	
 					
-		case 0x46:	z80.status.IMODE = Z80_IM0; _Z80_ITS(8,2,"IM 0"); break;
-		case 0x56:	z80.status.IMODE = Z80_IM1; _Z80_ITS(8,2,"IM 1"); break;
-		case 0x5E:	z80.status.IMODE = Z80_IM2; _Z80_ITS(8,2,"IM 2"); break;
+		case 0x46:	z80.status.IMODE = 0; _Z80_ITS(8,2,"IM 0"); break;
+		case 0x56:	z80.status.IMODE = 1; _Z80_ITS(8,2,"IM 1"); break;
+		case 0x5E:	z80.status.IMODE = 2; _Z80_ITS(8,2,"IM 2"); break;
 		
 		/* The HFLAG is missing in IN , how to calculate it? No idea */
 		case 0x40:	_Z80_READ_IO(z80.regs[BC].REG16,z80.regs[BC].H); NX = 0; SX = (z80.regs[BC].H >> 7); ZX = ( z80.regs[BC].H==0); PX=z80_alu_check_parity(z80.regs[BC].H); _Z80_ITS(12,2,"IN B,(C)"); break;

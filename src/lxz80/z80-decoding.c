@@ -48,7 +48,7 @@ void z80_decoding() {
 		
 	switch ( z80.status.REGINST ) {
 
-			case 0x76:	_Z80_ITS(4,1,"HALT"); z80.status.HALT = Z80_TRUE; break;
+			case 0x76:	_Z80_ITS(4,1,"HALT"); z80.interface->signals.HALT = Z80_TRUE; break;
 			case 0x00:	_Z80_ITS(4,1,"NOP"); break;
 
 			case 0xED:	z80_ed_decoding(); 			break;

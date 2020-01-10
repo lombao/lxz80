@@ -23,44 +23,113 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define LXZ80_VERSION "0.0.8"
+#define LXZ80_VERSION "0.0.9"
 
 
+/* Define error values */
+#define ERROR_UNKNOWN_OPCODE 1 /* we found an unknown opcode */
+#define ERROR_UNDEFINED 	 2 /* an undefined fatal internal error */
+
+
+/* A convenience to define TRUE and FALSE ignoring the 
+ * negative logics and other eletronic stuff */
+typedef enum { 
+		Z80_TRUE,
+		Z80_FALSE
+} t_z80_bool;
+
+
+/* The interface structure you will share with the Z80 to read 
+   or write data from the internal CPU. You need to a variable 
+   of this type yourself and pass it to z80_init
+   */
 struct z80interface {
-	float clock; /* in Mhz, typically 1, 2, 3, 4 */
-	void (*io)(struct z80interface *);
-	int type;		/* 0: read ram, 1: write ram, 2: read io, 3: write io */
-    uint16_t busaddr;
+	float clock; 							/* in Mhz, typically 1, 2, 3, 4 */
+	void (*io)(struct z80interface *);		/* the callback */
+	int type;								/* 0: read ram, 1: write ram, 2: read io, 3: write io */
+    uint16_t busaddr;			
     uint8_t  busdata;
+    uint64_t totalts;						/* number of ts since start */
+    struct {
+		uint16_t AF;
+		uint16_t BC;
+		uint16_t DE;
+		uint16_t HL;
+		uint16_t AFPLUS;
+		uint16_t BCPLUS;
+		uint16_t DEPLUS;
+		uint16_t HLPLUS;
+		uint16_t IX;
+		uint16_t IY;
+		uint16_t SP;
+		uint16_t PC;
+    } registers;
+    struct {
+		int 		number;	/* the number of error, 0 if there is none */
+		uint16_t	pc;		/* the value of the PC when error happened */
+    } error;
+    struct {
+		t_z80_bool			HALT;		/* Signal Halt */
+		t_z80_bool			RST;		/* Signal Halt */
+		t_z80_bool			INT;		/* Signal Halt */
+		t_z80_bool			NMI;		/* Signal Halt */
+    } signals;
 };
 
 
 /**********************************************************************/
 /* API FUNCTIONS													  */
+
+/* Need to call this one first to init the Z80
+   As parameter you must provide a z80interface
+   struct. Note that you do not need to define 
+   all fields
+   The fields more relevant for the z80_init are
+   io ( the callback ) and the clock ( in Mhz )
+   */
 void z80_init( struct z80interface * interface );		
+
+
+
+/* These are init functions for the different registers. The provide
+   a mechanism to set its value. In principle these are to be used 
+   just after z80_init to set the values you want, but nothing
+   prevent you using to alter the register values at any time
+   */
+void z80_init_reg_a(const uint8_t v);
+void z80_init_reg_b(const uint8_t v);
+void z80_init_reg_c(const uint8_t v);
+void z80_init_reg_d(const uint8_t v);
+void z80_init_reg_e(const uint8_t v);
+void z80_init_reg_h(const uint8_t v);
+void z80_init_reg_l(const uint8_t v);
+void z80_init_reg_f(const uint8_t v);
+void z80_init_reg_bc(const uint16_t v);
+void z80_init_reg_de(const uint16_t v);
+void z80_init_reg_hl(const uint16_t v);
+void z80_init_reg_ix(const uint16_t v);
+void z80_init_reg_iy(const uint16_t v);
+void z80_init_reg_pc(const uint16_t v);
+
+
+/* You call this function and it will entry in a loop
+   running all instructions until it finds a HALT instruction or
+   and error. Then it returns.
+   */
 int z80_run ();
+
+/* You use this instruction to trigger a read of data into the struct
+   z80interface you have provided in the z80_init. It is a way to
+   read inside the Z80. For instance, it makes a copy of the registers
+   */
+void z80_readstatus();
+
 
 void z80_signal_rst(); 	
 void z80_signal_halt(); 
 void z80_signal_int(); 	
 void z80_signal_nmi(); 	
 
-uint16_t z80_show_af();
-uint16_t z80_show_bc();
-uint16_t z80_show_de();
-uint16_t z80_show_hl();
-uint16_t z80_show_ix();
-uint16_t z80_show_iy();
-
-void z80_write_reg_a(uint8_t v);
-void z80_write_reg_b(uint8_t v);
-void z80_write_reg_c(uint8_t v);
-void z80_write_reg_d(uint8_t v);
-void z80_write_reg_e(uint8_t v);
-void z80_write_reg_h(uint8_t v);
-void z80_write_reg_l(uint8_t v);
-
-uint64_t z80_show_totalts();
 
 /**********************************************************************/
 

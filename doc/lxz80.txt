@@ -21,21 +21,21 @@ There are two basic functions you must use
 * z80_init( struct z80interface * interface )
 * z80_run()
 
-There is an structure you must fill in to call z80 init
-
-struct z80interface {
-	float clock; /* in Mhz, typically 1, 2, 3, 4 */
-	void (*io)(struct z80interface *);
-	int type;		/* 0: read ram, 1: write ram, 2: read io, 3: write io */
-    	uint16_t busaddr;
-    	uint8_t  busdata;
-};
+There is an structure you must fill in to call z80 init.
+Please read the lxz80.h file to see the details of the
+struct, but basically you have to fill ONLY the clock ( in Mhz ) 
+and provide the callback.
 
 You must provide a callback function to handle the ram and io requests.
-void io ( struct z80interface * interface );
+void io ( struct z80interface * interface ); 
 
-This function will receive the same struct of z80 interface, but with the
-type element indicating the function ( ram or io, read or write )
+The z80 will call this callback whenever needs an IO or RAM access. So you 
+can capture these requests and handle them as you see fit. This function
+will receive as parameter a pointer to the same z80interface you provided 
+in the z80_init, but some values will defined
+First the "type", this defines the type of request, se lxz80 for the
+different values. Then, the busdata and busaddr will contain the
+corresponding values depending on the "type" of "io/ram request"
 
 See the code of lxzrun ( main.c ) for an example 
 
@@ -43,12 +43,49 @@ See the code of lxzrun ( main.c ) for an example
 The z80_run
 ===========
 Once z80 init is done, you call this function ONLY ONCE.
-This function WILL NEVER RETURN until it finds a HALT signal/instruction. 
-If the code running executes a HALT instruction or you send 
-the signal HALT the emulation will end. The z80_run will try to run every instruction at the same speed as
-it is supposed to be, but currently there is work to do in that area.
+This function WILL NEVER RETURN until it finds a HALT signal/instruction or
+and error is found.
+
+If you want to check if there was an error, check the
+z80interface.error.number. Its value must be 0, otherwise an error has been
+found. In the lxz80.h file you can find the defines for the posible errors
+Not many, I know.
+ 
+If no error happen, the other way to finish the z80_run is via the HALT. If
+the code running executes a HALT instruction, then you have a HALT and the
+z80_run will return. Also you can force a signal HALT using the 
+
+z80_signal_halt();
 
 
+The reset
+==========
+You can force a reset of the z80, using the 
+
+z80_signal rst();
+
+This will not make the z80_run stop, it is just that at the next cycle the
+cpu will reset its values ( PC = 0, AF = FFFF , and so on ).
+
+This function actually alters the z80interface, more exactly the
+z80interface.signals.RST, it sets the values to Z80_TRUE which the Z80
+will detect and act accordingly. So you can call this function or you can 
+modify the z80interface yourself directly
+
+The INT
+=======
+The INT ( masquerable interruption ) works like the reset, you can trigger
+this signal by calling
+
+z80_signal_int();
+
+But also you can modify yourself the z80interface.signals.int , setting it
+to Z80_TRUE. 
+If it is set, then, at the next instruction the Z80 will execute an the
+interruption ( provided is not a EI ). When the Interruption is acknowledge
+this value, z80interface.signals.INT is set to Z80_FALSE.
+NOTE: AT THE CURRENT VERSION ONLY MODE 1 is support, you set IM0 or IM2
+it will not work. But it will implemented in the future.
 
 
 

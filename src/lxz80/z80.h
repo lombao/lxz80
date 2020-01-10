@@ -19,61 +19,38 @@
 #ifndef _Z80_H
 #define _Z80_H
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
 #include "lxz80.h"
-
-
-
-/* The possible type of errors */	
-typedef enum { 
-		ERROR_UNKNOWN_OPCODE,  	/* Opcode has not been recognized */
-		IM2_MISSING_VECTOR		/* Vector not provided when INT in IM2 called */
-	} t_z80_errors;
 	
-
-typedef enum { 
-		Z80_TRUE,
-		Z80_FALSE
-	} t_z80_bool;
-	
-/* interruption modes */
-typedef enum {
-	Z80_IM0,
-	Z80_IM1,
-	Z80_IM2
-    } t_interrupt_mode;
-
-
-/* this is the index with the z80.regs that identify each of of them */	
+/* This is the index with the z80.regs 
+ * that identify each of of them */	
 typedef enum registers {
-	AF,
-	AFPLUS,
-	BC,
-	DE,
-	HL,
-	BCPLUS,
-	DEPLUS,
-	HLPLUS,
-	IX,
-	IY,
-	SP,
-	WZ,
-	PC,
-	IR
-    } t_registers_idx;
+		AF,
+		AFPLUS,
+		BC,
+		DE,
+		HL,
+		BCPLUS,
+		DEPLUS,
+		HLPLUS,
+		IX,
+		IY,
+		SP,
+		WZ,
+		PC,
+		IR
+} t_registers_idx;
 
 
 //----------------------------------------------------------------------
 //  THE z80 STRUCTURE
 // This represents the CPU , with its registers and status 
+
+/* the registers */
+#define Z80_NUM_REGS 15
+
 typedef struct {
 	
-	/* the registers */
-	#define Z80_NUM_REGS 15
-	#define Z80_MAX_NAME 10
-	char nameregs[Z80_NUM_REGS][Z80_MAX_NAME];   
+	/* the internal registers */
 	union {
 		uint16_t REG16;
 		struct {			  	
@@ -95,22 +72,15 @@ typedef struct {
 	} regs[Z80_NUM_REGS]; 
 	
     /* the status */
-	#define MAX_ASM_LINE 80
 	struct {
-		t_z80_bool			HALT;		/* Signal Halt */
-		t_z80_bool			RST;		/* Signal Halt */
-		t_z80_bool			INT;		/* Signal Halt */
-		t_z80_bool			NMI;		/* Signal Halt */
 		
 		uint8_t  			IFF1;
 		uint8_t  			IFF2;		
 		
-		t_interrupt_mode	IMODE;		/* interrupt mode ONLY IMPLEMENTED MODE 1*/
-			
+		uint8_t				IMODE;		/* 0,1,2---> ONLY IMPLEMENTED MODE 1*/			
 		uint8_t  			REGINST; 	/* do not confuse with IR register */
 		
 		int ts;							/* number of tstates of the last instruction */
-		uint64_t totalts;				/* the total of tstates since the start */
 		
 	} status;
 	
@@ -118,9 +88,6 @@ typedef struct {
 	
 	
 } t_z80;
-
-
-
 
 
 /**********************************************************************/
@@ -137,33 +104,11 @@ typedef struct {
 
 
 /**********************************************************************/
-/* API FUNCTIONS													  */
+/* Internal functions												  */
 
-		
-int z80_run ();
-
-void z80_signal_rst(); 	
-void z80_signal_halt(); 
-void z80_signal_int(); 	
-void z80_signal_nmi(); 	
-
-uint16_t z80_show_af();
-uint16_t z80_show_bc();
-uint16_t z80_show_de();
-uint16_t z80_show_hl();
-uint16_t z80_show_ix();
-uint16_t z80_show_iy();
-
-void z80_write_reg_a(uint8_t v);
-void z80_write_reg_b(uint8_t v);
-void z80_write_reg_c(uint8_t v);
-void z80_write_reg_d(uint8_t v);
-void z80_write_reg_e(uint8_t v);
-void z80_write_reg_h(uint8_t v);
-void z80_write_reg_l(uint8_t v);
-
-uint64_t z80_show_totalts();
-
+void z80_reset ();
+void z80_error ( int e );
+uint8_t z80_alu_check_parity( uint8_t input );
 /**********************************************************************/
 
 
