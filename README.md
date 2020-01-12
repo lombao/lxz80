@@ -1,12 +1,16 @@
 ## LXZ80
-Z80 Emulator suite
+Z80 Emulator suite, composed by a Z80 emulator, an assembler and a small
+tool to run z80 binaries.
+
 - A Z80 emulator as a shared library 	( liblxz80.so )
 - A Z80 assembler  			( lxzasm )
 - A Z80 run engine			( lxzrun )
 
-# HOW TO COMPILE
-Classical autotools
+# Why ?
+Why not. Next question
 
+# HOW TO COMPILE
+ 
 ./autogen.sh
 ./configure
 make
@@ -20,6 +24,7 @@ The resulting objects are
 - $prefix/lib64/lx80.so    
 - $prefix/include/lxz80.h 
 - $prefix/share/lxz80/examples ( some .asm files to test and try both lxzasm and lxzrun )
+- $prefix/lib64/pkgconfig/lxz80.pc 
 
 The build requirements are:
 - Obviously, autoconf and automake
@@ -40,11 +45,3 @@ not expect being bombarded by emails I will probably answer them all.
 # Documentation
 Additional documentation in the /doc folder
 
-# TO DO
-- Create a pkg config file for the project
-- Refine the use of interruptions on the emulator
-- Create a "virtual" Z80 system for testing/development with GUI
-- Add examples/code/tests
-- Documentation
-- Improve the autotools setup ( I suspect there are some errors )
-- Add macros to the lxzasm

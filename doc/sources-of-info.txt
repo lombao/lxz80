@@ -16,3 +16,9 @@ https://floooh.github.io/2017/12/10/z80-emu-evolution.html
 
 * tests
 http://www.jeffavery.ca/computers/macintosh_z80exerciser.html
+
+
+* Info about old ASM directives
+http://48k.ca/zmac.html
+http://www.mathematik.uni-ulm.de/users/ag/yaze-ag/
+http://www.winape.net/help/macros.html

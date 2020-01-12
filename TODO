@@ -13,6 +13,8 @@ Assembler:
    Consider the LIST NOLIST directives
    Consider the ASEG CSEG directives
    I have 3 reduce/reduce conflicts in the grammar due to LD xx,( expr ) instructions. I need to sort out this.
+   Compile ZEXALL
+   Compatibility with MAXAM
       
 Emulator: 
    Add support for more undocumented features, some already implemented.
