@@ -20,6 +20,12 @@
 ;  Some modifications. Cesar Lombao
 ;  A contains the fibonacci sequence number to be calculated
 ;  D will hold the resut
+;
+; You can compile it with
+;     lxzasm fib.asm
+; and run it with
+;     lxzrun -A 5 a.z80
+; You will see that the D register contains the value 3
         	
         CP 0
         JR Z,FIN

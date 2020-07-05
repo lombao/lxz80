@@ -41,7 +41,6 @@ void labelAlreadyDefinedError(const char * label);
 void labelUndefinedError(const char * label);
 void sourceMaxLinesError();
 void sourceSizeLineError();
-void sourceLimitError(const int limit);
 void undocumentedError();
 void warningError(const char *str);
 void includebinTooBigError(const char * includefile);
@@ -118,13 +117,6 @@ void sourceSizeLineError() {
      	recoverableError("Maximun size of opcodes in a line, is too big");
      	fprintf(stderr,"     The maximun size in opcodes per line is %d\n",MAX_SIZE_CODE_LINE);
      	exit (1);
-
-}
-
-void sourceLimitError(const int limit) {
-	
-     	warningError("Memory beyond the LIMIT has been used");
-     	fprintf(stderr,"     The LIMIT directive has been defined in your code as: %4x\n",limit);
 
 }
 

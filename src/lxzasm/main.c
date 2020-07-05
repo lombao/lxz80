@@ -25,7 +25,8 @@
 
 #include "defs.h"
 
-/* external dependencies */
+//----------------------------------------------------------------------
+// EXTERNAL
 extern int yyparse();
 extern int yylineno;
 extern int reset_lexer();
@@ -40,18 +41,24 @@ extern void setCodeAsmLine(const int line, const char * text);
 extern char * getDefinedLabels(); /* here added in case we need debug */
 extern void setFileName(const char * filename);
 extern void codeLink();
+extern struct sline * preproc_uploadFile(const char * file);
+extern FILE * preproc_writeFile();
+extern void preproc_proc();
+extern void preproc_setslines( struct sline * s );
+void reset_pc();
 
-/*******************/
-/* LOCAL FUNCTIONS */
+//----------------------------------------------------------------------
+// INTERNAL
 void showUsage();
-
-
+void showVersion();
 
 /******************************/
 /* GLOBAL VARIABLES           */
 
 int pass = 1; 			/* The pass of the assembler */
 int condStatus = -1; 	/* IF directive control */
+
+
 /*******************************/
 
 
@@ -68,15 +75,16 @@ void showUsage() {
 }
 
 
+void showVersion() {
+	fprintf(stderr,"LXZ Assembler. Version %s\n\n",LXZ80_VERSION); 
+}
 
 
 /*** MAIN *************************/ 
 int main(int argc, char *argv[])
 {
   int opt;
-  uint16_t pppc = 0;
   char outputFile[MAX_SIZE_FILE_NAME];
-  char inputFile[MAX_SIZE_FILE_NAME];
   int outputList = FALSE;
   int paddingZeroes = FALSE;
   
@@ -88,8 +96,12 @@ int main(int argc, char *argv[])
      exit(EXIT_FAILURE);
   }
   
-  while ((opt = getopt(argc, argv, "o:plh")) != -1) {
+  while ((opt = getopt(argc, argv, "o:plvh")) != -1) {
         switch (opt) {
+		case 'v':
+			showVersion();
+			exit(EXIT_SUCCESS);
+			break;
         case 'o':
 			strcpy(outputFile,optarg);
             break;  
@@ -101,6 +113,7 @@ int main(int argc, char *argv[])
             break;     
         case 'h': /* Show version and quit */
             showUsage();
+            exit(EXIT_SUCCESS);
             break;
         default: /* '?' */
             showUsage();
@@ -114,47 +127,47 @@ int main(int argc, char *argv[])
      exit(EXIT_FAILURE);
   } 
   
+
+	preproc_setslines( preproc_uploadFile(argv[optind]) );
+	preproc_proc();
+	
+	yyin = preproc_writeFile();
   
-  /* reset the code table, just for the number of files given */
+    /* reset the code table, just for the number of files given */
 	codeInit(); 
-  
-	strcpy(inputFile,argv[optind]);
+
 	pass = 1;
-	yyin = fopen(inputFile, "r");
-	if (yyin == NULL) { perror("ERROR:"); return(EXIT_FAILURE); }
 	yyparse();
-	fclose(yyin);
-        
+
+	
+	
  /*              
         printf("Pass 1 completed\n");
         printf("Defined Labels: \n %s\n",getDefinedLabels());
- */       
-        
+ */ 
+       
+    rewind(yyin);    
 	reset_lexer();
-	pc = previouspc = pppc;
+	reset_pc();
 	pass = 2;
-	yyin = fopen(inputFile, "r");
-	if (yyin == NULL) { perror("ERROR:"); return(EXIT_FAILURE); }
 	yyparse();
 	fclose(yyin);
 
-       /* ingest the original source code */ 
-    yyin = fopen(inputFile, "r");
+
+/* ingest the original source code */ 
+    yyin = fopen(argv[optind], "r");
 	if (yyin == NULL) { perror("ERROR:"); return(EXIT_FAILURE); }	
 	int l = 1; char line[MAX_SIZE_ASM_LINE];
 	while (fgets(line, sizeof(line), yyin)) {
 		setCodeAsmLine(l,line);
 		l++;
 	} 
-	fclose(yyin);
-        
-    reset_lexer();
-    pppc = pc;
+	fclose(yyin);        
    
-    /* Let's link the code */
+/* Let's link the code */
     codeLink();
 
-	/* Output */
+/* Output */
 	outputBinCode(outputFile,paddingZeroes);
 
 	if ( outputList == TRUE ) {

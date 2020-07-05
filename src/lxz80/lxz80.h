@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define LXZ80_VERSION "0.0.9"
+#define LXZ80_VERSION "0.0.10"
 
 
 /* Define error values */

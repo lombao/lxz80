@@ -51,18 +51,12 @@ int from_hexa(const char * s) {
 %option noinput
 
 %%
-;[^\n]*\n	          { return NEWLINE; }
-#[ ]+([^\n])+\n       {  return NEWLINE; } 
 [ \t]+                /* eat up whitespace */
 \'.\'                   { yylval.normal = yytext[1]; return CHAR; }
 \".\"                   { yylval.normal = yytext[1]; return CHAR; }
 \"[^\n\"]*\"          {  strncpy(yylval.literal,yytext+1,strlen(yytext)-1); yylval.literal[strlen(yytext)-2]=0x0;return STRING; }
 '[^\n']+'             {  strncpy(yylval.literal,yytext+1,strlen(yytext)-1); yylval.literal[strlen(yytext)-2]=0x0;return STRING; }
 \.BYTE                { return DEFB; }
-\.TITLE               { return TITLE; }
-TITLE                 { return TITLE; }
-title			{ return TITLE; }
-\.title			{ return TITLE; }
 FNAME                 { return FNAME; }
 IF                    { return IF; }
 IFDEF                 { return IFDEF; }
@@ -79,7 +73,6 @@ GT                    { return GREATERTHAN; }
 \<=                    { return LESSEQ; }
 LT                    { return LESSTHAN; }
 LE                    { return LESSEQ; } 
-\.ORG                 { return ORG; }
 \.EQU                 { return EQU;  }
 \.DB                  { return DEFB; }
 \.DS                  { return DEFS; }
@@ -117,10 +110,6 @@ ERROR                 { return ERROR; }
 INCLUDE               { return INCLUDE; }
 INCBIN                { return INCLUDEBIN;  }
 INCLUDEBIN            { return INCLUDEBIN;  }
-NOLIST                { return NOLIST; }
-nolist			{ return NOLIST; }
-LIMIT                 { return LIMIT; }
-limit			{ return LIMIT; }
 ALIGN                 { return ALIGN; }
 align			{ return ALIGN; }
 DJNZ			{ return DJNZ; }
@@ -165,8 +154,6 @@ DEC                   { return DEC; }
 dec			{ return DEC; }
 END       		{ return END; }
 end			{ return END; }
-ORG                   { return ORG; }
-org			{ return ORG; }
 EQU                   { return EQU; }
 equ			{ return EQU; }
 IYH                   { return IYH; }

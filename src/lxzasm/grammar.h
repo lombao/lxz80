@@ -1,8 +1,9 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.5.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -29,6 +30,9 @@
 
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
+
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
 
 #ifndef YY_YY_GRAMMAR_H_INCLUDED
 # define YY_YY_GRAMMAR_H_INCLUDED
@@ -71,125 +75,121 @@ extern int yydebug;
     IFDEF = 281,
     IFNDEF = 282,
     ENDIF = 283,
-    TITLE = 284,
-    FNAME = 285,
-    INCLUDE = 286,
-    INCLUDEBIN = 287,
-    DEFINED = 288,
-    NEWLINE = 289,
-    ERROR = 290,
-    LIMIT = 291,
-    DOLAR = 292,
-    ALIGN = 293,
-    COMMA = 294,
-    ASEG = 295,
-    CHAR = 296,
-    LDDR = 297,
-    CALL = 298,
-    RRCA = 299,
-    OTDR = 300,
-    OTIR = 301,
-    OUTI = 302,
-    OUTD = 303,
-    RETI = 304,
-    RETN = 305,
-    PUSH = 306,
-    ORG = 307,
-    END = 308,
-    EQU = 309,
-    DEC = 310,
-    AND = 311,
-    SBC = 312,
-    OUT = 313,
-    ADC = 314,
-    LDD = 315,
-    LDI = 316,
-    ADD = 317,
-    RRA = 318,
-    RRC = 319,
-    SRA = 320,
-    SRL = 321,
-    SLL = 322,
-    RRD = 323,
-    POP = 324,
-    CCF = 325,
-    RET = 326,
-    XOR = 327,
-    BIT = 328,
-    SCF = 329,
-    NOP = 330,
-    SET = 331,
-    JP = 332,
-    DJNZ = 333,
-    HALT = 334,
-    INDR = 335,
-    INIR = 336,
-    IND = 337,
-    LDIR = 338,
-    SLA = 339,
-    NEG = 340,
-    LD = 341,
-    AF = 342,
-    HL = 343,
-    SP = 344,
-    BC = 345,
-    DE = 346,
-    IX = 347,
-    IY = 348,
-    IXH = 349,
-    IXL = 350,
-    IYH = 351,
-    IYL = 352,
-    OR = 353,
-    AFPLUS = 354,
-    SUB = 355,
-    CP = 356,
-    RES = 357,
-    CPD = 358,
-    CPDR = 359,
-    CPI = 360,
-    CPIR = 361,
-    CPL = 362,
-    RLA = 363,
-    RLC = 364,
-    RLCA = 365,
-    DAA = 366,
-    RL = 367,
-    RLD = 368,
-    DI = 369,
-    EI = 370,
-    EX = 371,
-    JR = 372,
-    RR = 373,
-    EXX = 374,
-    RST = 375,
-    IM = 376,
-    IN = 377,
-    INI = 378,
-    INC = 379,
-    NC = 380,
-    NZ = 381,
-    PO = 382,
-    PE = 383,
-    Z = 384,
-    P = 385,
-    M = 386,
-    A = 387,
-    B = 388,
-    C = 389,
-    D = 390,
-    E = 391,
-    H = 392,
-    L = 393,
-    R = 394,
-    I = 395,
-    F = 396,
-    NOLIST = 397,
-    STRING = 398,
-    LITERAL = 399,
-    LABEL = 400,
-    INTEGER = 401,
-    UMINUS = 402
+    FNAME = 284,
+    INCLUDE = 285,
+    INCLUDEBIN = 286,
+    DEFINED = 287,
+    NEWLINE = 288,
+    ERROR = 289,
+    DOLAR = 290,
+    ALIGN = 291,
+    COMMA = 292,
+    ASEG = 293,
+    CHAR = 294,
+    LDDR = 295,
+    CALL = 296,
+    RRCA = 297,
+    OTDR = 298,
+    OTIR = 299,
+    OUTI = 300,
+    OUTD = 301,
+    RETI = 302,
+    RETN = 303,
+    PUSH = 304,
+    END = 305,
+    EQU = 306,
+    DEC = 307,
+    AND = 308,
+    SBC = 309,
+    OUT = 310,
+    ADC = 311,
+    LDD = 312,
+    LDI = 313,
+    ADD = 314,
+    RRA = 315,
+    RRC = 316,
+    SRA = 317,
+    SRL = 318,
+    SLL = 319,
+    RRD = 320,
+    POP = 321,
+    CCF = 322,
+    RET = 323,
+    XOR = 324,
+    BIT = 325,
+    SCF = 326,
+    NOP = 327,
+    SET = 328,
+    JP = 329,
+    DJNZ = 330,
+    HALT = 331,
+    INDR = 332,
+    INIR = 333,
+    IND = 334,
+    LDIR = 335,
+    SLA = 336,
+    NEG = 337,
+    LD = 338,
+    AF = 339,
+    HL = 340,
+    SP = 341,
+    BC = 342,
+    DE = 343,
+    IX = 344,
+    IY = 345,
+    IXH = 346,
+    IXL = 347,
+    IYH = 348,
+    IYL = 349,
+    OR = 350,
+    AFPLUS = 351,
+    SUB = 352,
+    CP = 353,
+    RES = 354,
+    CPD = 355,
+    CPDR = 356,
+    CPI = 357,
+    CPIR = 358,
+    CPL = 359,
+    RLA = 360,
+    RLC = 361,
+    RLCA = 362,
+    DAA = 363,
+    RL = 364,
+    RLD = 365,
+    DI = 366,
+    EI = 367,
+    EX = 368,
+    JR = 369,
+    RR = 370,
+    EXX = 371,
+    RST = 372,
+    IM = 373,
+    IN = 374,
+    INI = 375,
+    INC = 376,
+    NC = 377,
+    NZ = 378,
+    PO = 379,
+    PE = 380,
+    Z = 381,
+    P = 382,
+    M = 383,
+    A = 384,
+    B = 385,
+    C = 386,
+    D = 387,
+    E = 388,
+    H = 389,
+    L = 390,
+    R = 391,
+    I = 392,
+    F = 393,
+    STRING = 394,
+    LITERAL = 395,
+    LABEL = 396,
+    INTEGER = 397,
+    UMINUS = 398
   };
 #endif
 /* Tokens.  */
@@ -219,132 +219,127 @@ extern int yydebug;
 #define IFDEF 281
 #define IFNDEF 282
 #define ENDIF 283
-#define TITLE 284
-#define FNAME 285
-#define INCLUDE 286
-#define INCLUDEBIN 287
-#define DEFINED 288
-#define NEWLINE 289
-#define ERROR 290
-#define LIMIT 291
-#define DOLAR 292
-#define ALIGN 293
-#define COMMA 294
-#define ASEG 295
-#define CHAR 296
-#define LDDR 297
-#define CALL 298
-#define RRCA 299
-#define OTDR 300
-#define OTIR 301
-#define OUTI 302
-#define OUTD 303
-#define RETI 304
-#define RETN 305
-#define PUSH 306
-#define ORG 307
-#define END 308
-#define EQU 309
-#define DEC 310
-#define AND 311
-#define SBC 312
-#define OUT 313
-#define ADC 314
-#define LDD 315
-#define LDI 316
-#define ADD 317
-#define RRA 318
-#define RRC 319
-#define SRA 320
-#define SRL 321
-#define SLL 322
-#define RRD 323
-#define POP 324
-#define CCF 325
-#define RET 326
-#define XOR 327
-#define BIT 328
-#define SCF 329
-#define NOP 330
-#define SET 331
-#define JP 332
-#define DJNZ 333
-#define HALT 334
-#define INDR 335
-#define INIR 336
-#define IND 337
-#define LDIR 338
-#define SLA 339
-#define NEG 340
-#define LD 341
-#define AF 342
-#define HL 343
-#define SP 344
-#define BC 345
-#define DE 346
-#define IX 347
-#define IY 348
-#define IXH 349
-#define IXL 350
-#define IYH 351
-#define IYL 352
-#define OR 353
-#define AFPLUS 354
-#define SUB 355
-#define CP 356
-#define RES 357
-#define CPD 358
-#define CPDR 359
-#define CPI 360
-#define CPIR 361
-#define CPL 362
-#define RLA 363
-#define RLC 364
-#define RLCA 365
-#define DAA 366
-#define RL 367
-#define RLD 368
-#define DI 369
-#define EI 370
-#define EX 371
-#define JR 372
-#define RR 373
-#define EXX 374
-#define RST 375
-#define IM 376
-#define IN 377
-#define INI 378
-#define INC 379
-#define NC 380
-#define NZ 381
-#define PO 382
-#define PE 383
-#define Z 384
-#define P 385
-#define M 386
-#define A 387
-#define B 388
-#define C 389
-#define D 390
-#define E 391
-#define H 392
-#define L 393
-#define R 394
-#define I 395
-#define F 396
-#define NOLIST 397
-#define STRING 398
-#define LITERAL 399
-#define LABEL 400
-#define INTEGER 401
-#define UMINUS 402
+#define FNAME 284
+#define INCLUDE 285
+#define INCLUDEBIN 286
+#define DEFINED 287
+#define NEWLINE 288
+#define ERROR 289
+#define DOLAR 290
+#define ALIGN 291
+#define COMMA 292
+#define ASEG 293
+#define CHAR 294
+#define LDDR 295
+#define CALL 296
+#define RRCA 297
+#define OTDR 298
+#define OTIR 299
+#define OUTI 300
+#define OUTD 301
+#define RETI 302
+#define RETN 303
+#define PUSH 304
+#define END 305
+#define EQU 306
+#define DEC 307
+#define AND 308
+#define SBC 309
+#define OUT 310
+#define ADC 311
+#define LDD 312
+#define LDI 313
+#define ADD 314
+#define RRA 315
+#define RRC 316
+#define SRA 317
+#define SRL 318
+#define SLL 319
+#define RRD 320
+#define POP 321
+#define CCF 322
+#define RET 323
+#define XOR 324
+#define BIT 325
+#define SCF 326
+#define NOP 327
+#define SET 328
+#define JP 329
+#define DJNZ 330
+#define HALT 331
+#define INDR 332
+#define INIR 333
+#define IND 334
+#define LDIR 335
+#define SLA 336
+#define NEG 337
+#define LD 338
+#define AF 339
+#define HL 340
+#define SP 341
+#define BC 342
+#define DE 343
+#define IX 344
+#define IY 345
+#define IXH 346
+#define IXL 347
+#define IYH 348
+#define IYL 349
+#define OR 350
+#define AFPLUS 351
+#define SUB 352
+#define CP 353
+#define RES 354
+#define CPD 355
+#define CPDR 356
+#define CPI 357
+#define CPIR 358
+#define CPL 359
+#define RLA 360
+#define RLC 361
+#define RLCA 362
+#define DAA 363
+#define RL 364
+#define RLD 365
+#define DI 366
+#define EI 367
+#define EX 368
+#define JR 369
+#define RR 370
+#define EXX 371
+#define RST 372
+#define IM 373
+#define IN 374
+#define INI 375
+#define INC 376
+#define NC 377
+#define NZ 378
+#define PO 379
+#define PE 380
+#define Z 381
+#define P 382
+#define M 383
+#define A 384
+#define B 385
+#define C 386
+#define D 387
+#define E 388
+#define H 389
+#define L 390
+#define R 391
+#define I 392
+#define F 393
+#define STRING 394
+#define LITERAL 395
+#define LABEL 396
+#define INTEGER 397
+#define UMINUS 398
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
 union YYSTYPE
 {
-#line 68 "grammar.y" /* yacc.c:1909  */
+#line 67 "grammar.y"
 
   uint32_t normal;
   uint8_t byte;
@@ -354,9 +349,9 @@ union YYSTYPE
   char literal[64];
   
 
-#line 358 "grammar.h" /* yacc.c:1909  */
-};
+#line 353 "grammar.h"
 
+};
 typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

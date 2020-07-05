@@ -20,10 +20,9 @@ extern void fatalError(const char *str);
 extern int getLabelValue(const char * label, uint * k);
 extern int outCode( int num, ... );
 extern void outDirective();
-extern void setLimit(uint16_t limit);
 extern void includebinTooBigError(const char * includefile);
 void directiveError(const char * msg);
-extern void setStart(uint16_t org);
+
 
 extern void yyerror(const char *str);
 extern int yylineno;
@@ -86,13 +85,12 @@ void includebin(const char * includefile) {
 %token EXCLAMATION
 %token NEQUAL EQUAL
 %token IF IFDEF IFNDEF ENDIF
-%token TITLE FNAME
+%token FNAME
 %token INCLUDE
 %token INCLUDEBIN
 %token DEFINED
 %token NEWLINE
 %token ERROR
-%token LIMIT
 %token DOLAR
 %token ALIGN
 %token COMMA
@@ -108,7 +106,6 @@ void includebin(const char * includefile) {
 %token RETI
 %token RETN
 %token PUSH
-%token ORG
 %token END
 %token EQU
 %token DEC
@@ -173,7 +170,6 @@ void includebin(const char * includefile) {
 %token INC
 %token NC NZ PO PE Z P M
 %token A B C D E H L R I F
-%token NOLIST
 %token <literal> STRING
 %token <literal> LITERAL
 %token <literal> LABEL
@@ -226,9 +222,7 @@ void includebin(const char * includefile) {
          | directive NEWLINE             {  yylineno++; previouspc = pc; }
          | LITERAL directive NEWLINE     {  setLabelAddress($1,previouspc); yylineno++; previouspc = pc; }
          | LABEL directive NEWLINE       {  setLabelAddress($1,previouspc); yylineno++; previouspc = pc; }
-         | NOLIST NEWLINE                { yylineno++; /* MISSING !!!! */ }
          | ASEG   NEWLINE                { yylineno++; /* MISSING Absolute segment directive mode. Not yet implemented */ }
-         | TITLE STRING NEWLINE          { yylineno++; /* nothing happens, perhaps to add this to a .lst file */ }
          | FNAME STRING NEWLINE          { yylineno++; /* nothing happens, I've foudn this directive around, probably alias to TITLE */ }
          | IF expr NEWLINE               { yylineno++; condStatus = ($2==0)?0:1; }
          | IFDEF LITERAL NEWLINE         { yylineno++; condStatus = (LookupTableLabels($2)<0)?0:1; }
@@ -238,8 +232,7 @@ void includebin(const char * includefile) {
          | LITERAL STRING                { fatalError("Syntax error: I do not understand this line"); }
          | LABEL LITERAL                 { fatalError("Syntax error: I do not understand this line"); }
     ;
-    directive:     ORG expr       	{ setStart($2); outDirective();  }              
-                   | ERROR STRING  	{ directiveError($2); }
+    directive:      ERROR STRING  	{ directiveError($2); }
   	               | END            { return 0; /* we should stop here compilation */}
 	               | END expr  		{ return 0; /* MISSING, in order to allow entry point definition */ }
 	               | directivedefb  { }
@@ -250,7 +243,7 @@ void includebin(const char * includefile) {
 	               | LITERAL EQU expr  { setLabelValue($1,$3);  }
 	               | LABEL EQU expr    { setLabelValue($1,$3);  } 
 	               | ALIGN expr        { k = (((pc/$2)+1)*$2); for(a=pc; a < k; a++) { outCode(1,0x0); } }
-	               | LIMIT expr        { setLimit($2); outDirective();  } 
+	       
                    
     ;
 	instruction: opcodeld       {  }

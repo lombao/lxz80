@@ -41,8 +41,6 @@ struct Scodeline {
 } ObjectCode[MAX_NUMBER_LINES];
 
 
-uint16_t start_org = 0;					/* start of the code , normally the lowest ORG */
-uint16_t end_limit = 0xFFFF;  			/* The limit in memory, the upper limit */
 uint8_t binarycode[MAX_SIZE_RAM];	/* the binary code */
 uint16_t totalbytes = 0;			/* the number of bytes compiled */
 
@@ -58,7 +56,14 @@ extern char * fileasm;
 extern char * getDefinedLabels();
 extern void sourceMaxLinesError();
 extern void sourceSizeLineError();
-extern void sourceLimitError(const int limit);
+
+/* the preproc results */
+extern struct {
+	char * title ;
+	int    org   ;
+	int    limit ;
+} preproc;
+
 
 /* Functions in this module  */
 void codeInit();
@@ -67,11 +72,9 @@ void outDirective();
 void outputBinCode(const char * outputfile, const uint8_t padding);
 void outputLstCode(const char * outputfile);
 void setPC(uint16_t org);
-void setLimit(uint16_t limit);
-void setStart(uint16_t start);
 void setCodeAsmLine(const int line, const char * text);
 void codeLink();
-
+void reset_pc();
 
 /*************************************************/
 /*************************************************/
@@ -93,9 +96,15 @@ void codeInit() {
 	for(a=0;a<MAX_SIZE_RAM;a++) {
 		binarycode[a] = 0;
 	}
+	
+	previouspc = pc = preproc.org;
+	
 }
 
 
+void reset_pc() {
+	previouspc = pc = preproc.org;
+}
 
 /* this is a patch to add in the ObjectCode table 
  * lines that don't produce any cpu instruction like
@@ -114,21 +123,6 @@ void setCodeAsmLine(const int line, const char * text) {
 }
 
 
-/* to stablish an lower memory limit */
-void setStart(uint16_t start) {
-	if ( start_org == 0 ) { start_org = start; }
-	if ( start_org > start ) { start_org = start; }
-	
-	previouspc = pc = start;
-}
-
-/* to stablish an upper memory limit */
-void setLimit(uint16_t limit) {
-	end_limit = limit;
-}
-
-
-
 
 /*************************************************/
 int outCode( int num, ... ) {
@@ -137,6 +131,7 @@ int outCode( int num, ... ) {
  va_list arguments;     
  uint8_t opcode;
  int k;
+ 
  
     if ( !condStatus ) { return 0; }
   	
@@ -149,10 +144,11 @@ int outCode( int num, ... ) {
 	     sourceSizeLineError(); 
     }
    
-   if ( pc+num >= end_limit ) {
-	  sourceLimitError(end_limit);
-   } 
-      
+	if ( pc+num >= preproc.limit ) { 
+		fprintf(stderr,"::: ERROR:  The LIMIT directive has been exceeded in line %d, the limit is: %4x\n",yylineno,preproc.limit);
+		exit(EXIT_FAILURE);
+	}
+	  
     /* Initializing arguments to store all values after num */
     va_start ( arguments, num );           
 	k = ObjectCode[yylineno].size;
@@ -215,8 +211,19 @@ void outputLstCode(const char * outputfile) {
         fo = fopen(outputfile,"w");
         if (fo == NULL) { perror("ERROR OUTPUT:"); exit(EXIT_FAILURE); }
          
-        sprintf(line,"LIST::::::: \n\n");
+        if ( preproc.title != NULL ) {
+			sprintf(line,"LIST::::: %s \n\n",preproc.title);
+		}
+		else {
+			sprintf(line,"LIST::::: \n\n");
+		}
 		fwrite(line,1,strlen(line),fo);     
+        
+        sprintf(line,"ORG::::: %04XH \n",preproc.org);
+		fwrite(line,1,strlen(line),fo); 
+		sprintf(line,"LIMIT::: %04XH \n\n",preproc.limit);
+		fwrite(line,1,strlen(line),fo); 
+		 
                    
         		                 
 		  for(a=0;a<MAX_NUMBER_LINES;a++) {
@@ -273,10 +280,10 @@ void outputBinCode(const char * outputfile,const uint8_t padding ) {
         if (fo == NULL) { perror("ERROR OUTPUT:"); exit(EXIT_FAILURE); }
                 
         if (padding == FALSE) { /* then only output data from the start point */
-			fwrite(&(binarycode[start_org]),1,end_limit-start_org,fo);
+			fwrite(&(binarycode[preproc.org]),1,preproc.limit-preproc.org,fo);
 		}
 		else {           
-			fwrite(&(binarycode[0]),1,end_limit,fo);
+			fwrite(&(binarycode[0]),1,preproc.limit,fo);
 	    }
 		
         fclose(fo);
