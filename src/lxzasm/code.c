@@ -36,7 +36,6 @@ struct Scodeline {
 	uint16_t size;   	/* the size in bytes */
 	uint16_t line;   	/* the corresponding line number in source code */
 	uint16_t address;	/* Address in memory */
-	uint8_t  directive; /* to flag that this line although withouth opcodes should be printed */
 	char text[MAX_SIZE_ASM_LINE]; /* the original asm text */
 } ObjectCode[MAX_NUMBER_LINES];
 
@@ -44,11 +43,9 @@ struct Scodeline {
 uint8_t binarycode[MAX_SIZE_RAM];	/* the binary code */
 uint16_t totalbytes = 0;			/* the number of bytes compiled */
 
-uint16_t pc;	     /* global pc counter */
-uint16_t previouspc;
-
-
 /* External dependencies */
+extern int pc;
+extern int prepc;
 extern int pass;
 extern int yylineno;
 extern int condStatus;
@@ -68,7 +65,6 @@ extern struct {
 /* Functions in this module  */
 void codeInit();
 int outCode( int num, ... );
-void outDirective();
 void outputBinCode(const char * outputfile, const uint8_t padding);
 void outputLstCode(const char * outputfile);
 void setPC(uint16_t org);
@@ -90,20 +86,19 @@ void codeInit() {
 		ObjectCode[a].line = 0;
 		ObjectCode[a].code = NULL;
 		ObjectCode[a].address = 0;
-		ObjectCode[a].directive = 0;
 	}
 	  
 	for(a=0;a<MAX_SIZE_RAM;a++) {
 		binarycode[a] = 0;
 	}
 	
-	previouspc = pc = preproc.org;
-	
+	prepc = pc = preproc.org;
+	/* printf("Within the CodeInit , the pc is now %d because preproc.org is %d\n",pc,preproc.org); */
 }
 
 
 void reset_pc() {
-	previouspc = pc = preproc.org;
+	prepc = pc = preproc.org;
 }
 
 /* this is a patch to add in the ObjectCode table 
@@ -111,10 +106,6 @@ void reset_pc() {
  * directives or labels , so later can be shown in the 
  * .lst files */
  
-void outDirective () {
-	 ObjectCode[yylineno].directive = 1;
-	 ObjectCode[yylineno].address = pc;
-}
 
 
 /* Use to add the original asm lines into the code */
@@ -250,12 +241,7 @@ void outputLstCode(const char * outputfile) {
 			     fwrite(line,1,strlen(line),fo);			  
 		       } 
 		    } /* end if */
-		    else{
-			  if ( ObjectCode[a].directive ) {
-				sprintf(line,"%04X %8s %04d %s",ObjectCode[a].address,"       ",ObjectCode[a].line,ObjectCode[a].text);
-				fwrite(line,1,strlen(line),fo);			
-			  }
-			}
+
 		  }  
 		
 

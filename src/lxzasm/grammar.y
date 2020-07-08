@@ -19,22 +19,18 @@ extern void warningError(const char *str);
 extern void fatalError(const char *str);
 extern int getLabelValue(const char * label, uint * k);
 extern int outCode( int num, ... );
-extern void outDirective();
 extern void includebinTooBigError(const char * includefile);
-void directiveError(const char * msg);
 
 
 extern void yyerror(const char *str);
 extern int yylineno;
 extern int pc;
-extern int previouspc;
+extern int prepc;
 extern int pass;
 extern int condStatus;
 
 
 char msg[200];
-uint k;
-uint a;
 uint8_t * p;
 
 int yywrap()
@@ -85,7 +81,6 @@ void includebin(const char * includefile) {
 %token EXCLAMATION
 %token NEQUAL EQUAL
 %token IF IFDEF IFNDEF ENDIF
-%token FNAME
 %token INCLUDE
 %token INCLUDEBIN
 %token DEFINED
@@ -94,7 +89,6 @@ void includebin(const char * includefile) {
 %token DOLAR
 %token ALIGN
 %token COMMA
-%token ASEG
 %token <byte> CHAR
 %token LDDR
 %token CALL
@@ -205,46 +199,35 @@ void includebin(const char * includefile) {
 %%
     program:  lines  {  }
     ;
-    lines:  line         {  }
-		|	lines line   {  }
+    lines:  line         {  yylineno++; }
+		|	lines line   {  yylineno++; }
 		
+	line: auxline				{ prepc = pc; }
+	    |  NEWLINE				{ prepc = pc; }
+	    |  LABEL auxline		{ setLabelAddress($1,prepc); prepc = pc;} 
+	    |  LABEL NEWLINE		{ setLabelAddress($1,prepc); prepc = pc;}
+	    |  LABEL EQU expr		{ setLabelValue($1,$3);  } 
 	;
-	line:  instruction   NEWLINE         { yylineno++; previouspc = pc; }
-	     | LABEL instruction NEWLINE     { setLabelAddress($1,previouspc); yylineno++; previouspc = pc; }
-	     | LITERAL instruction NEWLINE   { setLabelAddress($1,previouspc); yylineno++; previouspc = pc; } 
-	     | NEWLINE                       { yylineno++; previouspc = pc; }
-	     | LABEL NEWLINE                 { setLabelAddress($1,pc); outDirective(); yylineno++; previouspc = pc; }
-   	     | LITERAL NEWLINE               { setLabelAddress($1,pc); outDirective(); yylineno++; previouspc = pc; }
-         | INCLUDE STRING NEWLINE        { yylineno++; warningError("Include feature has not yet being implemented. Ignoring this line"); }
-         | INCLUDE LITERAL NEWLINE       { yylineno++; warningError("Include feature has not yet being implemented. Ignoring this line"); }
-         | INCLUDEBIN STRING NEWLINE     {  includebin($2); yylineno++; }
-         | INCLUDEBIN LITERAL NEWLINE    {  includebin($2); yylineno++; }  
-         | directive NEWLINE             {  yylineno++; previouspc = pc; }
-         | LITERAL directive NEWLINE     {  setLabelAddress($1,previouspc); yylineno++; previouspc = pc; }
-         | LABEL directive NEWLINE       {  setLabelAddress($1,previouspc); yylineno++; previouspc = pc; }
-         | ASEG   NEWLINE                { yylineno++; /* MISSING Absolute segment directive mode. Not yet implemented */ }
-         | FNAME STRING NEWLINE          { yylineno++; /* nothing happens, I've foudn this directive around, probably alias to TITLE */ }
-         | IF expr NEWLINE               { yylineno++; condStatus = ($2==0)?0:1; }
-         | IFDEF LITERAL NEWLINE         { yylineno++; condStatus = (LookupTableLabels($2)<0)?0:1; }
-         | IFNDEF LITERAL NEWLINE        { yylineno++; condStatus = (LookupTableLabels($2)<0)?1:0; } 
-         | ENDIF NEWLINE                 { if (condStatus < 0) { fatalError("Syntax error. Detected ENDIF without IF"); } condStatus = -1; yylineno++; } 
-         | LABEL STRING                  { fatalError("Syntax error: I do not understand this line"); }
-         | LITERAL STRING                { fatalError("Syntax error: I do not understand this line"); }
-         | LABEL LITERAL                 { fatalError("Syntax error: I do not understand this line"); }
-    ;
-    directive:      ERROR STRING  	{ directiveError($2); }
-  	               | END            { return 0; /* we should stop here compilation */}
-	               | END expr  		{ return 0; /* MISSING, in order to allow entry point definition */ }
-	               | directivedefb  { }
-	               | directivedefs  { }
-	               | directivedefw  { }
-	               | directivedefc  { }
-	               | directivedefd  { }
-	               | LITERAL EQU expr  { setLabelValue($1,$3);  }
-	               | LABEL EQU expr    { setLabelValue($1,$3);  } 
-	               | ALIGN expr        { k = (((pc/$2)+1)*$2); for(a=pc; a < k; a++) { outCode(1,0x0); } }
-	       
-                   
+	
+	auxline:  instruction          		{ }
+			| INCLUDEBIN STRING 		{  includebin($2);  }
+			| INCLUDEBIN LITERAL 		{  includebin($2);  }  
+			| IF expr 					{ condStatus = ($2==0)?0:1; }
+			| IFDEF LITERAL 			{ condStatus = (LookupTableLabels($2)<0)?0:1; }
+			| IFNDEF LITERAL 			{ condStatus = (LookupTableLabels($2)<0)?1:0; } 
+			| ENDIF 					{ if (condStatus < 0) { fatalError("Syntax error. Detected ENDIF without IF"); } condStatus = -1; } 
+			| ERROR STRING  			{  fprintf(stderr,">>DIRECTIVE ERROR in line: %d ::: %s\n",yylineno,$2); exit(EXIT_FAILURE); }   
+            | END            			{ return 0; /* we should stop here compilation */}
+            | END expr  				{ return 0; /* MISSING, in order to allow entry point definition */ }
+            | directivedefb  			{ }
+            | directivedefs  			{ }
+            | directivedefw  			{ }
+            | directivedefc  			{ }
+            | directivedefd  			{ }  	
+			| LITERAL EQU expr 			{ setLabelValue($1,$3);  } 			
+            | ALIGN expr        		{ int k = (((pc/$2)+1)*$2); for(int a=pc; a < k; a++) { outCode(1,0x0); } }    
+            | INCLUDE STRING 			{ warningError("Include feature has not yet being implemented. Ignoring this line"); }
+			| INCLUDE LITERAL 			{ warningError("Include feature has not yet being implemented. Ignoring this line"); }        
     ;
 	instruction: opcodeld       {  }
 	           | opcodeand      {  }
@@ -319,36 +302,36 @@ void includebin(const char * includefile) {
 	;
 	directivedefc: DEFC LITERAL EQUAL expr   { setLabelValue($2,$4); }
 	;
-	directivedefs: DEFS expr                 { for(a=0;a<abs($2);a++) { outCode(1,0x0); } }
-	         |     DEFS expr COMMA expr {  for(a=0;a<abs($2);a++) { outCode(1,$4); }  } 
+	directivedefs: DEFS expr                 { for(int a=0;a<abs($2);a++) { outCode(1,0x0); } }
+	         |     DEFS expr COMMA expr {  for(int a=0;a<abs($2);a++) { outCode(1,$4); }  } 
 	;
-	directivedefb: DEFB listexpr       { for(a=0;a<$2[0];a++)      { outCode(1,$2[a+1]);  } }
+	directivedefb: DEFB listexpr       { for(int a=0;a<$2[0];a++)      { outCode(1,$2[a+1]);  } }
 	;
-	directivedefw: DEFW listexprw      { for(a=0;a<$2[0];a++)      { outCode(1,$2[a+1]);  } }
+	directivedefw: DEFW listexprw      { for(int a=0;a<$2[0];a++)      { outCode(1,$2[a+1]);  } }
 	;
-    directivedefd: DEFD listexprd      { for(a=0;a<$2[0];a++)      { outCode(1,$2[a+1]);  } }
+    directivedefd: DEFD listexprd      { for(int a=0;a<$2[0];a++)      { outCode(1,$2[a+1]);  } }
 	;
 	opcodeadc: ADC A COMMA expr   { outCode(2,0xCE,$4); }
-	         | ADC A COMMA reg8        { k = (($4)|128|8); outCode(1,k); }
+	         | ADC A COMMA reg8        { int k = (($4)|128|8); outCode(1,k); }
 	         | ADC A COMMA PARLEFT HL PARRIGHT { outCode(1,0x8E); }
 	         | ADC A COMMA PARLEFT IX PLUS expr PARRIGHT { outCode(3,0xDD,0x8E,$7); }
 	         | ADC A COMMA PARLEFT IY PLUS expr PARRIGHT { outCode(3,0xFD,0x8E,$7); }
 	         | ADC A COMMA PARLEFT IX PARRIGHT { outCode(3,0xDD,0x8E,0); }
 	         | ADC A COMMA PARLEFT IY PARRIGHT { outCode(3,0xFD,0x8E,0); } 
-	         | ADC HL COMMA reg16      { k = (($4<<4)|64|8|2); outCode(2,0xED,k); } 
+	         | ADC HL COMMA reg16      { int k = (($4<<4)|64|8|2); outCode(2,0xED,k); } 
 	         | ADC A COMMA IXH         {  outCode(2,0xDD,0x8C); }
 	         | ADC A COMMA IXL         {  outCode(2,0xDD,0x8D); }
 	         | ADC A COMMA IYH         {  outCode(2,0xFD,0x8C); }
 	         | ADC A COMMA IYL         {  outCode(2,0xFD,0x8D); }	
 	;
 	opcodeadd: ADD A COMMA expr   { outCode(2,0xC6,$4); }
-	         | ADD A COMMA reg8        { k = (($4)|128); outCode(1,k); }
+	         | ADD A COMMA reg8        { int k = (($4)|128); outCode(1,k); }
 	         | ADD A COMMA PARLEFT HL PARRIGHT { outCode(1,0x86); }
 	         | ADD A COMMA PARLEFT IX PLUS expr PARRIGHT { outCode(3,0xDD,0x86,$7); }
 	         | ADD A COMMA PARLEFT IY PLUS expr PARRIGHT { outCode(3,0xFD,0x86,$7); }
 	         | ADD A COMMA PARLEFT IX PARRIGHT { outCode(3,0xDD,0x86,0); }
 	         | ADD A COMMA PARLEFT IY PARRIGHT { outCode(3,0xFD,0x86,0); } 
-	         | ADD HL COMMA reg16      { k = (($4<<4)|8|1); outCode(1,k); }
+	         | ADD HL COMMA reg16      { int k = (($4<<4)|8|1); outCode(1,k); }
 	         | ADD IX COMMA BC         { outCode(2,0xDD,0x09); }
 	         | ADD IX COMMA DE         { outCode(2,0xDD,0x19); }
 	         | ADD IX COMMA IX         { outCode(2,0xDD,0x29); }
@@ -363,7 +346,7 @@ void includebin(const char * includefile) {
 	         | ADD A COMMA IYL         {  outCode(2,0xFD,0x85); }
 	;
 	opcodeand: AND expr   { outCode(2,0xE6,$2); }
-	         | AND reg8        { k = (($2)|128|32); outCode(1,k); }
+	         | AND reg8        { int k = (($2)|128|32); outCode(1,k); }
 	         | AND PARLEFT HL PARRIGHT { outCode(1,0xA6); }
 	         | AND PARLEFT IX PLUS expr PARRIGHT { outCode(3,0xDD,0xA6,$5); }
 	         | AND PARLEFT IY PLUS expr PARRIGHT { outCode(3,0xFD,0xA6,$5); }
@@ -375,7 +358,7 @@ void includebin(const char * includefile) {
 	         | AND IYH          { outCode(2,0xFD,0xA4); }
 	         | AND IYL          { outCode(2,0xFD,0xA5); }
 	         | AND A COMMA expr   { outCode(2,0xE6,$4); }
-	         | AND A COMMA reg8        { k = (($4)|128|32); outCode(1,k); }
+	         | AND A COMMA reg8        { int k = (($4)|128|32); outCode(1,k); }
 	         | AND A COMMA PARLEFT HL PARRIGHT { outCode(1,0xA6); }
 	         | AND A COMMA PARLEFT IX PLUS expr PARRIGHT { outCode(3,0xDD,0xA6,$7); }
 	         | AND A COMMA PARLEFT IY PLUS expr PARRIGHT { outCode(3,0xFD,0xA6,$7); }
@@ -396,7 +379,7 @@ void includebin(const char * includefile) {
 	         |  CALL cc COMMA expr { outCode(3, (($2<<3)|128|64|4),0x00FF&$4,(0xFF00&$4)>>8); }                    
 	;	
 	opcodecp: CP expr   { outCode(2,0xFE,$2); }
-	         | CP reg8        { k = (($2)|128|32|16|8); outCode(1,k); }
+	         | CP reg8        { int k = (($2)|128|32|16|8); outCode(1,k); }
 	         | CP PARLEFT HL PARRIGHT { outCode(1,0xBE); }
 	         | CP PARLEFT IX PLUS expr PARRIGHT { outCode(3,0xDD,0xBE,$5); }
 	         | CP PARLEFT IY PLUS expr PARRIGHT { outCode(3,0xFD,0xBE,$5); }
@@ -407,13 +390,13 @@ void includebin(const char * includefile) {
 	         | CP IYH         {  outCode(2,0xFD,0xBC); }
 	         | CP IYL         {  outCode(2,0xFD,0xBD); }
 	;
-	opcodedec: DEC reg8        { k = (($2<<3)|4|1); outCode(1,k); }
+	opcodedec: DEC reg8        { int k = (($2<<3)|4|1); outCode(1,k); }
 	         | DEC PARLEFT HL PARRIGHT { outCode(1,0x35); }
 	         | DEC PARLEFT IX PLUS expr PARRIGHT { outCode(3,0xDD,0x35,$5); }
 	         | DEC PARLEFT IY PLUS expr PARRIGHT { outCode(3,0xFD,0x35,$5); }
 	         | DEC PARLEFT IX PARRIGHT { outCode(3,0xDD,0x35,0); }
 	         | DEC PARLEFT IY PARRIGHT { outCode(3,0xFD,0x35,0); }
-	         | DEC reg16       { k = (($2<<4)|8|2|1); outCode(1,k); }
+	         | DEC reg16       { int k = (($2<<4)|8|2|1); outCode(1,k); }
 	         | DEC IX          { outCode(2,0xDD,0x2B); }
    	         | DEC IY          { outCode(2,0xFD,0x2B); }
              | DEC IXH          { outCode(1,0xDD,0x25); }
@@ -470,7 +453,7 @@ void includebin(const char * includefile) {
 	         | JR PO COMMA expr  { fatalError("You cannot use PO flag bit in JR instruction"); }
 	         
 	;
-	opcodeld:  LD reg8 COMMA reg8        							{ k = (($2 << 3)|64); k = k | $4; outCode(1,k); }
+	opcodeld:  LD reg8 COMMA reg8        							{ int k = (($2 << 3)|64); k = k | $4; outCode(1,k); }
 	         | LD reg8 COMMA PARLEFT expr PARRIGHT                  { outCode(3,0x3A,0x00FF&$5,(0xFF00&$5)>>8); if ($2 != 7) {fatalError("Only A REGISTER can be used with this syntax");} }
 	         | LD reg8 COMMA expr 									{ outCode(2,(($2 << 3)|6),$4); }
 	         | LD reg8 COMMA PARLEFT regixiy PLUS expr PARRIGHT 	{ outCode(3,$5,($2<<3)|64|4|2,$7); }
@@ -560,7 +543,7 @@ void includebin(const char * includefile) {
 
      ; 
  	opcodeor:  OR expr   { outCode(2,0xF6,$2); }
-	         | OR reg8        { k = (($2)|128|32|16); outCode(1,k); }
+	         | OR reg8        { int k = (($2)|128|32|16); outCode(1,k); }
 	         | OR PARLEFT HL PARRIGHT { outCode(1,0xB6); }
 	         | OR PARLEFT IX PLUS expr PARRIGHT { outCode(3,0xDD,0xB6,$5); }
 	         | OR PARLEFT IY PLUS expr PARRIGHT { outCode(3,0xFD,0xB6,$5); }
@@ -569,7 +552,7 @@ void includebin(const char * includefile) {
 	         | OR IYH          { outCode(2,0xFD,0xB4); }
 	         | OR IYL          { outCode(2,0xFD,0xB5); }
 	         | OR A COMMA expr   { outCode(2,0xF6,$4); }
-	         | OR A COMMA reg8        { k = (($4)|128|32|16); outCode(1,k); }
+	         | OR A COMMA reg8        { int k = (($4)|128|32|16); outCode(1,k); }
 	         | OR A COMMA PARLEFT HL PARRIGHT { outCode(1,0xB6); }
 	         | OR A COMMA PARLEFT IX PLUS expr PARRIGHT { outCode(3,0xDD,0xB6,$7); }
 	         | OR A COMMA PARLEFT IY PLUS expr PARRIGHT { outCode(3,0xFD,0xB6,$7); }
@@ -678,7 +661,7 @@ void includebin(const char * includefile) {
 	         | SUB IYL         {  outCode(2,0xFD,0x95); }
 	         
     ; 
-	opcodexor: XOR reg8			{ k = (($2)|128|32|8); outCode(1,k); }
+	opcodexor: XOR reg8			{ int k = (($2)|128|32|8); outCode(1,k); }
 	         | XOR expr    { outCode(2,0xEE,$2); }
 	         | XOR PARLEFT HL PARRIGHT { outCode(1,0xAE); }
 	         | XOR PARLEFT IX PLUS expr PARRIGHT { outCode(3,0xDD,0xAE,$5); }
@@ -687,7 +670,7 @@ void includebin(const char * includefile) {
 	         | XOR IXL          { outCode(2,0xDD,0xAD); }
 	         | XOR IYH          { outCode(2,0xFD,0xAC); }
 	         | XOR IYL          { outCode(2,0xFD,0xAD); }
-	         | XOR A COMMA reg8			{ k = (($4)|128|32|8); outCode(1,k); }
+	         | XOR A COMMA reg8			{ int k = (($4)|128|32|8); outCode(1,k); }
 	         | XOR A COMMA expr    { outCode(2,0xEE,$4); }
 	         | XOR A COMMA PARLEFT HL PARRIGHT { outCode(1,0xAE); }
 	         | XOR A COMMA PARLEFT IX PLUS expr PARRIGHT { outCode(3,0xDD,0xAE,$7); }
@@ -700,7 +683,7 @@ void includebin(const char * includefile) {
 	;
 	listexprw:  expr                 { p = (uint8_t *)malloc(3*sizeof(uint8_t)); p[0] = 2; p[1] = $1&0x00FF; p[2] = $1>>8; $$ = p;  }
 	         | listexprw COMMA expr  { p = (uint8_t *)realloc($1,((*($1))+2)*sizeof(uint8_t)); p[p[0]+1] = $3&0x00FF; p[p[0]+2] = $3>>8; p[0] = p[0] + 2; $$ = p; }   
-	         | STRING                     { p = (uint8_t *)malloc(strlen($1)+1); p[0] = strlen($1); for(a=0;a<strlen($1);a++) { p[a+1] = $1[a];  } $$ = p; }       
+	         | STRING                     { p = (uint8_t *)malloc(strlen($1)+1); p[0] = strlen($1); for(int a=0;a<strlen($1);a++) { p[a+1] = $1[a];  } $$ = p; }       
 	         | listexprw COMMA STRING      {
 	                                        p = (uint8_t *)realloc($1,$1[0]+strlen($3)); 
 	                                        strcpy((char *)&p[p[0]+1],(char *)$3); p[0] = p[0] + strlen($3); $$ = p; 
@@ -710,7 +693,7 @@ void includebin(const char * includefile) {
 	
 	listexprd:  expr                      { p = (uint8_t *)malloc(5*sizeof(uint8_t)); p[0] = 4; p[1] = $1&0x000000FF; p[2] = ($1&0x0000FF00)>>8; p[3] = ($1&0x00FF0000)>>16; p[4] = ($1&0xFF000000)>>24; $$ = p;  }
 	         | listexprd COMMA expr  { p = (uint8_t *)realloc($1,((*($1))+4)*sizeof(uint8_t)); p[p[0]+1] = $3&&0x000000FF; p[p[0]+2] = ($3&0x0000FF00)>>8; p[p[0]+4] = ($3&0x00FF0000)>>18; p[p[0]+4] = ($3&0xFF000000)>>24; p[0] = p[0] + 4; $$ = p; }   
-	         | STRING                     { p = (uint8_t *)malloc(strlen($1)+1); p[0] = strlen($1); for(a=0;a<strlen($1);a++) { p[a+1] = $1[a];  } $$ = p; }                      
+	         | STRING                     { p = (uint8_t *)malloc(strlen($1)+1); p[0] = strlen($1); for(int a=0;a<strlen($1);a++) { p[a+1] = $1[a];  } $$ = p; }                      
 	         | listexprd COMMA STRING      {
 	                                        p = (uint8_t *)realloc($1,$1[0]+strlen($3)); 
 	                                        strcpy((char *)&p[p[0]+1],(char *)$3); p[0] = p[0] + strlen($3); $$ = p; 
@@ -719,7 +702,7 @@ void includebin(const char * includefile) {
 	
 	
 	listexpr:  expr                      { p = (uint8_t *)malloc(2); p[0] = 1; p[1] = $1; $$ = p; }
-	         | STRING                    { p = (uint8_t *)malloc(strlen($1)+1); p[0] = strlen($1); for(a=0;a<strlen($1);a++) { p[a+1] = $1[a];  } $$ = p; }
+	         | STRING                    { p = (uint8_t *)malloc(strlen($1)+1); p[0] = strlen($1); for(int a=0;a<strlen($1);a++) { p[a+1] = $1[a];  } $$ = p; }
 	         | listexpr COMMA expr  { 
 	                                       if (((uint16_t)$3) > 255) {
 	                                          p = (uint8_t *)realloc($1,((*($1))+2)); p[p[0]+1] = $3&0x00FF; p[(*p)+2] = $3>>8; p[0] = p[0] + 2; $$ = p; 
@@ -754,13 +737,13 @@ void includebin(const char * includefile) {
 	         | expr AND 		expr       	{ if ( $1 && $3) { $$=1; } else {$$=0; } } 
   	         | expr OR  		expr     	{ if ( $1 || $3) { $$=1; } else {$$=0; } } 
 	;	               
-	expritem: LITERAL               {  
+	expritem: LITERAL               { int k; 
 	                                 if (getLabelValue($1,&k) < 0)   { labelUndefinedError($1); $$=0; }                                  
 	                                 else { $$=k; }
 	                                }	                              
              | INTEGER              { $$ = $1; }
              | CHAR                 { $$ = $1; }
-             | DOLAR                { $$ = previouspc; }
+             | DOLAR                { $$ = prepc; }
              | DEFINED LITERAL      { $$ = (LookupTableLabels($2)<0)?0:1; } 
              
     ;

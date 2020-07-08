@@ -11,9 +11,9 @@
 	LD B,8
     
 DIV:	XOR A
-	SBC HL,DE
+	SBC HL,  DE
 	INC HL
-	JP P,NOADD
+	JP P,	NOADD
 	ADD HL,DE
 	DEC HL
 	

@@ -57,7 +57,6 @@ int from_hexa(const char * s) {
 \"[^\n\"]*\"          {  strncpy(yylval.literal,yytext+1,strlen(yytext)-1); yylval.literal[strlen(yytext)-2]=0x0;return STRING; }
 '[^\n']+'             {  strncpy(yylval.literal,yytext+1,strlen(yytext)-1); yylval.literal[strlen(yytext)-2]=0x0;return STRING; }
 \.BYTE                { return DEFB; }
-FNAME                 { return FNAME; }
 IF                    { return IF; }
 IFDEF                 { return IFDEF; }
 IFNDEF                { return IFNDEF; }
@@ -114,8 +113,6 @@ ALIGN                 { return ALIGN; }
 align			{ return ALIGN; }
 DJNZ			{ return DJNZ; }
 djnz			{ return DJNZ; }
-ASEG                  { return ASEG; }
-aseg			{ return ASEG; }
 CALL                  { return CALL; }
 call			{ return CALL; }
 OTDR                  { return OTDR; }

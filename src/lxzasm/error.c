@@ -44,8 +44,6 @@ void sourceSizeLineError();
 void undocumentedError();
 void warningError(const char *str);
 void includebinTooBigError(const char * includefile);
-void directiveError(const char * msg);
-
 /*************************************************/
 void yyerror(const char *str)
 {
@@ -128,10 +126,4 @@ void includebinTooBigError(const char * includefile) {
 	
 }
 
-void directiveError(const char * msg) {
-	
-  if ( !condStatus ) { return; }
-  
-	    fprintf(stderr,">DIRECTIVE ERROR in line: %d ::: %s\n",yylineno,msg);    
-	    exit(1);
-}
+

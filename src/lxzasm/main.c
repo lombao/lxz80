@@ -31,8 +31,6 @@ extern int yyparse();
 extern int yylineno;
 extern int reset_lexer();
 extern FILE * yyin;
-extern int pc;
-extern int previouspc;
 extern int outCode( int num, ... );
 extern void codeInit();
 extern void outputBinCode(const char * outputfile, const uint8_t padding);
@@ -57,8 +55,8 @@ void showVersion();
 
 int pass = 1; 			/* The pass of the assembler */
 int condStatus = -1; 	/* IF directive control */
-
-
+int pc	=0;	     	/* global pc counter */
+int prepc =0;
 /*******************************/
 
 
@@ -130,7 +128,6 @@ int main(int argc, char *argv[])
 
 	preproc_setslines( preproc_uploadFile(argv[optind]) );
 	preproc_proc();
-	
 	yyin = preproc_writeFile();
   
     /* reset the code table, just for the number of files given */
