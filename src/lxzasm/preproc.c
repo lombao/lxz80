@@ -6,32 +6,12 @@
 #include <stdint.h>
 
 #include "defs.h"
-
-struct sline {
-		struct sline * next;
-		struct sline * prev;
-		char parsed[MAX_SIZE_ASM_LINE+1];
-		char line[MAX_SIZE_ASM_LINE+1];
-		char filename[MAX_SIZE_FILE_NAME+1];
-		int nline;
-};
-
-
-struct sline * slines		= NULL;
-struct sline * slinesidx	= NULL;
-
+#include "codedata.h"
 
 //----------------------------------------------------------------------
-/* the preproc results */
-struct {
-	char * title ;
-	int    org   ;
-	int    limit ;
-} preproc;
-
-
-
-
+extern struct sline * slines;
+extern struct sline * slinesidx;
+extern struct spreproc preproc;
 
 //----------------------------------------------------------------------
 // INTERNAL
@@ -50,10 +30,12 @@ void preproc_directive_limit();
 void preproc_directive_aseg();
 void preproc_directive_cseg();
 void preproc_directive_include();
-	
+void preproc_directive_includebin();
+
 char *  preproc_util_extractliteral( char * s  );
 int  preproc_util_extractnumber( char * s  );
 void preproc_includeFile(const char * file, struct sline * sfrom, struct sline * sto);
+void preproc_loadBlob(const char * file, struct sline * s);
 
 
 /**********************************************************************/
@@ -92,6 +74,10 @@ struct sline * preproc_uploadFile(const char * file) {
 		strcpy(s->parsed,auxline);
 		strcpy(s->filename,file);
 		s->next = NULL;
+		s->code = NULL;
+		s->codehex = NULL;
+		s->codesize = 0;
+		s->address = -1;
 		s->nline = c++;
 		s->prev  = idx;
 	
@@ -330,9 +316,9 @@ void preproc_directive_include() {
 	while(s != NULL) {	
 		
 		if (  strncmp(s->parsed,".include ",strlen(".include ") ) == 0 ||
-		      strncmp(s->parsed,".include ",strlen(".include ")) == 0 ||
+		      strncmp(s->parsed,".INCLUDE ",strlen(".include ")) == 0 ||
 			  strncmp(s->parsed,"include ",strlen("include ")) == 0 ||
-			  strncmp(s->parsed,"include ",strlen("INCLUDE ")) == 0 
+			  strncmp(s->parsed,"INCLUDE ",strlen("INCLUDE ")) == 0 
 		   ) {
 				filename = preproc_util_extractliteral( s->parsed  );  
 				preproc_includeFile(filename, s->prev, s->next );
@@ -351,6 +337,30 @@ void preproc_directive_include() {
 	}
 }
 
+
+//*********************************************************************/
+void preproc_directive_includebin() {
+	
+	struct sline * s = slines;
+	
+    char * filename;
+    
+	while(s != NULL) {	
+		
+		if (  strncmp(s->parsed,".includebin ",strlen(".includebin ") ) == 0 ||
+		      strncmp(s->parsed,".INCLUDEDIN ",strlen(".includebin ")) == 0 ||
+			  strncmp(s->parsed,"includebin ",strlen("includebin ")) == 0 ||
+			  strncmp(s->parsed,"INCLUDEBIN ",strlen("INCLUDEBIN ")) == 0 
+		   ) {
+				filename = preproc_util_extractliteral( s->parsed  );  
+				preproc_loadBlob(filename,s);
+				
+		}
+		
+		s = s->next;
+		
+	}
+}
 
 //*********************************************************************/
 void preproc_directive_title() {
@@ -619,6 +629,10 @@ void preproc_includeFile(const char * file, struct sline * sfrom, struct sline *
 		strcpy(s->parsed,auxline);
 		strcpy(s->filename,file);
 		s->next = NULL;
+		s->code = NULL;
+		s->codehex = NULL;
+		s->codesize = 0;
+		s->address = -1;
 		s->nline = c++;
 		s->prev  = idx;
 	
@@ -636,5 +650,50 @@ void preproc_includeFile(const char * file, struct sline * sfrom, struct sline *
 	
  idx->next = sto;
  if ( sto != NULL ) { sto->prev = idx; }
+
+}
+
+//*********************************************************************/
+//*********************************************************************/
+//*********************************************************************/
+//*********************************************************************/
+void preproc_loadBlob(const char * file, struct sline * s) {
+
+  
+   
+	FILE * fi=fopen(file, "rb"); 
+	if ( fi == NULL) { 
+		fprintf(stderr,"::: ERROR: I cannot upload the binary file %s\n",file);
+		exit(EXIT_FAILURE);
+	}
+	
+	
+	fseek (fi , 0 , SEEK_END);
+	long lSize = ftell (fi);
+	rewind (fi);
+	
+	if ( lSize > 65535 ) {
+		fprintf(stderr,"::: ERROR: I cannot upload the a binary file so big as %s\n",file);
+		exit(EXIT_FAILURE);
+	}
+	
+	// allocate memory to contain the whole file:
+	s->code = (uint8_t*) malloc (sizeof(uint8_t)*(lSize+1));
+	if (s->code == NULL) {
+		fprintf(stderr,"::: ERROR: Out of memory uploading the Binary file %s\n",file);
+		exit(EXIT_FAILURE);
+	}
+		
+	// copy the file into the buffer:
+	int result = fread (s->code,1,lSize,fi);
+	if (result != lSize) {
+		fprintf(stderr,"::: ERROR: Reading error the binary file %s\n",file);
+		exit(EXIT_FAILURE);
+	}
+	s->codesize = lSize;
+	
+
+ 	fclose (fi);
+ 
 
 }

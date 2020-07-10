@@ -24,6 +24,7 @@
 #include <unistd.h>
 
 #include "defs.h"
+#include "codedata.h"
 
 //----------------------------------------------------------------------
 // EXTERNAL
@@ -43,7 +44,7 @@ extern struct sline * preproc_uploadFile(const char * file);
 extern FILE * preproc_writeFile();
 extern void preproc_proc();
 extern void preproc_setslines( struct sline * s );
-void reset_pc();
+
 
 //----------------------------------------------------------------------
 // INTERNAL
@@ -52,11 +53,15 @@ void showVersion();
 
 /******************************/
 /* GLOBAL VARIABLES           */
-
-int pass = 1; 			/* The pass of the assembler */
+int pass;
 int condStatus = -1; 	/* IF directive control */
 int pc	=0;	     	/* global pc counter */
 int prepc =0;
+
+struct sline * slines		= NULL;
+struct sline * slinesidx	= NULL;
+struct spreproc preproc;
+
 /*******************************/
 
 
@@ -129,42 +134,30 @@ int main(int argc, char *argv[])
 	preproc_setslines( preproc_uploadFile(argv[optind]) );
 	preproc_proc();
 	yyin = preproc_writeFile();
-  
+ 
+ 
     /* reset the code table, just for the number of files given */
 	codeInit(); 
-
 	pass = 1;
 	yyparse();
 
 	
 	
  /*              
-        printf("Pass 1 completed\n");
         printf("Defined Labels: \n %s\n",getDefinedLabels());
  */ 
-       
+      
     rewind(yyin);    
 	reset_lexer();
-	reset_pc();
+	codeInit(); 
 	pass = 2;
 	yyparse();
 	fclose(yyin);
 
-
-/* ingest the original source code */ 
-    yyin = fopen(argv[optind], "r");
-	if (yyin == NULL) { perror("ERROR:"); return(EXIT_FAILURE); }	
-	int l = 1; char line[MAX_SIZE_ASM_LINE];
-	while (fgets(line, sizeof(line), yyin)) {
-		setCodeAsmLine(l,line);
-		l++;
-	} 
-	fclose(yyin);        
-   
-/* Let's link the code */
-    codeLink();
+      
 
 /* Output */
+
 	outputBinCode(outputFile,paddingZeroes);
 
 	if ( outputList == TRUE ) {

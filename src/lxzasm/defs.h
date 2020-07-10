@@ -53,4 +53,4 @@
 
 
 /* Version */
-#define LXZ80_VERSION "0.0.11"
+#define LXZ80_VERSION "0.0.12"

@@ -5,11 +5,11 @@
 #include <stdint.h>
 
 #include "defs.h"
+#include "codedata.h"
  
 int yyparse();
 int yylex();
 
-void includebin(const char * includefile);
 
 extern int setLabelAddress(const char * label, const int pc);
 extern int setLabelValue(const char * label, const int val);
@@ -19,16 +19,12 @@ extern void warningError(const char *str);
 extern void fatalError(const char *str);
 extern int getLabelValue(const char * label, uint * k);
 extern int outCode( int num, ... );
-extern void includebinTooBigError(const char * includefile);
-
-
 extern void yyerror(const char *str);
+
 extern int yylineno;
 extern int pc;
 extern int prepc;
-extern int pass;
 extern int condStatus;
-
 
 char msg[200];
 uint8_t * p;
@@ -38,35 +34,18 @@ int yywrap()
         return 1;
 } 
   
-  
-void includebin(const char * includefile) {
- FILE * fi;
- uint8_t buffer[MAX_SIZE_CODE_LINE];
- uint16_t nbread;
- int a;
-        
-     if ( !condStatus ) { return; }
-     
-        fi = fopen(includefile, "r");
-		if (fi == NULL) { perror("ERROR INCLUDE:"); exit(1); }
-        nbread = fread(buffer, sizeof(char), MAX_SIZE_CODE_LINE, fi);
-        if ( nbread == MAX_SIZE_CODE_LINE ) { includebinTooBigError(includefile); }
-        for(a=0;a<nbread;a++) { outCode(1,buffer[a]); }       
-        fclose(fi);
-        
-}
 
 
 %}
 
 
 %union {
-  uint32_t normal;
-  uint8_t byte;
-  uint16_t word;
-  uint16_t address;
+  uint32_t 	normal;
+  uint8_t 	byte;
+  uint16_t 	word;
+  uint16_t 	address;
   uint8_t * listexpr;
-  char literal[64];
+  char 		literal[64];
   }
 
 
@@ -81,7 +60,6 @@ void includebin(const char * includefile) {
 %token EXCLAMATION
 %token NEQUAL EQUAL
 %token IF IFDEF IFNDEF ENDIF
-%token INCLUDE
 %token INCLUDEBIN
 %token DEFINED
 %token NEWLINE
@@ -202,16 +180,14 @@ void includebin(const char * includefile) {
     lines:  line         {  yylineno++; }
 		|	lines line   {  yylineno++; }
 		
-	line: auxline				{ prepc = pc; }
-	    |  NEWLINE				{ prepc = pc; }
-	    |  LABEL auxline		{ setLabelAddress($1,prepc); prepc = pc;} 
-	    |  LABEL NEWLINE		{ setLabelAddress($1,prepc); prepc = pc;}
-	    |  LABEL EQU expr		{ setLabelValue($1,$3);  } 
+	line: auxline NEWLINE				{ prepc = pc;   }
+	    |  NEWLINE						{ prepc = pc;  outCode(0);  }
+	    |  LABEL auxline NEWLINE		{ setLabelAddress($1,prepc); prepc = pc; } 
+	    |  LABEL NEWLINE				{ setLabelAddress($1,prepc); prepc = pc; outCode(0); }
+	    |  LABEL EQU expr NEWLINE		{ setLabelValue($1,$3);  outCode(0);  } 
 	;
 	
 	auxline:  instruction          		{ }
-			| INCLUDEBIN STRING 		{  includebin($2);  }
-			| INCLUDEBIN LITERAL 		{  includebin($2);  }  
 			| IF expr 					{ condStatus = ($2==0)?0:1; }
 			| IFDEF LITERAL 			{ condStatus = (LookupTableLabels($2)<0)?0:1; }
 			| IFNDEF LITERAL 			{ condStatus = (LookupTableLabels($2)<0)?1:0; } 
@@ -226,8 +202,7 @@ void includebin(const char * includefile) {
             | directivedefd  			{ }  	
 			| LITERAL EQU expr 			{ setLabelValue($1,$3);  } 			
             | ALIGN expr        		{ int k = (((pc/$2)+1)*$2); for(int a=pc; a < k; a++) { outCode(1,0x0); } }    
-            | INCLUDE STRING 			{ warningError("Include feature has not yet being implemented. Ignoring this line"); }
-			| INCLUDE LITERAL 			{ warningError("Include feature has not yet being implemented. Ignoring this line"); }        
+      
     ;
 	instruction: opcodeld       {  }
 	           | opcodeand      {  }

@@ -106,9 +106,6 @@ dw			{ return DEFW; }
 DD                    { return DEFD; }
 dd			{ return DEFD; }
 ERROR                 { return ERROR; }
-INCLUDE               { return INCLUDE; }
-INCBIN                { return INCLUDEBIN;  }
-INCLUDEBIN            { return INCLUDEBIN;  }
 ALIGN                 { return ALIGN; }
 align			{ return ALIGN; }
 DJNZ			{ return DJNZ; }
