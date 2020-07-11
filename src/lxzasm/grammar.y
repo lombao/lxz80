@@ -19,12 +19,15 @@ extern void warningError(const char *str);
 extern void fatalError(const char *str);
 extern int getLabelValue(const char * label, uint * k);
 extern int outCode( int num, ... );
-extern void yyerror(const char *str);
+
+extern char * preproc_getfilename_bylineno(const int lineno);	
+extern int preproc_getnline_bylineno(const int lineno);
 
 extern int yylineno;
 extern int pc;
 extern int prepc;
 extern int condStatus;
+extern int pass;
 
 char msg[200];
 uint8_t * p;
@@ -34,7 +37,12 @@ int yywrap()
         return 1;
 } 
   
-
+void yyerror(const char *str)
+{
+	    if (pass> 1) {
+			fprintf(stderr,"::: ERROR: in file : %s line: %d ::: %s\n",preproc_getfilename_bylineno(yylineno), preproc_getnline_bylineno(yylineno), str);    
+	    }
+} 
 
 %}
 

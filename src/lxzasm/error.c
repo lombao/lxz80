@@ -35,7 +35,6 @@ extern int condStatus;
 /* Local declarations */
 void labelSizeError(const char * label);
 void recoverableError(const char *str);
-void yyerror(const char *str);
 void labelExhaustedError();
 void labelAlreadyDefinedError(const char * label);
 void labelUndefinedError(const char * label);
@@ -45,12 +44,7 @@ void undocumentedError();
 void warningError(const char *str);
 void includebinTooBigError(const char * includefile);
 /*************************************************/
-void yyerror(const char *str)
-{
-	    if (pass> 1) {
-	      recoverableError(str);  
-	    }
-} 
+
 
 void recoverableError(const char *str) {
 	    fprintf(stderr,">ERROR in line: %d ::: %s\n",yylineno,str);    

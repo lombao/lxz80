@@ -31,10 +31,12 @@
 #include "defs.h"
 #include "codedata.h"
 
-/* totalbytes */
-int totalbytes = 0;			/* the number of bytes compiled */
 
-/* External dependencies */
+//----------------------------------------------------------------------
+// EXTERNAL
+extern struct sline * slines;
+extern struct spreproc preproc;
+
 extern int pc;
 extern int prepc;
 extern int yylineno;
@@ -42,18 +44,16 @@ extern int condStatus;
 extern char * fileasm;
 extern char * getDefinedLabels();
 
-
 //----------------------------------------------------------------------
-extern struct sline * slines;
-extern struct sline * slinesidx;
-extern struct spreproc preproc;
-
-
+// INTERNAL
 /* Functions in this module  */
 void codeInit();
 int outCode( int num, ... );
 void outputBinCode(const char * outputfile, const uint8_t padding);
 void outputLstCode(const char * outputfile);
+
+/* totalbytes */
+int totalbytes = 0;			/* the number of bytes compiled */
 
 
 /*************************************************/
@@ -71,8 +71,6 @@ void codeInit() {
 	slines->address = preproc.org;
 	
 }
-
-
 
 
 /*************************************************/
@@ -134,7 +132,6 @@ int outCode( int num, ... ) {
 
 
 /*************************************************/
-
 void outputLstCode(const char * outputfile) {
 
  FILE * fo;
@@ -167,8 +164,10 @@ void outputLstCode(const char * outputfile) {
 		/* Lines */
 		while(s != NULL) {
 			
-			sprintf(line,"%04X %8s %04d %s",s->address,s->codehex,s->nline,s->parsed);
-			fwrite(line,1,strlen(line),fo);
+			if ( s->codesize > 0 ) {
+				sprintf(line,"%04X %8s      %04d %s",s->address,s->codehex,s->nline,s->parsed);
+				fwrite(line,1,strlen(line),fo);
+			}
 					
 			s = s->next;
 		}
@@ -190,7 +189,7 @@ void outputLstCode(const char * outputfile) {
 }
 
 
-
+/*************************************************/
 void outputBinCode(const char * outputfile,const uint8_t padding ) {
  FILE * fo;
  struct sline * s = slines;	

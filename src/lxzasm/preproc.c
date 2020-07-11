@@ -697,3 +697,24 @@ void preproc_loadBlob(const char * file, struct sline * s) {
  
 
 }
+
+//---------------------------------------------------------------------
+//------------------------
+
+char * preproc_getfilename_bylineno(const int lineno) {
+	
+	struct sline * s = slines;
+	
+		for(int k=1;k<lineno;k++) { s = s->next; }
+		return s->filename;
+}
+
+
+int preproc_getnline_bylineno(const int lineno) {
+	
+	struct sline * s = slines;
+	
+		for(int k=1;k<lineno;k++) { s = s->next; }
+		return s->nline;
+	
+}

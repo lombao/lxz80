@@ -333,7 +333,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 42 "grammar.y"
+#line 50 "grammar.y"
 
   uint32_t 	normal;
   uint8_t 	byte;

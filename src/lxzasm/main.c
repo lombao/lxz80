@@ -45,13 +45,7 @@ extern FILE * preproc_writeFile();
 extern void preproc_proc();
 extern void preproc_setslines( struct sline * s );
 
-
 //----------------------------------------------------------------------
-// INTERNAL
-void showUsage();
-void showVersion();
-
-/******************************/
 /* GLOBAL VARIABLES           */
 int pass;
 int condStatus = -1; 	/* IF directive control */
@@ -62,7 +56,12 @@ struct sline * slines		= NULL;
 struct sline * slinesidx	= NULL;
 struct spreproc preproc;
 
-/*******************************/
+
+//----------------------------------------------------------------------
+// INTERNAL
+void showUsage();
+void showVersion();
+
 
 
 /* Print usage */

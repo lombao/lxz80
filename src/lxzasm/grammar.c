@@ -88,12 +88,15 @@ extern void warningError(const char *str);
 extern void fatalError(const char *str);
 extern int getLabelValue(const char * label, uint * k);
 extern int outCode( int num, ... );
-extern void yyerror(const char *str);
+
+extern char * preproc_getfilename_bylineno(const int lineno);	
+extern int preproc_getnline_bylineno(const int lineno);
 
 extern int yylineno;
 extern int pc;
 extern int prepc;
 extern int condStatus;
+extern int pass;
 
 char msg[200];
 uint8_t * p;
@@ -103,10 +106,15 @@ int yywrap()
         return 1;
 } 
   
+void yyerror(const char *str)
+{
+	    if (pass> 1) {
+			fprintf(stderr,"::: ERROR: in file : %s line: %d ::: %s\n",preproc_getfilename_bylineno(yylineno), preproc_getnline_bylineno(yylineno), str);    
+	    }
+} 
 
 
-
-#line 110 "grammar.c"
+#line 118 "grammar.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -438,7 +446,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 42 "grammar.y"
+#line 50 "grammar.y"
 
   uint32_t 	normal;
   uint8_t 	byte;
@@ -448,7 +456,7 @@ union YYSTYPE
   char 		literal[64];
   
 
-#line 452 "grammar.c"
+#line 460 "grammar.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -837,52 +845,52 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   178,   178,   180,   181,   183,   184,   185,   186,   187,
-     190,   191,   192,   193,   194,   195,   196,   197,   198,   199,
-     200,   201,   202,   203,   204,   207,   208,   209,   210,   211,
-     212,   213,   214,   215,   216,   217,   218,   219,   220,   221,
-     222,   223,   224,   225,   226,   227,   228,   229,   230,   231,
-     232,   233,   234,   235,   236,   237,   238,   239,   240,   241,
-     242,   243,   244,   245,   246,   247,   248,   249,   250,   251,
-     252,   253,   254,   255,   256,   257,   258,   259,   260,   261,
-     262,   263,   264,   265,   266,   267,   268,   269,   270,   271,
-     272,   273,   274,   278,   280,   281,   283,   285,   287,   289,
-     290,   291,   292,   293,   294,   295,   296,   297,   298,   299,
-     300,   302,   303,   304,   305,   306,   307,   308,   309,   310,
-     311,   312,   313,   314,   315,   316,   317,   318,   319,   320,
-     321,   323,   324,   325,   326,   327,   328,   329,   331,   332,
-     333,   334,   335,   336,   337,   338,   339,   340,   341,   342,
-     343,   345,   346,   347,   348,   353,   354,   356,   357,   358,
-     359,   360,   361,   362,   363,   364,   365,   366,   368,   369,
-     370,   371,   372,   373,   374,   375,   376,   377,   378,   379,
-     380,   383,   386,   387,   388,   389,   390,   392,   400,   401,
-     403,   404,   405,   406,   407,   408,   409,   410,   411,   412,
-     413,   414,   415,   417,   418,   419,   420,   421,   423,   424,
-     425,   426,   427,   428,   431,   432,   433,   434,   435,   436,
-     437,   438,   439,   440,   441,   442,   443,   444,   445,   446,
-     447,   448,   449,   450,   451,   452,   453,   454,   455,   456,
-     457,   458,   459,   463,   465,   469,   473,   479,   484,   485,
-     486,   487,   488,   489,   490,   491,   492,   493,   494,   495,
-     496,   497,   498,   499,   500,   501,   502,   503,   504,   505,
-     506,   507,   508,   509,   510,   511,   512,   513,   514,   515,
-     516,   517,   520,   521,   522,   523,   524,   525,   526,   527,
-     528,   529,   530,   531,   532,   533,   534,   535,   536,   537,
-     540,   541,   543,   544,   545,   547,   548,   549,   552,   553,
-     554,   555,   558,   559,   562,   563,   564,   565,   567,   568,
-     569,   570,   572,   573,   574,   575,   577,   578,   579,   580,
-     582,   591,   592,   593,   594,   595,   596,   597,   598,   599,
-     600,   602,   603,   604,   605,   608,   609,   610,   611,   613,
-     614,   615,   616,   618,   619,   620,   621,   623,   624,   625,
-     626,   628,   629,   630,   631,   632,   633,   634,   635,   636,
-     639,   640,   641,   642,   643,   644,   645,   646,   647,   648,
-     649,   650,   651,   652,   653,   654,   655,   656,   659,   660,
-     661,   662,   669,   670,   671,   672,   679,   680,   681,   689,
-     694,   695,   696,   697,   698,   699,   700,   701,   702,   703,
-     704,   705,   706,   707,   708,   709,   710,   711,   712,   713,
-     715,   719,   720,   721,   722,   726,   727,   728,   729,   730,
-     731,   732,   734,   735,   737,   738,   739,   740,   742,   743,
-     744,   745,   748,   749,   751,   752,   754,   755,   756,   757,
-     758,   759,   760,   761,   763,   764,   765,   766
+       0,   186,   186,   188,   189,   191,   192,   193,   194,   195,
+     198,   199,   200,   201,   202,   203,   204,   205,   206,   207,
+     208,   209,   210,   211,   212,   215,   216,   217,   218,   219,
+     220,   221,   222,   223,   224,   225,   226,   227,   228,   229,
+     230,   231,   232,   233,   234,   235,   236,   237,   238,   239,
+     240,   241,   242,   243,   244,   245,   246,   247,   248,   249,
+     250,   251,   252,   253,   254,   255,   256,   257,   258,   259,
+     260,   261,   262,   263,   264,   265,   266,   267,   268,   269,
+     270,   271,   272,   273,   274,   275,   276,   277,   278,   279,
+     280,   281,   282,   286,   288,   289,   291,   293,   295,   297,
+     298,   299,   300,   301,   302,   303,   304,   305,   306,   307,
+     308,   310,   311,   312,   313,   314,   315,   316,   317,   318,
+     319,   320,   321,   322,   323,   324,   325,   326,   327,   328,
+     329,   331,   332,   333,   334,   335,   336,   337,   339,   340,
+     341,   342,   343,   344,   345,   346,   347,   348,   349,   350,
+     351,   353,   354,   355,   356,   361,   362,   364,   365,   366,
+     367,   368,   369,   370,   371,   372,   373,   374,   376,   377,
+     378,   379,   380,   381,   382,   383,   384,   385,   386,   387,
+     388,   391,   394,   395,   396,   397,   398,   400,   408,   409,
+     411,   412,   413,   414,   415,   416,   417,   418,   419,   420,
+     421,   422,   423,   425,   426,   427,   428,   429,   431,   432,
+     433,   434,   435,   436,   439,   440,   441,   442,   443,   444,
+     445,   446,   447,   448,   449,   450,   451,   452,   453,   454,
+     455,   456,   457,   458,   459,   460,   461,   462,   463,   464,
+     465,   466,   467,   471,   473,   477,   481,   487,   492,   493,
+     494,   495,   496,   497,   498,   499,   500,   501,   502,   503,
+     504,   505,   506,   507,   508,   509,   510,   511,   512,   513,
+     514,   515,   516,   517,   518,   519,   520,   521,   522,   523,
+     524,   525,   528,   529,   530,   531,   532,   533,   534,   535,
+     536,   537,   538,   539,   540,   541,   542,   543,   544,   545,
+     548,   549,   551,   552,   553,   555,   556,   557,   560,   561,
+     562,   563,   566,   567,   570,   571,   572,   573,   575,   576,
+     577,   578,   580,   581,   582,   583,   585,   586,   587,   588,
+     590,   599,   600,   601,   602,   603,   604,   605,   606,   607,
+     608,   610,   611,   612,   613,   616,   617,   618,   619,   621,
+     622,   623,   624,   626,   627,   628,   629,   631,   632,   633,
+     634,   636,   637,   638,   639,   640,   641,   642,   643,   644,
+     647,   648,   649,   650,   651,   652,   653,   654,   655,   656,
+     657,   658,   659,   660,   661,   662,   663,   664,   667,   668,
+     669,   670,   677,   678,   679,   680,   687,   688,   689,   697,
+     702,   703,   704,   705,   706,   707,   708,   709,   710,   711,
+     712,   713,   714,   715,   716,   717,   718,   719,   720,   721,
+     723,   727,   728,   729,   730,   734,   735,   736,   737,   738,
+     739,   740,   742,   743,   745,   746,   747,   748,   750,   751,
+     752,   753,   756,   757,   759,   760,   762,   763,   764,   765,
+     766,   767,   768,   769,   771,   772,   773,   774
 };
 #endif
 
@@ -2798,1119 +2806,1119 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 178 "grammar.y"
+#line 186 "grammar.y"
                      {  }
-#line 2804 "grammar.c"
+#line 2812 "grammar.c"
     break;
 
   case 3:
-#line 180 "grammar.y"
+#line 188 "grammar.y"
                          {  yylineno++; }
-#line 2810 "grammar.c"
+#line 2818 "grammar.c"
     break;
 
   case 4:
-#line 181 "grammar.y"
+#line 189 "grammar.y"
                                      {  yylineno++; }
-#line 2816 "grammar.c"
+#line 2824 "grammar.c"
     break;
 
   case 5:
-#line 183 "grammar.y"
+#line 191 "grammar.y"
                                                         { prepc = pc;   }
-#line 2822 "grammar.c"
+#line 2830 "grammar.c"
     break;
 
   case 6:
-#line 184 "grammar.y"
+#line 192 "grammar.y"
                                                                 { prepc = pc;  outCode(0);  }
-#line 2828 "grammar.c"
+#line 2836 "grammar.c"
     break;
 
   case 7:
-#line 185 "grammar.y"
+#line 193 "grammar.y"
                                                 { setLabelAddress((yyvsp[-2].literal),prepc); prepc = pc; }
-#line 2834 "grammar.c"
+#line 2842 "grammar.c"
     break;
 
   case 8:
-#line 186 "grammar.y"
+#line 194 "grammar.y"
                                                         { setLabelAddress((yyvsp[-1].literal),prepc); prepc = pc; outCode(0); }
-#line 2840 "grammar.c"
+#line 2848 "grammar.c"
     break;
 
   case 9:
-#line 187 "grammar.y"
+#line 195 "grammar.y"
                                                 { setLabelValue((yyvsp[-3].literal),(yyvsp[-1].normal));  outCode(0);  }
-#line 2846 "grammar.c"
+#line 2854 "grammar.c"
     break;
 
   case 10:
-#line 190 "grammar.y"
+#line 198 "grammar.y"
                                                 { }
-#line 2852 "grammar.c"
+#line 2860 "grammar.c"
     break;
 
   case 11:
-#line 191 "grammar.y"
+#line 199 "grammar.y"
                                                                         { condStatus = ((yyvsp[0].normal)==0)?0:1; }
-#line 2858 "grammar.c"
+#line 2866 "grammar.c"
     break;
 
   case 12:
-#line 192 "grammar.y"
+#line 200 "grammar.y"
                                                                 { condStatus = (LookupTableLabels((yyvsp[0].literal))<0)?0:1; }
-#line 2864 "grammar.c"
+#line 2872 "grammar.c"
     break;
 
   case 13:
-#line 193 "grammar.y"
+#line 201 "grammar.y"
                                                                 { condStatus = (LookupTableLabels((yyvsp[0].literal))<0)?1:0; }
-#line 2870 "grammar.c"
+#line 2878 "grammar.c"
     break;
 
   case 14:
-#line 194 "grammar.y"
+#line 202 "grammar.y"
                                                                         { if (condStatus < 0) { fatalError("Syntax error. Detected ENDIF without IF"); } condStatus = -1; }
-#line 2876 "grammar.c"
+#line 2884 "grammar.c"
     break;
 
   case 15:
-#line 195 "grammar.y"
+#line 203 "grammar.y"
                                                                 {  fprintf(stderr,">>DIRECTIVE ERROR in line: %d ::: %s\n",yylineno,(yyvsp[0].literal)); exit(EXIT_FAILURE); }
-#line 2882 "grammar.c"
+#line 2890 "grammar.c"
     break;
 
   case 16:
-#line 196 "grammar.y"
+#line 204 "grammar.y"
                                                 { return 0; /* we should stop here compilation */}
-#line 2888 "grammar.c"
+#line 2896 "grammar.c"
     break;
 
   case 17:
-#line 197 "grammar.y"
+#line 205 "grammar.y"
                                                         { return 0; /* MISSING, in order to allow entry point definition */ }
-#line 2894 "grammar.c"
+#line 2902 "grammar.c"
     break;
 
   case 18:
-#line 198 "grammar.y"
+#line 206 "grammar.y"
                                                 { }
-#line 2900 "grammar.c"
+#line 2908 "grammar.c"
     break;
 
   case 19:
-#line 199 "grammar.y"
+#line 207 "grammar.y"
                                                 { }
-#line 2906 "grammar.c"
+#line 2914 "grammar.c"
     break;
 
   case 20:
-#line 200 "grammar.y"
+#line 208 "grammar.y"
                                                 { }
-#line 2912 "grammar.c"
+#line 2920 "grammar.c"
     break;
 
   case 21:
-#line 201 "grammar.y"
+#line 209 "grammar.y"
                                                 { }
-#line 2918 "grammar.c"
+#line 2926 "grammar.c"
     break;
 
   case 22:
-#line 202 "grammar.y"
+#line 210 "grammar.y"
                                                 { }
-#line 2924 "grammar.c"
+#line 2932 "grammar.c"
     break;
 
   case 23:
-#line 203 "grammar.y"
+#line 211 "grammar.y"
                                                                 { setLabelValue((yyvsp[-2].literal),(yyvsp[0].normal));  }
-#line 2930 "grammar.c"
+#line 2938 "grammar.c"
     break;
 
   case 24:
-#line 204 "grammar.y"
+#line 212 "grammar.y"
                                                 { int k = (((pc/(yyvsp[0].normal))+1)*(yyvsp[0].normal)); for(int a=pc; a < k; a++) { outCode(1,0x0); } }
-#line 2936 "grammar.c"
+#line 2944 "grammar.c"
     break;
 
   case 25:
-#line 207 "grammar.y"
+#line 215 "grammar.y"
                                     {  }
-#line 2942 "grammar.c"
+#line 2950 "grammar.c"
     break;
 
   case 26:
-#line 208 "grammar.y"
+#line 216 "grammar.y"
                                     {  }
-#line 2948 "grammar.c"
+#line 2956 "grammar.c"
     break;
 
   case 27:
-#line 209 "grammar.y"
+#line 217 "grammar.y"
                                     {  }
-#line 2954 "grammar.c"
+#line 2962 "grammar.c"
     break;
 
   case 28:
-#line 210 "grammar.y"
+#line 218 "grammar.y"
                                     {  }
-#line 2960 "grammar.c"
+#line 2968 "grammar.c"
     break;
 
   case 29:
-#line 211 "grammar.y"
+#line 219 "grammar.y"
                                     {  }
-#line 2966 "grammar.c"
+#line 2974 "grammar.c"
     break;
 
   case 30:
-#line 212 "grammar.y"
+#line 220 "grammar.y"
                                     {  }
-#line 2972 "grammar.c"
+#line 2980 "grammar.c"
     break;
 
   case 31:
-#line 213 "grammar.y"
+#line 221 "grammar.y"
                                     {  }
-#line 2978 "grammar.c"
+#line 2986 "grammar.c"
     break;
 
   case 32:
-#line 214 "grammar.y"
+#line 222 "grammar.y"
                                 {  }
-#line 2984 "grammar.c"
+#line 2992 "grammar.c"
     break;
 
   case 33:
-#line 215 "grammar.y"
+#line 223 "grammar.y"
                                 {  }
-#line 2990 "grammar.c"
+#line 2998 "grammar.c"
     break;
 
   case 34:
-#line 216 "grammar.y"
+#line 224 "grammar.y"
                                 {  }
-#line 2996 "grammar.c"
+#line 3004 "grammar.c"
     break;
 
   case 35:
-#line 217 "grammar.y"
+#line 225 "grammar.y"
                                 {  }
-#line 3002 "grammar.c"
+#line 3010 "grammar.c"
     break;
 
   case 36:
-#line 218 "grammar.y"
+#line 226 "grammar.y"
                                 {  }
-#line 3008 "grammar.c"
+#line 3016 "grammar.c"
     break;
 
   case 37:
-#line 219 "grammar.y"
+#line 227 "grammar.y"
                                 {  }
-#line 3014 "grammar.c"
+#line 3022 "grammar.c"
     break;
 
   case 38:
-#line 220 "grammar.y"
+#line 228 "grammar.y"
                                 {  }
-#line 3020 "grammar.c"
+#line 3028 "grammar.c"
     break;
 
   case 39:
-#line 221 "grammar.y"
+#line 229 "grammar.y"
                                 {  }
-#line 3026 "grammar.c"
+#line 3034 "grammar.c"
     break;
 
   case 40:
-#line 222 "grammar.y"
+#line 230 "grammar.y"
                                 {  }
-#line 3032 "grammar.c"
+#line 3040 "grammar.c"
     break;
 
   case 41:
-#line 223 "grammar.y"
+#line 231 "grammar.y"
                                 {  }
-#line 3038 "grammar.c"
+#line 3046 "grammar.c"
     break;
 
   case 42:
-#line 224 "grammar.y"
+#line 232 "grammar.y"
                                 {  }
-#line 3044 "grammar.c"
+#line 3052 "grammar.c"
     break;
 
   case 43:
-#line 225 "grammar.y"
+#line 233 "grammar.y"
                                 {  }
-#line 3050 "grammar.c"
+#line 3058 "grammar.c"
     break;
 
   case 44:
-#line 226 "grammar.y"
+#line 234 "grammar.y"
                                 {  }
-#line 3056 "grammar.c"
+#line 3064 "grammar.c"
     break;
 
   case 45:
-#line 227 "grammar.y"
+#line 235 "grammar.y"
                                 {  }
-#line 3062 "grammar.c"
+#line 3070 "grammar.c"
     break;
 
   case 46:
-#line 228 "grammar.y"
+#line 236 "grammar.y"
                                 {  }
-#line 3068 "grammar.c"
+#line 3076 "grammar.c"
     break;
 
   case 47:
-#line 229 "grammar.y"
+#line 237 "grammar.y"
                                 {  }
-#line 3074 "grammar.c"
+#line 3082 "grammar.c"
     break;
 
   case 48:
-#line 230 "grammar.y"
+#line 238 "grammar.y"
                                 {  }
-#line 3080 "grammar.c"
+#line 3088 "grammar.c"
     break;
 
   case 49:
-#line 231 "grammar.y"
+#line 239 "grammar.y"
                                 {  }
-#line 3086 "grammar.c"
+#line 3094 "grammar.c"
     break;
 
   case 50:
-#line 232 "grammar.y"
+#line 240 "grammar.y"
                                 {  }
-#line 3092 "grammar.c"
+#line 3100 "grammar.c"
     break;
 
   case 51:
-#line 233 "grammar.y"
+#line 241 "grammar.y"
                                 {  }
-#line 3098 "grammar.c"
+#line 3106 "grammar.c"
     break;
 
   case 52:
-#line 234 "grammar.y"
+#line 242 "grammar.y"
                                 {  }
-#line 3104 "grammar.c"
+#line 3112 "grammar.c"
     break;
 
   case 53:
-#line 235 "grammar.y"
+#line 243 "grammar.y"
                                 {  }
-#line 3110 "grammar.c"
+#line 3118 "grammar.c"
     break;
 
   case 54:
-#line 236 "grammar.y"
+#line 244 "grammar.y"
                                 {  }
-#line 3116 "grammar.c"
+#line 3124 "grammar.c"
     break;
 
   case 55:
-#line 237 "grammar.y"
+#line 245 "grammar.y"
                                 {  }
-#line 3122 "grammar.c"
+#line 3130 "grammar.c"
     break;
 
   case 56:
-#line 238 "grammar.y"
+#line 246 "grammar.y"
                                 {  }
-#line 3128 "grammar.c"
+#line 3136 "grammar.c"
     break;
 
   case 57:
-#line 239 "grammar.y"
+#line 247 "grammar.y"
                                 {  }
-#line 3134 "grammar.c"
+#line 3142 "grammar.c"
     break;
 
   case 58:
-#line 240 "grammar.y"
+#line 248 "grammar.y"
                                 {  }
-#line 3140 "grammar.c"
+#line 3148 "grammar.c"
     break;
 
   case 59:
-#line 241 "grammar.y"
+#line 249 "grammar.y"
                                 { outCode(1,0x3F); }
-#line 3146 "grammar.c"
+#line 3154 "grammar.c"
     break;
 
   case 60:
-#line 242 "grammar.y"
+#line 250 "grammar.y"
                                 { outCode(2,0xED,0xA9); }
-#line 3152 "grammar.c"
+#line 3160 "grammar.c"
     break;
 
   case 61:
-#line 243 "grammar.y"
+#line 251 "grammar.y"
                                 { outCode(2,0xED,0xB9); }
-#line 3158 "grammar.c"
+#line 3166 "grammar.c"
     break;
 
   case 62:
-#line 244 "grammar.y"
+#line 252 "grammar.y"
                                 { outCode(2,0xED,0xA1); }
-#line 3164 "grammar.c"
+#line 3172 "grammar.c"
     break;
 
   case 63:
-#line 245 "grammar.y"
+#line 253 "grammar.y"
                                 { outCode(2,0xED,0xB1); }
-#line 3170 "grammar.c"
+#line 3178 "grammar.c"
     break;
 
   case 64:
-#line 246 "grammar.y"
+#line 254 "grammar.y"
                                 { outCode(1,0x2F); }
-#line 3176 "grammar.c"
+#line 3184 "grammar.c"
     break;
 
   case 65:
-#line 247 "grammar.y"
+#line 255 "grammar.y"
                                 { outCode(1,0x27); }
-#line 3182 "grammar.c"
+#line 3190 "grammar.c"
     break;
 
   case 66:
-#line 248 "grammar.y"
+#line 256 "grammar.y"
                                 { outCode(1,0xF3); }
-#line 3188 "grammar.c"
+#line 3196 "grammar.c"
     break;
 
   case 67:
-#line 249 "grammar.y"
+#line 257 "grammar.y"
                                 { outCode(1,0xFB); }
-#line 3194 "grammar.c"
+#line 3202 "grammar.c"
     break;
 
   case 68:
-#line 250 "grammar.y"
+#line 258 "grammar.y"
                                 { outCode(1,0xD9); }
-#line 3200 "grammar.c"
+#line 3208 "grammar.c"
     break;
 
   case 69:
-#line 251 "grammar.y"
+#line 259 "grammar.y"
                                 { outCode(1,0x76); }
-#line 3206 "grammar.c"
+#line 3214 "grammar.c"
     break;
 
   case 70:
-#line 252 "grammar.y"
+#line 260 "grammar.y"
                                 { outCode(2,0xED,0xAA); }
-#line 3212 "grammar.c"
+#line 3220 "grammar.c"
     break;
 
   case 71:
-#line 253 "grammar.y"
+#line 261 "grammar.y"
                                 { outCode(2,0xED,0xBA); }
-#line 3218 "grammar.c"
+#line 3226 "grammar.c"
     break;
 
   case 72:
-#line 254 "grammar.y"
+#line 262 "grammar.y"
                                 { outCode(2,0xED,0xA2); }
-#line 3224 "grammar.c"
+#line 3232 "grammar.c"
     break;
 
   case 73:
-#line 255 "grammar.y"
+#line 263 "grammar.y"
                                 { outCode(2,0xED,0xB2); }
-#line 3230 "grammar.c"
+#line 3238 "grammar.c"
     break;
 
   case 74:
-#line 256 "grammar.y"
+#line 264 "grammar.y"
                                     { outCode(2,0xED,0xA8); }
-#line 3236 "grammar.c"
+#line 3244 "grammar.c"
     break;
 
   case 75:
-#line 257 "grammar.y"
+#line 265 "grammar.y"
                                     { outCode(2,0xED,0xB8); }
-#line 3242 "grammar.c"
+#line 3250 "grammar.c"
     break;
 
   case 76:
-#line 258 "grammar.y"
+#line 266 "grammar.y"
                                     { outCode(2,0xED,0xA0); }
-#line 3248 "grammar.c"
+#line 3256 "grammar.c"
     break;
 
   case 77:
-#line 259 "grammar.y"
+#line 267 "grammar.y"
                                     { outCode(2,0xED,0xB0); }
-#line 3254 "grammar.c"
+#line 3262 "grammar.c"
     break;
 
   case 78:
-#line 260 "grammar.y"
+#line 268 "grammar.y"
                                     { outCode(2,0xED,0x44); }
-#line 3260 "grammar.c"
+#line 3268 "grammar.c"
     break;
 
   case 79:
-#line 261 "grammar.y"
+#line 269 "grammar.y"
                                     { outCode(1,0x00);      }
-#line 3266 "grammar.c"
+#line 3274 "grammar.c"
     break;
 
   case 80:
-#line 262 "grammar.y"
+#line 270 "grammar.y"
                                     { outCode(2,0xED,0xBB); }
-#line 3272 "grammar.c"
+#line 3280 "grammar.c"
     break;
 
   case 81:
-#line 263 "grammar.y"
+#line 271 "grammar.y"
                                     { outCode(2,0xED,0xB3); }
-#line 3278 "grammar.c"
+#line 3286 "grammar.c"
     break;
 
   case 82:
-#line 264 "grammar.y"
+#line 272 "grammar.y"
                                     { outCode(2,0xED,0xAB); }
-#line 3284 "grammar.c"
+#line 3292 "grammar.c"
     break;
 
   case 83:
-#line 265 "grammar.y"
+#line 273 "grammar.y"
                                     { outCode(2,0xED,0xA3); }
-#line 3290 "grammar.c"
+#line 3298 "grammar.c"
     break;
 
   case 84:
-#line 266 "grammar.y"
+#line 274 "grammar.y"
                                     { outCode(2,0xED,0x4D); }
-#line 3296 "grammar.c"
+#line 3304 "grammar.c"
     break;
 
   case 85:
-#line 267 "grammar.y"
+#line 275 "grammar.y"
                                     { outCode(2,0xED,0x45); }
-#line 3302 "grammar.c"
+#line 3310 "grammar.c"
     break;
 
   case 86:
-#line 268 "grammar.y"
+#line 276 "grammar.y"
                                     { outCode(1,0x17);      }
-#line 3308 "grammar.c"
+#line 3316 "grammar.c"
     break;
 
   case 87:
-#line 269 "grammar.y"
+#line 277 "grammar.y"
                                     { outCode(1,0x07);      }
-#line 3314 "grammar.c"
+#line 3322 "grammar.c"
     break;
 
   case 88:
-#line 270 "grammar.y"
+#line 278 "grammar.y"
                                     { outCode(2,0xED,0x6F); }
-#line 3320 "grammar.c"
+#line 3328 "grammar.c"
     break;
 
   case 89:
-#line 271 "grammar.y"
+#line 279 "grammar.y"
                                     { outCode(1,0x1F);      }
-#line 3326 "grammar.c"
+#line 3334 "grammar.c"
     break;
 
   case 90:
-#line 272 "grammar.y"
+#line 280 "grammar.y"
                                     { outCode(1,0x0F);      }
-#line 3332 "grammar.c"
+#line 3340 "grammar.c"
     break;
 
   case 91:
-#line 273 "grammar.y"
+#line 281 "grammar.y"
                                     { outCode(2,0xED,0x67); }
-#line 3338 "grammar.c"
+#line 3346 "grammar.c"
     break;
 
   case 92:
-#line 274 "grammar.y"
+#line 282 "grammar.y"
                                     { outCode(1,0x37); }
-#line 3344 "grammar.c"
+#line 3352 "grammar.c"
     break;
 
   case 93:
-#line 278 "grammar.y"
+#line 286 "grammar.y"
                                                  { setLabelValue((yyvsp[-2].literal),(yyvsp[0].normal)); }
-#line 3350 "grammar.c"
+#line 3358 "grammar.c"
     break;
 
   case 94:
-#line 280 "grammar.y"
+#line 288 "grammar.y"
                                                  { for(int a=0;a<abs((yyvsp[0].normal));a++) { outCode(1,0x0); } }
-#line 3356 "grammar.c"
+#line 3364 "grammar.c"
     break;
 
   case 95:
-#line 281 "grammar.y"
+#line 289 "grammar.y"
                                             {  for(int a=0;a<abs((yyvsp[-2].normal));a++) { outCode(1,(yyvsp[0].normal)); }  }
-#line 3362 "grammar.c"
+#line 3370 "grammar.c"
     break;
 
   case 96:
-#line 283 "grammar.y"
+#line 291 "grammar.y"
                                            { for(int a=0;a<(yyvsp[0].listexpr)[0];a++)      { outCode(1,(yyvsp[0].listexpr)[a+1]);  } }
-#line 3368 "grammar.c"
+#line 3376 "grammar.c"
     break;
 
   case 97:
-#line 285 "grammar.y"
+#line 293 "grammar.y"
                                            { for(int a=0;a<(yyvsp[0].listexpr)[0];a++)      { outCode(1,(yyvsp[0].listexpr)[a+1]);  } }
-#line 3374 "grammar.c"
+#line 3382 "grammar.c"
     break;
 
   case 98:
-#line 287 "grammar.y"
+#line 295 "grammar.y"
                                        { for(int a=0;a<(yyvsp[0].listexpr)[0];a++)      { outCode(1,(yyvsp[0].listexpr)[a+1]);  } }
-#line 3380 "grammar.c"
+#line 3388 "grammar.c"
     break;
 
   case 99:
-#line 289 "grammar.y"
+#line 297 "grammar.y"
                                       { outCode(2,0xCE,(yyvsp[0].normal)); }
-#line 3386 "grammar.c"
+#line 3394 "grammar.c"
     break;
 
   case 100:
-#line 290 "grammar.y"
+#line 298 "grammar.y"
                                            { int k = (((yyvsp[0].byte))|128|8); outCode(1,k); }
-#line 3392 "grammar.c"
+#line 3400 "grammar.c"
     break;
 
   case 101:
-#line 291 "grammar.y"
+#line 299 "grammar.y"
                                                    { outCode(1,0x8E); }
-#line 3398 "grammar.c"
+#line 3406 "grammar.c"
     break;
 
   case 102:
-#line 292 "grammar.y"
+#line 300 "grammar.y"
                                                              { outCode(3,0xDD,0x8E,(yyvsp[-1].normal)); }
-#line 3404 "grammar.c"
+#line 3412 "grammar.c"
     break;
 
   case 103:
-#line 293 "grammar.y"
+#line 301 "grammar.y"
                                                              { outCode(3,0xFD,0x8E,(yyvsp[-1].normal)); }
-#line 3410 "grammar.c"
+#line 3418 "grammar.c"
     break;
 
   case 104:
-#line 294 "grammar.y"
+#line 302 "grammar.y"
                                                    { outCode(3,0xDD,0x8E,0); }
-#line 3416 "grammar.c"
+#line 3424 "grammar.c"
     break;
 
   case 105:
-#line 295 "grammar.y"
+#line 303 "grammar.y"
                                                    { outCode(3,0xFD,0x8E,0); }
-#line 3422 "grammar.c"
+#line 3430 "grammar.c"
     break;
 
   case 106:
-#line 296 "grammar.y"
+#line 304 "grammar.y"
                                            { int k = (((yyvsp[0].byte)<<4)|64|8|2); outCode(2,0xED,k); }
-#line 3428 "grammar.c"
+#line 3436 "grammar.c"
     break;
 
   case 107:
-#line 297 "grammar.y"
+#line 305 "grammar.y"
                                            {  outCode(2,0xDD,0x8C); }
-#line 3434 "grammar.c"
+#line 3442 "grammar.c"
     break;
 
   case 108:
-#line 298 "grammar.y"
+#line 306 "grammar.y"
                                            {  outCode(2,0xDD,0x8D); }
-#line 3440 "grammar.c"
+#line 3448 "grammar.c"
     break;
 
   case 109:
-#line 299 "grammar.y"
+#line 307 "grammar.y"
                                            {  outCode(2,0xFD,0x8C); }
-#line 3446 "grammar.c"
+#line 3454 "grammar.c"
     break;
 
   case 110:
-#line 300 "grammar.y"
+#line 308 "grammar.y"
                                            {  outCode(2,0xFD,0x8D); }
-#line 3452 "grammar.c"
+#line 3460 "grammar.c"
     break;
 
   case 111:
-#line 302 "grammar.y"
+#line 310 "grammar.y"
                                       { outCode(2,0xC6,(yyvsp[0].normal)); }
-#line 3458 "grammar.c"
+#line 3466 "grammar.c"
     break;
 
   case 112:
-#line 303 "grammar.y"
+#line 311 "grammar.y"
                                            { int k = (((yyvsp[0].byte))|128); outCode(1,k); }
-#line 3464 "grammar.c"
+#line 3472 "grammar.c"
     break;
 
   case 113:
-#line 304 "grammar.y"
+#line 312 "grammar.y"
                                                    { outCode(1,0x86); }
-#line 3470 "grammar.c"
+#line 3478 "grammar.c"
     break;
 
   case 114:
-#line 305 "grammar.y"
+#line 313 "grammar.y"
                                                              { outCode(3,0xDD,0x86,(yyvsp[-1].normal)); }
-#line 3476 "grammar.c"
+#line 3484 "grammar.c"
     break;
 
   case 115:
-#line 306 "grammar.y"
+#line 314 "grammar.y"
                                                              { outCode(3,0xFD,0x86,(yyvsp[-1].normal)); }
-#line 3482 "grammar.c"
+#line 3490 "grammar.c"
     break;
 
   case 116:
-#line 307 "grammar.y"
+#line 315 "grammar.y"
                                                    { outCode(3,0xDD,0x86,0); }
-#line 3488 "grammar.c"
+#line 3496 "grammar.c"
     break;
 
   case 117:
-#line 308 "grammar.y"
+#line 316 "grammar.y"
                                                    { outCode(3,0xFD,0x86,0); }
-#line 3494 "grammar.c"
+#line 3502 "grammar.c"
     break;
 
   case 118:
-#line 309 "grammar.y"
+#line 317 "grammar.y"
                                            { int k = (((yyvsp[0].byte)<<4)|8|1); outCode(1,k); }
-#line 3500 "grammar.c"
+#line 3508 "grammar.c"
     break;
 
   case 119:
-#line 310 "grammar.y"
+#line 318 "grammar.y"
                                            { outCode(2,0xDD,0x09); }
-#line 3506 "grammar.c"
+#line 3514 "grammar.c"
     break;
 
   case 120:
-#line 311 "grammar.y"
+#line 319 "grammar.y"
                                            { outCode(2,0xDD,0x19); }
-#line 3512 "grammar.c"
+#line 3520 "grammar.c"
     break;
 
   case 121:
-#line 312 "grammar.y"
+#line 320 "grammar.y"
                                            { outCode(2,0xDD,0x29); }
-#line 3518 "grammar.c"
+#line 3526 "grammar.c"
     break;
 
   case 122:
-#line 313 "grammar.y"
+#line 321 "grammar.y"
                                            { outCode(2,0xDD,0x39); }
-#line 3524 "grammar.c"
+#line 3532 "grammar.c"
     break;
 
   case 123:
-#line 314 "grammar.y"
+#line 322 "grammar.y"
                                            { outCode(2,0xFD,0x09); }
-#line 3530 "grammar.c"
+#line 3538 "grammar.c"
     break;
 
   case 124:
-#line 315 "grammar.y"
+#line 323 "grammar.y"
                                            { outCode(2,0xFD,0x19); }
-#line 3536 "grammar.c"
+#line 3544 "grammar.c"
     break;
 
   case 125:
-#line 316 "grammar.y"
+#line 324 "grammar.y"
                                            { outCode(2,0xFD,0x29); }
-#line 3542 "grammar.c"
+#line 3550 "grammar.c"
     break;
 
   case 126:
-#line 317 "grammar.y"
+#line 325 "grammar.y"
                                            { outCode(2,0xFD,0x39); }
-#line 3548 "grammar.c"
+#line 3556 "grammar.c"
     break;
 
   case 127:
-#line 318 "grammar.y"
+#line 326 "grammar.y"
                                            {  outCode(2,0xDD,0x84); }
-#line 3554 "grammar.c"
+#line 3562 "grammar.c"
     break;
 
   case 128:
-#line 319 "grammar.y"
+#line 327 "grammar.y"
                                            {  outCode(2,0xDD,0x85); }
-#line 3560 "grammar.c"
+#line 3568 "grammar.c"
     break;
 
   case 129:
-#line 320 "grammar.y"
+#line 328 "grammar.y"
                                            {  outCode(2,0xFD,0x84); }
-#line 3566 "grammar.c"
+#line 3574 "grammar.c"
     break;
 
   case 130:
-#line 321 "grammar.y"
+#line 329 "grammar.y"
                                            {  outCode(2,0xFD,0x85); }
-#line 3572 "grammar.c"
+#line 3580 "grammar.c"
     break;
 
   case 131:
-#line 323 "grammar.y"
+#line 331 "grammar.y"
                               { outCode(2,0xE6,(yyvsp[0].normal)); }
-#line 3578 "grammar.c"
+#line 3586 "grammar.c"
     break;
 
   case 132:
-#line 324 "grammar.y"
+#line 332 "grammar.y"
                                    { int k = (((yyvsp[0].byte))|128|32); outCode(1,k); }
-#line 3584 "grammar.c"
+#line 3592 "grammar.c"
     break;
 
   case 133:
-#line 325 "grammar.y"
+#line 333 "grammar.y"
                                            { outCode(1,0xA6); }
-#line 3590 "grammar.c"
+#line 3598 "grammar.c"
     break;
 
   case 134:
-#line 326 "grammar.y"
+#line 334 "grammar.y"
                                                      { outCode(3,0xDD,0xA6,(yyvsp[-1].normal)); }
-#line 3596 "grammar.c"
+#line 3604 "grammar.c"
     break;
 
   case 135:
-#line 327 "grammar.y"
+#line 335 "grammar.y"
                                                      { outCode(3,0xFD,0xA6,(yyvsp[-1].normal)); }
-#line 3602 "grammar.c"
+#line 3610 "grammar.c"
     break;
 
   case 136:
-#line 328 "grammar.y"
+#line 336 "grammar.y"
                                            { outCode(3,0xDD,0xA6,0); }
-#line 3608 "grammar.c"
+#line 3616 "grammar.c"
     break;
 
   case 137:
-#line 329 "grammar.y"
+#line 337 "grammar.y"
                                            { outCode(3,0xFD,0xA6,0); }
-#line 3614 "grammar.c"
+#line 3622 "grammar.c"
     break;
 
   case 138:
-#line 331 "grammar.y"
+#line 339 "grammar.y"
                                     { outCode(2,0xDD,0xA4); }
-#line 3620 "grammar.c"
+#line 3628 "grammar.c"
     break;
 
   case 139:
-#line 332 "grammar.y"
+#line 340 "grammar.y"
                                     { outCode(2,0xDD,0xA5); }
-#line 3626 "grammar.c"
+#line 3634 "grammar.c"
     break;
 
   case 140:
-#line 333 "grammar.y"
+#line 341 "grammar.y"
                                     { outCode(2,0xFD,0xA4); }
-#line 3632 "grammar.c"
+#line 3640 "grammar.c"
     break;
 
   case 141:
-#line 334 "grammar.y"
+#line 342 "grammar.y"
                                     { outCode(2,0xFD,0xA5); }
-#line 3638 "grammar.c"
+#line 3646 "grammar.c"
     break;
 
   case 142:
-#line 335 "grammar.y"
+#line 343 "grammar.y"
                                       { outCode(2,0xE6,(yyvsp[0].normal)); }
-#line 3644 "grammar.c"
+#line 3652 "grammar.c"
     break;
 
   case 143:
-#line 336 "grammar.y"
+#line 344 "grammar.y"
                                            { int k = (((yyvsp[0].byte))|128|32); outCode(1,k); }
-#line 3650 "grammar.c"
+#line 3658 "grammar.c"
     break;
 
   case 144:
-#line 337 "grammar.y"
+#line 345 "grammar.y"
                                                    { outCode(1,0xA6); }
-#line 3656 "grammar.c"
+#line 3664 "grammar.c"
     break;
 
   case 145:
-#line 338 "grammar.y"
+#line 346 "grammar.y"
                                                              { outCode(3,0xDD,0xA6,(yyvsp[-1].normal)); }
-#line 3662 "grammar.c"
+#line 3670 "grammar.c"
     break;
 
   case 146:
-#line 339 "grammar.y"
+#line 347 "grammar.y"
                                                              { outCode(3,0xFD,0xA6,(yyvsp[-1].normal)); }
-#line 3668 "grammar.c"
+#line 3676 "grammar.c"
     break;
 
   case 147:
-#line 340 "grammar.y"
+#line 348 "grammar.y"
                                             { outCode(2,0xDD,0xA4); }
-#line 3674 "grammar.c"
+#line 3682 "grammar.c"
     break;
 
   case 148:
-#line 341 "grammar.y"
+#line 349 "grammar.y"
                                             { outCode(2,0xDD,0xA5); }
-#line 3680 "grammar.c"
+#line 3688 "grammar.c"
     break;
 
   case 149:
-#line 342 "grammar.y"
+#line 350 "grammar.y"
                                             { outCode(2,0xFD,0xA4); }
-#line 3686 "grammar.c"
+#line 3694 "grammar.c"
     break;
 
   case 150:
-#line 343 "grammar.y"
+#line 351 "grammar.y"
                                             { outCode(2,0xFD,0xA5); }
-#line 3692 "grammar.c"
+#line 3700 "grammar.c"
     break;
 
   case 151:
-#line 345 "grammar.y"
+#line 353 "grammar.y"
                                                       { if ((yyvsp[-4].normal) > 7) { warningError("Bit number is bigger out of range, truncating"); } outCode(2,0xCB,(((yyvsp[-4].normal)<<3)|64|6)); }
-#line 3698 "grammar.c"
+#line 3706 "grammar.c"
     break;
 
   case 152:
-#line 346 "grammar.y"
+#line 354 "grammar.y"
                                                                 { if ((yyvsp[-6].normal)>7) { warningError("Bit number is bigger out of range, truncating"); } outCode(4,0xDD,0xCB,(yyvsp[-1].normal), (((yyvsp[-6].normal)<<3)|64|6)); }
-#line 3704 "grammar.c"
+#line 3712 "grammar.c"
     break;
 
   case 153:
-#line 347 "grammar.y"
+#line 355 "grammar.y"
                                                                 { if ((yyvsp[-6].normal)>7) { warningError("Bit number is bigger out of range, truncating"); } outCode(4,0xFD,0xCB,(yyvsp[-1].normal), (((yyvsp[-6].normal)<<3)|64|6)); }
-#line 3710 "grammar.c"
-    break;
-
-  case 154:
-#line 348 "grammar.y"
-                                   { 	if ((yyvsp[-2].normal)>7) { warningError("Bit number is bigger out of range, truncating"); }
-                                            outCode(2,0xCB,(((yyvsp[-2].normal)<<3)|(yyvsp[0].byte)|64));
-                                        }
 #line 3718 "grammar.c"
     break;
 
+  case 154:
+#line 356 "grammar.y"
+                                   { 	if ((yyvsp[-2].normal)>7) { warningError("Bit number is bigger out of range, truncating"); }
+                                            outCode(2,0xCB,(((yyvsp[-2].normal)<<3)|(yyvsp[0].byte)|64));
+                                        }
+#line 3726 "grammar.c"
+    break;
+
   case 155:
-#line 353 "grammar.y"
+#line 361 "grammar.y"
                                { outCode(3,0xCD,0x00FF&(yyvsp[0].normal),(0xFF00&(yyvsp[0].normal))>>8); }
-#line 3724 "grammar.c"
+#line 3732 "grammar.c"
     break;
 
   case 156:
-#line 354 "grammar.y"
+#line 362 "grammar.y"
                                        { outCode(3, (((yyvsp[-2].byte)<<3)|128|64|4),0x00FF&(yyvsp[0].normal),(0xFF00&(yyvsp[0].normal))>>8); }
-#line 3730 "grammar.c"
+#line 3738 "grammar.c"
     break;
 
   case 157:
-#line 356 "grammar.y"
+#line 364 "grammar.y"
                             { outCode(2,0xFE,(yyvsp[0].normal)); }
-#line 3736 "grammar.c"
+#line 3744 "grammar.c"
     break;
 
   case 158:
-#line 357 "grammar.y"
+#line 365 "grammar.y"
                                   { int k = (((yyvsp[0].byte))|128|32|16|8); outCode(1,k); }
-#line 3742 "grammar.c"
+#line 3750 "grammar.c"
     break;
 
   case 159:
-#line 358 "grammar.y"
+#line 366 "grammar.y"
                                           { outCode(1,0xBE); }
-#line 3748 "grammar.c"
+#line 3756 "grammar.c"
     break;
 
   case 160:
-#line 359 "grammar.y"
+#line 367 "grammar.y"
                                                     { outCode(3,0xDD,0xBE,(yyvsp[-1].normal)); }
-#line 3754 "grammar.c"
+#line 3762 "grammar.c"
     break;
 
   case 161:
-#line 360 "grammar.y"
+#line 368 "grammar.y"
                                                     { outCode(3,0xFD,0xBE,(yyvsp[-1].normal)); }
-#line 3760 "grammar.c"
+#line 3768 "grammar.c"
     break;
 
   case 162:
-#line 361 "grammar.y"
+#line 369 "grammar.y"
                                           { outCode(3,0xDD,0xBE,0); }
-#line 3766 "grammar.c"
+#line 3774 "grammar.c"
     break;
 
   case 163:
-#line 362 "grammar.y"
+#line 370 "grammar.y"
                                           { outCode(3,0xFD,0xBE,0); }
-#line 3772 "grammar.c"
+#line 3780 "grammar.c"
     break;
 
   case 164:
-#line 363 "grammar.y"
+#line 371 "grammar.y"
                                   {  outCode(2,0xDD,0xBC); }
-#line 3778 "grammar.c"
+#line 3786 "grammar.c"
     break;
 
   case 165:
-#line 364 "grammar.y"
+#line 372 "grammar.y"
                                   {  outCode(2,0xDD,0xBD); }
-#line 3784 "grammar.c"
+#line 3792 "grammar.c"
     break;
 
   case 166:
-#line 365 "grammar.y"
+#line 373 "grammar.y"
                                   {  outCode(2,0xFD,0xBC); }
-#line 3790 "grammar.c"
+#line 3798 "grammar.c"
     break;
 
   case 167:
-#line 366 "grammar.y"
+#line 374 "grammar.y"
                                   {  outCode(2,0xFD,0xBD); }
-#line 3796 "grammar.c"
+#line 3804 "grammar.c"
     break;
 
   case 168:
-#line 368 "grammar.y"
+#line 376 "grammar.y"
                                    { int k = (((yyvsp[0].byte)<<3)|4|1); outCode(1,k); }
-#line 3802 "grammar.c"
+#line 3810 "grammar.c"
     break;
 
   case 169:
-#line 369 "grammar.y"
+#line 377 "grammar.y"
                                            { outCode(1,0x35); }
-#line 3808 "grammar.c"
+#line 3816 "grammar.c"
     break;
 
   case 170:
-#line 370 "grammar.y"
+#line 378 "grammar.y"
                                                      { outCode(3,0xDD,0x35,(yyvsp[-1].normal)); }
-#line 3814 "grammar.c"
+#line 3822 "grammar.c"
     break;
 
   case 171:
-#line 371 "grammar.y"
+#line 379 "grammar.y"
                                                      { outCode(3,0xFD,0x35,(yyvsp[-1].normal)); }
-#line 3820 "grammar.c"
+#line 3828 "grammar.c"
     break;
 
   case 172:
-#line 372 "grammar.y"
+#line 380 "grammar.y"
                                            { outCode(3,0xDD,0x35,0); }
-#line 3826 "grammar.c"
+#line 3834 "grammar.c"
     break;
 
   case 173:
-#line 373 "grammar.y"
+#line 381 "grammar.y"
                                            { outCode(3,0xFD,0x35,0); }
-#line 3832 "grammar.c"
+#line 3840 "grammar.c"
     break;
 
   case 174:
-#line 374 "grammar.y"
+#line 382 "grammar.y"
                                    { int k = (((yyvsp[0].byte)<<4)|8|2|1); outCode(1,k); }
-#line 3838 "grammar.c"
+#line 3846 "grammar.c"
     break;
 
   case 175:
-#line 375 "grammar.y"
+#line 383 "grammar.y"
                                    { outCode(2,0xDD,0x2B); }
-#line 3844 "grammar.c"
+#line 3852 "grammar.c"
     break;
 
   case 176:
-#line 376 "grammar.y"
+#line 384 "grammar.y"
                                    { outCode(2,0xFD,0x2B); }
-#line 3850 "grammar.c"
+#line 3858 "grammar.c"
     break;
 
   case 177:
-#line 377 "grammar.y"
+#line 385 "grammar.y"
                                 { outCode(1,0xDD,0x25); }
-#line 3856 "grammar.c"
+#line 3864 "grammar.c"
     break;
 
   case 178:
-#line 378 "grammar.y"
+#line 386 "grammar.y"
                                 { outCode(1,0xDD,0x2D); }
-#line 3862 "grammar.c"
+#line 3870 "grammar.c"
     break;
 
   case 179:
-#line 379 "grammar.y"
+#line 387 "grammar.y"
                                 { outCode(1,0xFD,0x25); }
-#line 3868 "grammar.c"
+#line 3876 "grammar.c"
     break;
 
   case 180:
-#line 380 "grammar.y"
+#line 388 "grammar.y"
                                 { outCode(1,0xFD,0x2C); }
-#line 3874 "grammar.c"
+#line 3882 "grammar.c"
     break;
 
   case 181:
-#line 383 "grammar.y"
+#line 391 "grammar.y"
                                            {  outCode(2,0x10,((yyvsp[0].normal) - pc - 2) ); }
-#line 3880 "grammar.c"
+#line 3888 "grammar.c"
     break;
 
   case 182:
-#line 386 "grammar.y"
+#line 394 "grammar.y"
                                         { outCode(1,0x08); }
-#line 3886 "grammar.c"
+#line 3894 "grammar.c"
     break;
 
   case 183:
-#line 387 "grammar.y"
+#line 395 "grammar.y"
                                         { outCode(1,0xEB); }
-#line 3892 "grammar.c"
+#line 3900 "grammar.c"
     break;
 
   case 184:
-#line 388 "grammar.y"
+#line 396 "grammar.y"
                                                          { outCode(1,0xE3); }
-#line 3898 "grammar.c"
+#line 3906 "grammar.c"
     break;
 
   case 185:
-#line 389 "grammar.y"
+#line 397 "grammar.y"
                                                          { outCode(2,0xDD,0xE3); }
-#line 3904 "grammar.c"
+#line 3912 "grammar.c"
     break;
 
   case 186:
-#line 390 "grammar.y"
+#line 398 "grammar.y"
                                                          { outCode(2,0xFD,0xE3); }
-#line 3910 "grammar.c"
+#line 3918 "grammar.c"
     break;
 
   case 187:
-#line 392 "grammar.y"
+#line 400 "grammar.y"
                        { switch((yyvsp[0].normal)) {
                                 case 0: outCode(2,0xED,0x46); break;
                                 case 1: outCode(2,0xED,0x56); break;
@@ -3918,881 +3926,881 @@ yyreduce:
                                 default: fatalError("Interruption mode value is out of range: Only allowed 0, 1 or 2"); break;
                                }
                              }
-#line 3922 "grammar.c"
+#line 3930 "grammar.c"
     break;
 
   case 188:
-#line 400 "grammar.y"
+#line 408 "grammar.y"
                                                 { outCode(2,0xED,(((yyvsp[-4].byte)<<3)|64)); }
-#line 3928 "grammar.c"
+#line 3936 "grammar.c"
     break;
 
   case 189:
-#line 401 "grammar.y"
+#line 409 "grammar.y"
                                                 { outCode(2,0xDB,(yyvsp[0].normal)); if ((yyvsp[-2].byte) != 7) { fatalError("IN only can use the A Register, sorry"); } }
-#line 3934 "grammar.c"
+#line 3942 "grammar.c"
     break;
 
   case 190:
-#line 403 "grammar.y"
+#line 411 "grammar.y"
                                 { outCode(1,((yyvsp[0].byte)<<3)|4); }
-#line 3940 "grammar.c"
+#line 3948 "grammar.c"
     break;
 
   case 191:
-#line 404 "grammar.y"
+#line 412 "grammar.y"
                                 { outCode(1,(((yyvsp[0].byte)<<4)|1|2));  }
-#line 3946 "grammar.c"
+#line 3954 "grammar.c"
     break;
 
   case 192:
-#line 405 "grammar.y"
+#line 413 "grammar.y"
                                        { outCode(1,0x34); }
-#line 3952 "grammar.c"
+#line 3960 "grammar.c"
     break;
 
   case 193:
-#line 406 "grammar.y"
+#line 414 "grammar.y"
                                                  { outCode(3,0xDD,0x34,(yyvsp[-1].normal)); }
-#line 3958 "grammar.c"
+#line 3966 "grammar.c"
     break;
 
   case 194:
-#line 407 "grammar.y"
+#line 415 "grammar.y"
                                                  { outCode(3,0xFD,0x34,(yyvsp[-1].normal)); }
-#line 3964 "grammar.c"
+#line 3972 "grammar.c"
     break;
 
   case 195:
-#line 408 "grammar.y"
+#line 416 "grammar.y"
                                         { outCode(3,0xDD,0x34,0); }
-#line 3970 "grammar.c"
+#line 3978 "grammar.c"
     break;
 
   case 196:
-#line 409 "grammar.y"
+#line 417 "grammar.y"
                                         { outCode(3,0xFD,0x34,0); }
-#line 3976 "grammar.c"
+#line 3984 "grammar.c"
     break;
 
   case 197:
-#line 410 "grammar.y"
+#line 418 "grammar.y"
                                 { outCode(1,0xDD,0x23); }
-#line 3982 "grammar.c"
+#line 3990 "grammar.c"
     break;
 
   case 198:
-#line 411 "grammar.y"
+#line 419 "grammar.y"
                                 { outCode(1,0xFD,0x23); }
-#line 3988 "grammar.c"
+#line 3996 "grammar.c"
     break;
 
   case 199:
-#line 412 "grammar.y"
+#line 420 "grammar.y"
                                 { outCode(1,0xDD,0x24); }
-#line 3994 "grammar.c"
+#line 4002 "grammar.c"
     break;
 
   case 200:
-#line 413 "grammar.y"
+#line 421 "grammar.y"
                                 { outCode(1,0xDD,0x2C); }
-#line 4000 "grammar.c"
+#line 4008 "grammar.c"
     break;
 
   case 201:
-#line 414 "grammar.y"
+#line 422 "grammar.y"
                                 { outCode(1,0xFD,0x24); }
-#line 4006 "grammar.c"
+#line 4014 "grammar.c"
     break;
 
   case 202:
-#line 415 "grammar.y"
+#line 423 "grammar.y"
                                 { outCode(1,0xFD,0x2C); }
-#line 4012 "grammar.c"
+#line 4020 "grammar.c"
     break;
 
   case 203:
-#line 417 "grammar.y"
+#line 425 "grammar.y"
                                  { outCode(3,0xC3,0x00FF&(yyvsp[0].normal),(0xFF00&(yyvsp[0].normal))>>8); }
-#line 4018 "grammar.c"
+#line 4026 "grammar.c"
     break;
 
   case 204:
-#line 418 "grammar.y"
+#line 426 "grammar.y"
                                  { outCode(3,(((yyvsp[-2].byte)<<3)|128|64|2),0x00FF&(yyvsp[0].normal),(0xFF00&(yyvsp[0].normal))>>8); }
-#line 4024 "grammar.c"
+#line 4032 "grammar.c"
     break;
 
   case 205:
-#line 419 "grammar.y"
+#line 427 "grammar.y"
                                        { outCode(1,0xE9); }
-#line 4030 "grammar.c"
+#line 4038 "grammar.c"
     break;
 
   case 206:
-#line 420 "grammar.y"
+#line 428 "grammar.y"
                                        { outCode(2,0xDD,0xE9); }
-#line 4036 "grammar.c"
+#line 4044 "grammar.c"
     break;
 
   case 207:
-#line 421 "grammar.y"
+#line 429 "grammar.y"
                                        { outCode(2,0xDD,0xE9); }
-#line 4042 "grammar.c"
+#line 4050 "grammar.c"
     break;
 
   case 208:
-#line 423 "grammar.y"
+#line 431 "grammar.y"
                                            { outCode(2,((yyvsp[-2].byte)<<3)|32,((yyvsp[0].normal) - pc - 2)); }
-#line 4048 "grammar.c"
+#line 4056 "grammar.c"
     break;
 
   case 209:
-#line 424 "grammar.y"
+#line 432 "grammar.y"
                                     { outCode(2,0x18, ((yyvsp[0].normal) - pc - 2) ); }
-#line 4054 "grammar.c"
+#line 4062 "grammar.c"
     break;
 
   case 210:
-#line 425 "grammar.y"
+#line 433 "grammar.y"
                                     { fatalError("You cannot use M flag bit in JR instruction"); }
-#line 4060 "grammar.c"
+#line 4068 "grammar.c"
     break;
 
   case 211:
-#line 426 "grammar.y"
+#line 434 "grammar.y"
                                     { fatalError("You cannot use P flag bit in JR instruction"); }
-#line 4066 "grammar.c"
+#line 4074 "grammar.c"
     break;
 
   case 212:
-#line 427 "grammar.y"
+#line 435 "grammar.y"
                                      { fatalError("You cannot use PE flag bit in JR instruction"); }
-#line 4072 "grammar.c"
+#line 4080 "grammar.c"
     break;
 
   case 213:
-#line 428 "grammar.y"
+#line 436 "grammar.y"
                                      { fatalError("You cannot use PO flag bit in JR instruction"); }
-#line 4078 "grammar.c"
+#line 4086 "grammar.c"
     break;
 
   case 214:
-#line 431 "grammar.y"
+#line 439 "grammar.y"
                                                                                                 { int k = (((yyvsp[-2].byte) << 3)|64); k = k | (yyvsp[0].byte); outCode(1,k); }
-#line 4084 "grammar.c"
+#line 4092 "grammar.c"
     break;
 
   case 215:
-#line 432 "grammar.y"
+#line 440 "grammar.y"
                                                                         { outCode(3,0x3A,0x00FF&(yyvsp[-1].normal),(0xFF00&(yyvsp[-1].normal))>>8); if ((yyvsp[-4].byte) != 7) {fatalError("Only A REGISTER can be used with this syntax");} }
-#line 4090 "grammar.c"
+#line 4098 "grammar.c"
     break;
 
   case 216:
-#line 433 "grammar.y"
+#line 441 "grammar.y"
                                                                                                         { outCode(2,(((yyvsp[-2].byte) << 3)|6),(yyvsp[0].normal)); }
-#line 4096 "grammar.c"
+#line 4104 "grammar.c"
     break;
 
   case 217:
-#line 434 "grammar.y"
+#line 442 "grammar.y"
                                                                         { outCode(3,(yyvsp[-3].normal),((yyvsp[-6].byte)<<3)|64|4|2,(yyvsp[-1].normal)); }
-#line 4102 "grammar.c"
+#line 4110 "grammar.c"
     break;
 
   case 218:
-#line 435 "grammar.y"
+#line 443 "grammar.y"
                                                                                                 { outCode(1,((yyvsp[-4].byte)<<3)|64|4|2); }
-#line 4108 "grammar.c"
+#line 4116 "grammar.c"
     break;
 
   case 219:
-#line 436 "grammar.y"
+#line 444 "grammar.y"
                                                                                                 { outCode(1,0x02); }
-#line 4114 "grammar.c"
+#line 4122 "grammar.c"
     break;
 
   case 220:
-#line 437 "grammar.y"
+#line 445 "grammar.y"
                                                                                                 { outCode(1,0x12); }
-#line 4120 "grammar.c"
+#line 4128 "grammar.c"
     break;
 
   case 221:
-#line 438 "grammar.y"
+#line 446 "grammar.y"
                                                                                                 { outCode(2,0x36,(yyvsp[0].normal)); }
-#line 4126 "grammar.c"
+#line 4134 "grammar.c"
     break;
 
   case 222:
-#line 439 "grammar.y"
+#line 447 "grammar.y"
                                                                                                 { outCode(1,(yyvsp[0].byte)|64|32|16); }
-#line 4132 "grammar.c"
+#line 4140 "grammar.c"
     break;
 
   case 223:
-#line 440 "grammar.y"
+#line 448 "grammar.y"
                                                                                 { outCode(4,(yyvsp[-5].normal),0x36,(yyvsp[-3].normal),(yyvsp[0].normal)); }
-#line 4138 "grammar.c"
+#line 4146 "grammar.c"
     break;
 
   case 224:
-#line 441 "grammar.y"
+#line 449 "grammar.y"
                                                                                 { outCode(3,(yyvsp[-5].normal),((yyvsp[0].byte)|64|32|16),(yyvsp[-3].normal)); }
-#line 4144 "grammar.c"
+#line 4152 "grammar.c"
     break;
 
   case 225:
-#line 442 "grammar.y"
+#line 450 "grammar.y"
                                                                                 { outCode(4,(yyvsp[-5].normal),0x36,(yyvsp[-3].normal),-(yyvsp[0].normal)); }
-#line 4150 "grammar.c"
+#line 4158 "grammar.c"
     break;
 
   case 226:
-#line 443 "grammar.y"
+#line 451 "grammar.y"
                                                                                 { outCode(3,(yyvsp[-5].normal),((yyvsp[0].byte)|64|32|16),-(yyvsp[-3].normal)); }
-#line 4156 "grammar.c"
+#line 4164 "grammar.c"
     break;
 
   case 227:
-#line 444 "grammar.y"
+#line 452 "grammar.y"
                                                                                                 { outCode(3,0x32,0x00FF&(yyvsp[-3].normal),(0xFF00&(yyvsp[-3].normal))>>8); }
-#line 4162 "grammar.c"
+#line 4170 "grammar.c"
     break;
 
   case 228:
-#line 445 "grammar.y"
+#line 453 "grammar.y"
                                                                                                 { outCode(4,0xED,43,0x00FF&(yyvsp[-3].normal),(0xFF00&(yyvsp[-3].normal))>>8); }
-#line 4168 "grammar.c"
+#line 4176 "grammar.c"
     break;
 
   case 229:
-#line 446 "grammar.y"
+#line 454 "grammar.y"
                                                                                                 { outCode(4,0xED,53,0x00FF&(yyvsp[-3].normal),(0xFF00&(yyvsp[-3].normal))>>8); }
-#line 4174 "grammar.c"
+#line 4182 "grammar.c"
     break;
 
   case 230:
-#line 447 "grammar.y"
+#line 455 "grammar.y"
                                                                                                 { outCode(4,0xED,73,0x00FF&(yyvsp[-3].normal),(0xFF00&(yyvsp[-3].normal))>>8); }
-#line 4180 "grammar.c"
+#line 4188 "grammar.c"
     break;
 
   case 231:
-#line 448 "grammar.y"
+#line 456 "grammar.y"
                                                                                                 { outCode(3,0x22,0x00FF&(yyvsp[-3].normal),(0xFF00&(yyvsp[-3].normal))>>8); }
-#line 4186 "grammar.c"
+#line 4194 "grammar.c"
     break;
 
   case 232:
-#line 449 "grammar.y"
+#line 457 "grammar.y"
                                                                                                 { outCode(4,0xDD,0x22,0x00FF&(yyvsp[-3].normal),(0xFF00&(yyvsp[-3].normal))>>8); }
-#line 4192 "grammar.c"
+#line 4200 "grammar.c"
     break;
 
   case 233:
-#line 450 "grammar.y"
+#line 458 "grammar.y"
                                                                                                 { outCode(3,0xFD,0x22,0x00FF&(yyvsp[-3].normal),(0xFF00&(yyvsp[-3].normal))>>8); }
-#line 4198 "grammar.c"
+#line 4206 "grammar.c"
     break;
 
   case 234:
-#line 451 "grammar.y"
+#line 459 "grammar.y"
                                                                                                 { outCode(1,0x0A); if ((yyvsp[-4].byte) != 7) {fatalError("Only A REGISTER can be used with this syntax");}}
-#line 4204 "grammar.c"
+#line 4212 "grammar.c"
     break;
 
   case 235:
-#line 452 "grammar.y"
+#line 460 "grammar.y"
                                                                                                 { outCode(1,0x1A); if ((yyvsp[-4].byte) != 7) {fatalError("Only A REGISTER can be used with this syntax");}}
-#line 4210 "grammar.c"
+#line 4218 "grammar.c"
     break;
 
   case 236:
-#line 453 "grammar.y"
+#line 461 "grammar.y"
                                                                                                         { outCode(2,0xED,0x57); if ((yyvsp[-2].byte) != 7) {fatalError("Only A REGISTER can be used with this syntax");}}
-#line 4216 "grammar.c"
+#line 4224 "grammar.c"
     break;
 
   case 237:
-#line 454 "grammar.y"
+#line 462 "grammar.y"
                                                                                                         { outCode(2,0xED,0x47); }
-#line 4222 "grammar.c"
+#line 4230 "grammar.c"
     break;
 
   case 238:
-#line 455 "grammar.y"
+#line 463 "grammar.y"
                                                                                                         { outCode(2,0xED,0x5F); if ((yyvsp[-2].byte) != 7) {fatalError("Only A REGISTER can be used with this syntax");}}
-#line 4228 "grammar.c"
+#line 4236 "grammar.c"
     break;
 
   case 239:
-#line 456 "grammar.y"
+#line 464 "grammar.y"
                                                                                                         { outCode(2,0xED,0x4F); }
-#line 4234 "grammar.c"
+#line 4242 "grammar.c"
     break;
 
   case 240:
-#line 457 "grammar.y"
+#line 465 "grammar.y"
                                                                                 { outCode(4,(yyvsp[-4].normal),0x2A,0x00FF&(yyvsp[-1].normal),(0xFF00&(yyvsp[-1].normal))>>8); }
-#line 4240 "grammar.c"
+#line 4248 "grammar.c"
     break;
 
   case 241:
-#line 458 "grammar.y"
+#line 466 "grammar.y"
                                                                                         { outCode(4,(yyvsp[-2].normal),0x21,0x00FF&(yyvsp[0].normal),(0xFF00&(yyvsp[0].normal))>>8); }
-#line 4246 "grammar.c"
+#line 4254 "grammar.c"
     break;
 
   case 242:
-#line 459 "grammar.y"
+#line 467 "grammar.y"
                                                                                 { 
 																		if ((yyvsp[-4].byte) != 2) { outCode(4,0xED,0x4B,0x00FF&(yyvsp[-1].normal),(0xFF00&(yyvsp[-1].normal))>>8); }
 																		else            { outCode(3,0x2A,0x00FF&(yyvsp[-1].normal),(0xFF00&(yyvsp[-1].normal))>>8); }
 																	}
-#line 4255 "grammar.c"
+#line 4263 "grammar.c"
     break;
 
   case 243:
-#line 463 "grammar.y"
+#line 471 "grammar.y"
                                                                                                                 { outCode(3,((yyvsp[-2].byte)<<4)|1,0x00FF&(yyvsp[0].normal),(0xFF00&(yyvsp[0].normal))>>8); }
-#line 4261 "grammar.c"
+#line 4269 "grammar.c"
     break;
 
   case 244:
-#line 465 "grammar.y"
+#line 473 "grammar.y"
                                                                                                 { 
 																		if ( (yyvsp[-2].byte) != 3) { fatalError("Only SP Register can be used as destination with this syntax"); }
 																		else { outCode(1,0xF9);  }
 																	}
-#line 4270 "grammar.c"
+#line 4278 "grammar.c"
     break;
 
   case 245:
-#line 469 "grammar.y"
+#line 477 "grammar.y"
                                                                                                 {
 																		if ( (yyvsp[-2].byte) != 3) { fatalError("Only SP Register can be used as destination with this syntax"); }
 																		else  { outCode(2,(yyvsp[0].normal),0xF9); }
 																	}
-#line 4279 "grammar.c"
+#line 4287 "grammar.c"
     break;
 
   case 246:
-#line 473 "grammar.y"
+#line 481 "grammar.y"
                                                                                                         { 
 		                                                                switch ((yyvsp[-2].byte)) { case 4: case 5 : fatalError("Regs H or L not allowed in this syntax"); break;
 																			case 7: outCode(2,0xDD,(5<<3)|64|(yyvsp[0].byte)); break;
 																			default: outCode(2,0xDD,((yyvsp[-2].byte)<<3)|64|(yyvsp[0].byte)); break;
 																	    }
 																	}
-#line 4290 "grammar.c"
+#line 4298 "grammar.c"
     break;
 
   case 247:
-#line 479 "grammar.y"
+#line 487 "grammar.y"
                                                                                                 { switch ((yyvsp[-2].byte)) { case 4: case 5 : fatalError("Regs H or L not allowed in this syntax"); break;
 																		case 7: outCode(2,0xFD,(5<<3)|64|(yyvsp[0].byte)); break;
 																		default: outCode(2,0xFD,((yyvsp[-2].byte)<<3)|64|(yyvsp[0].byte)); break;
 																	  }
 																	}
-#line 4300 "grammar.c"
+#line 4308 "grammar.c"
     break;
 
   case 248:
-#line 484 "grammar.y"
+#line 492 "grammar.y"
                                          { outCode(2,0xDD,0x60); }
-#line 4306 "grammar.c"
+#line 4314 "grammar.c"
     break;
 
   case 249:
-#line 485 "grammar.y"
+#line 493 "grammar.y"
                                          { outCode(2,0xDD,0x61); }
-#line 4312 "grammar.c"
+#line 4320 "grammar.c"
     break;
 
   case 250:
-#line 486 "grammar.y"
+#line 494 "grammar.y"
                                          { outCode(2,0xDD,0x62); }
-#line 4318 "grammar.c"
+#line 4326 "grammar.c"
     break;
 
   case 251:
-#line 487 "grammar.y"
+#line 495 "grammar.y"
                                          { outCode(2,0xDD,0x63); }
-#line 4324 "grammar.c"
+#line 4332 "grammar.c"
     break;
 
   case 252:
-#line 488 "grammar.y"
+#line 496 "grammar.y"
                                          { outCode(2,0xDD,0x64); }
-#line 4330 "grammar.c"
+#line 4338 "grammar.c"
     break;
 
   case 253:
-#line 489 "grammar.y"
+#line 497 "grammar.y"
                                          { outCode(2,0xDD,0x65); }
-#line 4336 "grammar.c"
+#line 4344 "grammar.c"
     break;
 
   case 254:
-#line 490 "grammar.y"
+#line 498 "grammar.y"
                                          { outCode(2,0xDD,0x67); }
-#line 4342 "grammar.c"
+#line 4350 "grammar.c"
     break;
 
   case 255:
-#line 491 "grammar.y"
+#line 499 "grammar.y"
                                          { outCode(2,0xDD,0x68); }
-#line 4348 "grammar.c"
+#line 4356 "grammar.c"
     break;
 
   case 256:
-#line 492 "grammar.y"
+#line 500 "grammar.y"
                                          { outCode(2,0xDD,0x69); }
-#line 4354 "grammar.c"
+#line 4362 "grammar.c"
     break;
 
   case 257:
-#line 493 "grammar.y"
+#line 501 "grammar.y"
                                          { outCode(2,0xDD,0x6A); }
-#line 4360 "grammar.c"
+#line 4368 "grammar.c"
     break;
 
   case 258:
-#line 494 "grammar.y"
+#line 502 "grammar.y"
                                          { outCode(2,0xDD,0x6B); }
-#line 4366 "grammar.c"
+#line 4374 "grammar.c"
     break;
 
   case 259:
-#line 495 "grammar.y"
+#line 503 "grammar.y"
                                          { outCode(2,0xDD,0x6C); }
-#line 4372 "grammar.c"
+#line 4380 "grammar.c"
     break;
 
   case 260:
-#line 496 "grammar.y"
+#line 504 "grammar.y"
                                          { outCode(2,0xDD,0x6D); }
-#line 4378 "grammar.c"
+#line 4386 "grammar.c"
     break;
 
   case 261:
-#line 497 "grammar.y"
+#line 505 "grammar.y"
                                          { outCode(2,0xDD,0x6F); }
-#line 4384 "grammar.c"
+#line 4392 "grammar.c"
     break;
 
   case 262:
-#line 498 "grammar.y"
+#line 506 "grammar.y"
                                          { outCode(2,0xFD,0x60); }
-#line 4390 "grammar.c"
+#line 4398 "grammar.c"
     break;
 
   case 263:
-#line 499 "grammar.y"
+#line 507 "grammar.y"
                                          { outCode(2,0xFD,0x61); }
-#line 4396 "grammar.c"
+#line 4404 "grammar.c"
     break;
 
   case 264:
-#line 500 "grammar.y"
+#line 508 "grammar.y"
                                          { outCode(2,0xFD,0x62); }
-#line 4402 "grammar.c"
+#line 4410 "grammar.c"
     break;
 
   case 265:
-#line 501 "grammar.y"
+#line 509 "grammar.y"
                                          { outCode(2,0xFD,0x63); }
-#line 4408 "grammar.c"
+#line 4416 "grammar.c"
     break;
 
   case 266:
-#line 502 "grammar.y"
+#line 510 "grammar.y"
                                          { outCode(2,0xFD,0x64); }
-#line 4414 "grammar.c"
+#line 4422 "grammar.c"
     break;
 
   case 267:
-#line 503 "grammar.y"
+#line 511 "grammar.y"
                                          { outCode(2,0xFD,0x65); }
-#line 4420 "grammar.c"
+#line 4428 "grammar.c"
     break;
 
   case 268:
-#line 504 "grammar.y"
+#line 512 "grammar.y"
                                          { outCode(2,0xFD,0x67); }
-#line 4426 "grammar.c"
+#line 4434 "grammar.c"
     break;
 
   case 269:
-#line 505 "grammar.y"
+#line 513 "grammar.y"
                                          { outCode(2,0xFD,0x68); }
-#line 4432 "grammar.c"
+#line 4440 "grammar.c"
     break;
 
   case 270:
-#line 506 "grammar.y"
+#line 514 "grammar.y"
                                          { outCode(2,0xFD,0x69); }
-#line 4438 "grammar.c"
+#line 4446 "grammar.c"
     break;
 
   case 271:
-#line 507 "grammar.y"
+#line 515 "grammar.y"
                                          { outCode(2,0xFD,0x6A); }
-#line 4444 "grammar.c"
+#line 4452 "grammar.c"
     break;
 
   case 272:
-#line 508 "grammar.y"
+#line 516 "grammar.y"
                                          { outCode(2,0xFD,0x6B); }
-#line 4450 "grammar.c"
+#line 4458 "grammar.c"
     break;
 
   case 273:
-#line 509 "grammar.y"
+#line 517 "grammar.y"
                                          { outCode(2,0xFD,0x6C); }
-#line 4456 "grammar.c"
+#line 4464 "grammar.c"
     break;
 
   case 274:
-#line 510 "grammar.y"
+#line 518 "grammar.y"
                                          { outCode(2,0xFD,0x6D); }
-#line 4462 "grammar.c"
+#line 4470 "grammar.c"
     break;
 
   case 275:
-#line 511 "grammar.y"
+#line 519 "grammar.y"
                                          { outCode(2,0xFD,0x6F); }
-#line 4468 "grammar.c"
+#line 4476 "grammar.c"
     break;
 
   case 276:
-#line 512 "grammar.y"
+#line 520 "grammar.y"
                                     { outCode(2,0xFD,0x2E,(yyvsp[0].normal)); }
-#line 4474 "grammar.c"
+#line 4482 "grammar.c"
     break;
 
   case 277:
-#line 513 "grammar.y"
+#line 521 "grammar.y"
                                     { outCode(2,0xDD,0x2E,(yyvsp[0].normal)); }
-#line 4480 "grammar.c"
+#line 4488 "grammar.c"
     break;
 
   case 278:
-#line 514 "grammar.y"
+#line 522 "grammar.y"
                                     { outCode(2,0xFD,0x26,(yyvsp[0].normal)); }
-#line 4486 "grammar.c"
+#line 4494 "grammar.c"
     break;
 
   case 279:
-#line 515 "grammar.y"
+#line 523 "grammar.y"
                                     { outCode(2,0xDD,0x26,(yyvsp[0].normal)); }
-#line 4492 "grammar.c"
+#line 4500 "grammar.c"
     break;
 
   case 280:
-#line 516 "grammar.y"
+#line 524 "grammar.y"
                                     { fatalError("Sorry, LD option into F register is not allowed in the Z80"); }
-#line 4498 "grammar.c"
+#line 4506 "grammar.c"
     break;
 
   case 281:
-#line 517 "grammar.y"
+#line 525 "grammar.y"
                                     { fatalError("Sorry, LD option into AF register is not allowed in the Z80"); }
-#line 4504 "grammar.c"
+#line 4512 "grammar.c"
     break;
 
   case 282:
-#line 520 "grammar.y"
+#line 528 "grammar.y"
                              { outCode(2,0xF6,(yyvsp[0].normal)); }
-#line 4510 "grammar.c"
+#line 4518 "grammar.c"
     break;
 
   case 283:
-#line 521 "grammar.y"
+#line 529 "grammar.y"
                                   { int k = (((yyvsp[0].byte))|128|32|16); outCode(1,k); }
-#line 4516 "grammar.c"
+#line 4524 "grammar.c"
     break;
 
   case 284:
-#line 522 "grammar.y"
+#line 530 "grammar.y"
                                           { outCode(1,0xB6); }
-#line 4522 "grammar.c"
+#line 4530 "grammar.c"
     break;
 
   case 285:
-#line 523 "grammar.y"
+#line 531 "grammar.y"
                                                     { outCode(3,0xDD,0xB6,(yyvsp[-1].normal)); }
-#line 4528 "grammar.c"
+#line 4536 "grammar.c"
     break;
 
   case 286:
-#line 524 "grammar.y"
+#line 532 "grammar.y"
                                                     { outCode(3,0xFD,0xB6,(yyvsp[-1].normal)); }
-#line 4534 "grammar.c"
+#line 4542 "grammar.c"
     break;
 
   case 287:
-#line 525 "grammar.y"
+#line 533 "grammar.y"
                                    { outCode(2,0xDD,0xB4); }
-#line 4540 "grammar.c"
+#line 4548 "grammar.c"
     break;
 
   case 288:
-#line 526 "grammar.y"
+#line 534 "grammar.y"
                                    { outCode(2,0xDD,0xB5); }
-#line 4546 "grammar.c"
+#line 4554 "grammar.c"
     break;
 
   case 289:
-#line 527 "grammar.y"
+#line 535 "grammar.y"
                                    { outCode(2,0xFD,0xB4); }
-#line 4552 "grammar.c"
+#line 4560 "grammar.c"
     break;
 
   case 290:
-#line 528 "grammar.y"
+#line 536 "grammar.y"
                                    { outCode(2,0xFD,0xB5); }
-#line 4558 "grammar.c"
+#line 4566 "grammar.c"
     break;
 
   case 291:
-#line 529 "grammar.y"
+#line 537 "grammar.y"
                                      { outCode(2,0xF6,(yyvsp[0].normal)); }
-#line 4564 "grammar.c"
+#line 4572 "grammar.c"
     break;
 
   case 292:
-#line 530 "grammar.y"
+#line 538 "grammar.y"
                                           { int k = (((yyvsp[0].byte))|128|32|16); outCode(1,k); }
-#line 4570 "grammar.c"
+#line 4578 "grammar.c"
     break;
 
   case 293:
-#line 531 "grammar.y"
+#line 539 "grammar.y"
                                                   { outCode(1,0xB6); }
-#line 4576 "grammar.c"
+#line 4584 "grammar.c"
     break;
 
   case 294:
-#line 532 "grammar.y"
+#line 540 "grammar.y"
                                                             { outCode(3,0xDD,0xB6,(yyvsp[-1].normal)); }
-#line 4582 "grammar.c"
+#line 4590 "grammar.c"
     break;
 
   case 295:
-#line 533 "grammar.y"
+#line 541 "grammar.y"
                                                             { outCode(3,0xFD,0xB6,(yyvsp[-1].normal)); }
-#line 4588 "grammar.c"
+#line 4596 "grammar.c"
     break;
 
   case 296:
-#line 534 "grammar.y"
+#line 542 "grammar.y"
                                            { outCode(2,0xDD,0xB4); }
-#line 4594 "grammar.c"
+#line 4602 "grammar.c"
     break;
 
   case 297:
-#line 535 "grammar.y"
+#line 543 "grammar.y"
                                            { outCode(2,0xDD,0xB5); }
-#line 4600 "grammar.c"
+#line 4608 "grammar.c"
     break;
 
   case 298:
-#line 536 "grammar.y"
+#line 544 "grammar.y"
                                            { outCode(2,0xFD,0xB4); }
-#line 4606 "grammar.c"
+#line 4614 "grammar.c"
     break;
 
   case 299:
-#line 537 "grammar.y"
+#line 545 "grammar.y"
                                            { outCode(2,0xFD,0xB5); }
-#line 4612 "grammar.c"
+#line 4620 "grammar.c"
     break;
 
   case 300:
-#line 540 "grammar.y"
+#line 548 "grammar.y"
                                                       { outCode(2,0xD3,(yyvsp[-3].normal)); }
-#line 4618 "grammar.c"
+#line 4626 "grammar.c"
     break;
 
   case 301:
-#line 541 "grammar.y"
+#line 549 "grammar.y"
                                                            { outCode(2,0xED,((yyvsp[0].byte)<<3)|1|64); }
-#line 4624 "grammar.c"
+#line 4632 "grammar.c"
     break;
 
   case 302:
-#line 543 "grammar.y"
+#line 551 "grammar.y"
                            { outCode(1,((yyvsp[0].byte)<<4)|1|128|64); }
-#line 4630 "grammar.c"
+#line 4638 "grammar.c"
     break;
 
   case 303:
-#line 544 "grammar.y"
+#line 552 "grammar.y"
                          { outCode(2,0xDD,0xE1); }
-#line 4636 "grammar.c"
+#line 4644 "grammar.c"
     break;
 
   case 304:
-#line 545 "grammar.y"
+#line 553 "grammar.y"
                          { outCode(2,0xFD,0xE1); }
-#line 4642 "grammar.c"
+#line 4650 "grammar.c"
     break;
 
   case 305:
-#line 547 "grammar.y"
+#line 555 "grammar.y"
                              { outCode(1,((yyvsp[0].byte)<<4)|1|4|64|128); }
-#line 4648 "grammar.c"
+#line 4656 "grammar.c"
     break;
 
   case 306:
-#line 548 "grammar.y"
+#line 556 "grammar.y"
                            { outCode(2,0xDD,0xE5); }
-#line 4654 "grammar.c"
+#line 4662 "grammar.c"
     break;
 
   case 307:
-#line 549 "grammar.y"
+#line 557 "grammar.y"
                            { outCode(2,0xFD,0xE5); }
-#line 4660 "grammar.c"
+#line 4668 "grammar.c"
     break;
 
   case 308:
-#line 552 "grammar.y"
+#line 560 "grammar.y"
                                    { outCode(2,0xCB,((yyvsp[-2].normal)<<3)|(yyvsp[0].byte)|128); }
-#line 4666 "grammar.c"
+#line 4674 "grammar.c"
     break;
 
   case 309:
-#line 553 "grammar.y"
+#line 561 "grammar.y"
                                                   { outCode(2,0xCB,((yyvsp[-4].normal)<<3)|128|4|2); }
-#line 4672 "grammar.c"
+#line 4680 "grammar.c"
     break;
 
   case 310:
-#line 554 "grammar.y"
+#line 562 "grammar.y"
                                                             { outCode(3,0xDD,0xCB,((yyvsp[-1].normal)),((yyvsp[-6].normal)<<3)|128|4|2); }
-#line 4678 "grammar.c"
+#line 4686 "grammar.c"
     break;
 
   case 311:
-#line 555 "grammar.y"
+#line 563 "grammar.y"
                                                             { outCode(3,0xFD,0xCB,((yyvsp[-1].normal)),((yyvsp[-6].normal)<<3)|128|4|2); }
-#line 4684 "grammar.c"
+#line 4692 "grammar.c"
     break;
 
   case 312:
-#line 558 "grammar.y"
+#line 566 "grammar.y"
                                                            { outCode(1,0xC9); }
-#line 4690 "grammar.c"
+#line 4698 "grammar.c"
     break;
 
   case 313:
-#line 559 "grammar.y"
+#line 567 "grammar.y"
                                            { outCode(1,((yyvsp[0].byte)<<3)|128|64); }
-#line 4696 "grammar.c"
+#line 4704 "grammar.c"
     break;
 
   case 314:
-#line 562 "grammar.y"
+#line 570 "grammar.y"
                                                           { outCode(2,0xCB,((yyvsp[0].byte))|16); }
-#line 4702 "grammar.c"
+#line 4710 "grammar.c"
     break;
 
   case 315:
-#line 563 "grammar.y"
+#line 571 "grammar.y"
                                                       { outCode(2,0xCB,16); }
-#line 4708 "grammar.c"
+#line 4716 "grammar.c"
     break;
 
   case 316:
-#line 564 "grammar.y"
+#line 572 "grammar.y"
                                                  { outCode(4,0xDD,0xCB,((yyvsp[-1].normal)),0x16); }
-#line 4714 "grammar.c"
+#line 4722 "grammar.c"
     break;
 
   case 317:
-#line 565 "grammar.y"
+#line 573 "grammar.y"
                                                  { outCode(4,0xFD,0xCB,((yyvsp[-1].normal)),0x16); }
-#line 4720 "grammar.c"
+#line 4728 "grammar.c"
     break;
 
   case 318:
-#line 567 "grammar.y"
+#line 575 "grammar.y"
                                        { outCode(2,0xCB,  (yyvsp[0].byte)); }
-#line 4726 "grammar.c"
+#line 4734 "grammar.c"
     break;
 
   case 319:
-#line 568 "grammar.y"
+#line 576 "grammar.y"
                                          { outCode(2,0xCB,0x06); }
-#line 4732 "grammar.c"
+#line 4740 "grammar.c"
     break;
 
   case 320:
-#line 569 "grammar.y"
+#line 577 "grammar.y"
                                                  { outCode(4,0xDD,0xCB,(yyvsp[-1].normal),0x06); }
-#line 4738 "grammar.c"
+#line 4746 "grammar.c"
     break;
 
   case 321:
-#line 570 "grammar.y"
+#line 578 "grammar.y"
                                                  { outCode(4,0xFD,0xCB,(yyvsp[-1].normal),0x06); }
-#line 4744 "grammar.c"
+#line 4752 "grammar.c"
     break;
 
   case 322:
-#line 572 "grammar.y"
+#line 580 "grammar.y"
                                       { outCode(2,0xCB,(yyvsp[0].byte)|8|16); }
-#line 4750 "grammar.c"
+#line 4758 "grammar.c"
     break;
 
   case 323:
-#line 573 "grammar.y"
+#line 581 "grammar.y"
                                       { outCode(2,0xCB,0x1E);     }
-#line 4756 "grammar.c"
+#line 4764 "grammar.c"
     break;
 
   case 324:
-#line 574 "grammar.y"
+#line 582 "grammar.y"
                                                 { outCode(2,0xDD,0xCB,(yyvsp[-1].normal),0x1E); }
-#line 4762 "grammar.c"
+#line 4770 "grammar.c"
     break;
 
   case 325:
-#line 575 "grammar.y"
+#line 583 "grammar.y"
                                                 { outCode(2,0xFD,0xCB,(yyvsp[-1].normal),0x1E); }
-#line 4768 "grammar.c"
+#line 4776 "grammar.c"
     break;
 
   case 326:
-#line 577 "grammar.y"
+#line 585 "grammar.y"
                                        { outCode(2,0xCB,(yyvsp[0].byte)|8); }
-#line 4774 "grammar.c"
+#line 4782 "grammar.c"
     break;
 
   case 327:
-#line 578 "grammar.y"
+#line 586 "grammar.y"
                                        { outCode(2,0xCB,0x0E); }
-#line 4780 "grammar.c"
+#line 4788 "grammar.c"
     break;
 
   case 328:
-#line 579 "grammar.y"
+#line 587 "grammar.y"
                                                  { outCode(4,0xDD,0xCB,(yyvsp[-1].normal),0x0E); }
-#line 4786 "grammar.c"
+#line 4794 "grammar.c"
     break;
 
   case 329:
-#line 580 "grammar.y"
+#line 588 "grammar.y"
                                                  { outCode(4,0xFD,0xCB,(yyvsp[-1].normal),0x0E); }
-#line 4792 "grammar.c"
+#line 4800 "grammar.c"
     break;
 
   case 330:
-#line 582 "grammar.y"
+#line 590 "grammar.y"
                         { switch ((yyvsp[0].normal)) {
                                 case 0x0: case 0x8:
                                 case 0x10: case 0x18:
@@ -4801,419 +4809,419 @@ yyreduce:
                                 default: fatalError("Wrong vector provided for RST"); break;
                                }
                              }
-#line 4805 "grammar.c"
+#line 4813 "grammar.c"
     break;
 
   case 331:
-#line 591 "grammar.y"
+#line 599 "grammar.y"
                                 { outCode(1,(yyvsp[0].byte)|8|16|128); }
-#line 4811 "grammar.c"
+#line 4819 "grammar.c"
     break;
 
   case 332:
-#line 592 "grammar.y"
+#line 600 "grammar.y"
                                 { outCode(2,0xDE,(yyvsp[0].normal)); }
-#line 4817 "grammar.c"
+#line 4825 "grammar.c"
     break;
 
   case 333:
-#line 593 "grammar.y"
+#line 601 "grammar.y"
                                                { outCode(1,0x9E); }
-#line 4823 "grammar.c"
+#line 4831 "grammar.c"
     break;
 
   case 334:
-#line 594 "grammar.y"
+#line 602 "grammar.y"
                                                          { outCode(3,0xDD,0x9E,(yyvsp[-1].normal)); }
-#line 4829 "grammar.c"
+#line 4837 "grammar.c"
     break;
 
   case 335:
-#line 595 "grammar.y"
+#line 603 "grammar.y"
                                                          { outCode(3,0xFD,0x9E,(yyvsp[-1].normal)); }
-#line 4835 "grammar.c"
+#line 4843 "grammar.c"
     break;
 
   case 336:
-#line 596 "grammar.y"
+#line 604 "grammar.y"
                                   { outCode(2,0xED,((yyvsp[0].byte)<<4)|2|64); }
-#line 4841 "grammar.c"
+#line 4849 "grammar.c"
     break;
 
   case 337:
-#line 597 "grammar.y"
+#line 605 "grammar.y"
                                        {  outCode(2,0xDD,0x9C); }
-#line 4847 "grammar.c"
+#line 4855 "grammar.c"
     break;
 
   case 338:
-#line 598 "grammar.y"
+#line 606 "grammar.y"
                                            {  outCode(2,0xDD,0x9D); }
-#line 4853 "grammar.c"
+#line 4861 "grammar.c"
     break;
 
   case 339:
-#line 599 "grammar.y"
+#line 607 "grammar.y"
                                            {  outCode(2,0xFD,0x9C); }
-#line 4859 "grammar.c"
+#line 4867 "grammar.c"
     break;
 
   case 340:
-#line 600 "grammar.y"
+#line 608 "grammar.y"
                                            {  outCode(2,0xFD,0x9D); }
-#line 4865 "grammar.c"
+#line 4873 "grammar.c"
     break;
 
   case 341:
-#line 602 "grammar.y"
+#line 610 "grammar.y"
                                    { outCode(2,0xCB,((yyvsp[-2].normal)<<3)|(yyvsp[0].byte)|128|64); }
-#line 4871 "grammar.c"
+#line 4879 "grammar.c"
     break;
 
   case 342:
-#line 603 "grammar.y"
+#line 611 "grammar.y"
                                                   { outCode(2,0xCB,((yyvsp[-4].normal)<<3)|128|64|4|2); }
-#line 4877 "grammar.c"
+#line 4885 "grammar.c"
     break;
 
   case 343:
-#line 604 "grammar.y"
+#line 612 "grammar.y"
                                                             { outCode(3,0xDD,0xCB,((yyvsp[-1].normal)),((yyvsp[-6].normal)<<3)|128|64|4|2); }
-#line 4883 "grammar.c"
+#line 4891 "grammar.c"
     break;
 
   case 344:
-#line 605 "grammar.y"
+#line 613 "grammar.y"
                                                             { outCode(3,0xFD,0xCB,((yyvsp[-1].normal)),((yyvsp[-6].normal)<<3)|128|64|4|2); }
-#line 4889 "grammar.c"
+#line 4897 "grammar.c"
     break;
 
   case 345:
-#line 608 "grammar.y"
+#line 616 "grammar.y"
                                                         { outCode(2,0xCB,((yyvsp[0].byte))|32); }
-#line 4895 "grammar.c"
+#line 4903 "grammar.c"
     break;
 
   case 346:
-#line 609 "grammar.y"
+#line 617 "grammar.y"
                                                        { outCode(2,0xCB,26); }
-#line 4901 "grammar.c"
+#line 4909 "grammar.c"
     break;
 
   case 347:
-#line 610 "grammar.y"
+#line 618 "grammar.y"
                                                   { outCode(4,0xDD,0xCB,((yyvsp[-1].normal)),0x26); }
-#line 4907 "grammar.c"
+#line 4915 "grammar.c"
     break;
 
   case 348:
-#line 611 "grammar.y"
+#line 619 "grammar.y"
                                                   { outCode(4,0xFD,0xCB,((yyvsp[-1].normal)),0x26); }
-#line 4913 "grammar.c"
+#line 4921 "grammar.c"
     break;
 
   case 349:
-#line 613 "grammar.y"
+#line 621 "grammar.y"
                                                         { outCode(2,0xCB,((yyvsp[0].byte))|32|16); }
-#line 4919 "grammar.c"
+#line 4927 "grammar.c"
     break;
 
   case 350:
-#line 614 "grammar.y"
+#line 622 "grammar.y"
                                                        { outCode(2,0xCB,36); }
-#line 4925 "grammar.c"
+#line 4933 "grammar.c"
     break;
 
   case 351:
-#line 615 "grammar.y"
+#line 623 "grammar.y"
                                                   { outCode(4,0xDD,0xCB,((yyvsp[-1].normal)),0x36); }
-#line 4931 "grammar.c"
+#line 4939 "grammar.c"
     break;
 
   case 352:
-#line 616 "grammar.y"
+#line 624 "grammar.y"
                                                   { outCode(4,0xFD,0xCB,((yyvsp[-1].normal)),0x36); }
-#line 4937 "grammar.c"
+#line 4945 "grammar.c"
     break;
 
   case 353:
-#line 618 "grammar.y"
+#line 626 "grammar.y"
                                                         { outCode(2,0xCB,((yyvsp[0].byte))|32|8); }
-#line 4943 "grammar.c"
+#line 4951 "grammar.c"
     break;
 
   case 354:
-#line 619 "grammar.y"
+#line 627 "grammar.y"
                                                 { outCode(2,0xCB,0x2E); }
-#line 4949 "grammar.c"
+#line 4957 "grammar.c"
     break;
 
   case 355:
-#line 620 "grammar.y"
+#line 628 "grammar.y"
                                                   { outCode(4,0xDD,0xCB,((yyvsp[-1].normal)),0x2E); }
-#line 4955 "grammar.c"
+#line 4963 "grammar.c"
     break;
 
   case 356:
-#line 621 "grammar.y"
+#line 629 "grammar.y"
                                                   { outCode(4,0xFD,0xCB,((yyvsp[-1].normal)),0x2E); }
-#line 4961 "grammar.c"
+#line 4969 "grammar.c"
     break;
 
   case 357:
-#line 623 "grammar.y"
+#line 631 "grammar.y"
                                                         { outCode(2,0xCB,((yyvsp[0].byte))|32|16|8); }
-#line 4967 "grammar.c"
+#line 4975 "grammar.c"
     break;
 
   case 358:
-#line 624 "grammar.y"
+#line 632 "grammar.y"
                                                        { outCode(2,0xCB,0x3E); }
-#line 4973 "grammar.c"
+#line 4981 "grammar.c"
     break;
 
   case 359:
-#line 625 "grammar.y"
+#line 633 "grammar.y"
                                                   { outCode(4,0xDD,0xCB,((yyvsp[-1].normal)),0x3E); }
-#line 4979 "grammar.c"
+#line 4987 "grammar.c"
     break;
 
   case 360:
-#line 626 "grammar.y"
+#line 634 "grammar.y"
                                                   { outCode(4,0xFD,0xCB,((yyvsp[-1].normal)),0x3E); }
-#line 4985 "grammar.c"
+#line 4993 "grammar.c"
     break;
 
   case 361:
-#line 628 "grammar.y"
+#line 636 "grammar.y"
                                        { outCode(1,(yyvsp[0].byte)|16|128); }
-#line 4991 "grammar.c"
+#line 4999 "grammar.c"
     break;
 
   case 362:
-#line 629 "grammar.y"
+#line 637 "grammar.y"
                                   { outCode(2,0xD6,(yyvsp[0].normal)); }
-#line 4997 "grammar.c"
+#line 5005 "grammar.c"
     break;
 
   case 363:
-#line 630 "grammar.y"
+#line 638 "grammar.y"
                                        { outCode(1,0x96); }
-#line 5003 "grammar.c"
+#line 5011 "grammar.c"
     break;
 
   case 364:
-#line 631 "grammar.y"
+#line 639 "grammar.y"
                                                  { outCode(3,0xDD,0x96,(yyvsp[-1].normal)); }
-#line 5009 "grammar.c"
+#line 5017 "grammar.c"
     break;
 
   case 365:
-#line 632 "grammar.y"
+#line 640 "grammar.y"
                                                  { outCode(3,0xFD,0x96,(yyvsp[-1].normal)); }
-#line 5015 "grammar.c"
+#line 5023 "grammar.c"
     break;
 
   case 366:
-#line 633 "grammar.y"
+#line 641 "grammar.y"
                                {  outCode(2,0xDD,0x94); }
-#line 5021 "grammar.c"
+#line 5029 "grammar.c"
     break;
 
   case 367:
-#line 634 "grammar.y"
+#line 642 "grammar.y"
                                    {  outCode(2,0xDD,0x95); }
-#line 5027 "grammar.c"
+#line 5035 "grammar.c"
     break;
 
   case 368:
-#line 635 "grammar.y"
+#line 643 "grammar.y"
                                    {  outCode(2,0xFD,0x94); }
-#line 5033 "grammar.c"
+#line 5041 "grammar.c"
     break;
 
   case 369:
-#line 636 "grammar.y"
+#line 644 "grammar.y"
                                    {  outCode(2,0xFD,0x95); }
-#line 5039 "grammar.c"
+#line 5047 "grammar.c"
     break;
 
   case 370:
-#line 639 "grammar.y"
+#line 647 "grammar.y"
                                                 { int k = (((yyvsp[0].byte))|128|32|8); outCode(1,k); }
-#line 5045 "grammar.c"
+#line 5053 "grammar.c"
     break;
 
   case 371:
-#line 640 "grammar.y"
+#line 648 "grammar.y"
                                { outCode(2,0xEE,(yyvsp[0].normal)); }
-#line 5051 "grammar.c"
+#line 5059 "grammar.c"
     break;
 
   case 372:
-#line 641 "grammar.y"
+#line 649 "grammar.y"
                                            { outCode(1,0xAE); }
-#line 5057 "grammar.c"
+#line 5065 "grammar.c"
     break;
 
   case 373:
-#line 642 "grammar.y"
+#line 650 "grammar.y"
                                                      { outCode(3,0xDD,0xAE,(yyvsp[-1].normal)); }
-#line 5063 "grammar.c"
+#line 5071 "grammar.c"
     break;
 
   case 374:
-#line 643 "grammar.y"
+#line 651 "grammar.y"
                                                      { outCode(3,0xFD,0xAE,(yyvsp[-1].normal)); }
-#line 5069 "grammar.c"
+#line 5077 "grammar.c"
     break;
 
   case 375:
-#line 644 "grammar.y"
+#line 652 "grammar.y"
                                     { outCode(2,0xDD,0xAC); }
-#line 5075 "grammar.c"
+#line 5083 "grammar.c"
     break;
 
   case 376:
-#line 645 "grammar.y"
+#line 653 "grammar.y"
                                     { outCode(2,0xDD,0xAD); }
-#line 5081 "grammar.c"
+#line 5089 "grammar.c"
     break;
 
   case 377:
-#line 646 "grammar.y"
+#line 654 "grammar.y"
                                     { outCode(2,0xFD,0xAC); }
-#line 5087 "grammar.c"
+#line 5095 "grammar.c"
     break;
 
   case 378:
-#line 647 "grammar.y"
+#line 655 "grammar.y"
                                     { outCode(2,0xFD,0xAD); }
-#line 5093 "grammar.c"
+#line 5101 "grammar.c"
     break;
 
   case 379:
-#line 648 "grammar.y"
+#line 656 "grammar.y"
                                                         { int k = (((yyvsp[0].byte))|128|32|8); outCode(1,k); }
-#line 5099 "grammar.c"
+#line 5107 "grammar.c"
     break;
 
   case 380:
-#line 649 "grammar.y"
+#line 657 "grammar.y"
                                        { outCode(2,0xEE,(yyvsp[0].normal)); }
-#line 5105 "grammar.c"
+#line 5113 "grammar.c"
     break;
 
   case 381:
-#line 650 "grammar.y"
+#line 658 "grammar.y"
                                                    { outCode(1,0xAE); }
-#line 5111 "grammar.c"
+#line 5119 "grammar.c"
     break;
 
   case 382:
-#line 651 "grammar.y"
+#line 659 "grammar.y"
                                                              { outCode(3,0xDD,0xAE,(yyvsp[-1].normal)); }
-#line 5117 "grammar.c"
+#line 5125 "grammar.c"
     break;
 
   case 383:
-#line 652 "grammar.y"
+#line 660 "grammar.y"
                                                              { outCode(3,0xFD,0xAE,(yyvsp[-1].normal)); }
-#line 5123 "grammar.c"
+#line 5131 "grammar.c"
     break;
 
   case 384:
-#line 653 "grammar.y"
+#line 661 "grammar.y"
                                             { outCode(2,0xDD,0xAC); }
-#line 5129 "grammar.c"
+#line 5137 "grammar.c"
     break;
 
   case 385:
-#line 654 "grammar.y"
+#line 662 "grammar.y"
                                             { outCode(2,0xDD,0xAD); }
-#line 5135 "grammar.c"
+#line 5143 "grammar.c"
     break;
 
   case 386:
-#line 655 "grammar.y"
+#line 663 "grammar.y"
                                             { outCode(2,0xFD,0xAC); }
-#line 5141 "grammar.c"
+#line 5149 "grammar.c"
     break;
 
   case 387:
-#line 656 "grammar.y"
+#line 664 "grammar.y"
                                             { outCode(2,0xFD,0xAD); }
-#line 5147 "grammar.c"
+#line 5155 "grammar.c"
     break;
 
   case 388:
-#line 659 "grammar.y"
+#line 667 "grammar.y"
                                          { p = (uint8_t *)malloc(3*sizeof(uint8_t)); p[0] = 2; p[1] = (yyvsp[0].normal)&0x00FF; p[2] = (yyvsp[0].normal)>>8; (yyval.listexpr) = p;  }
-#line 5153 "grammar.c"
+#line 5161 "grammar.c"
     break;
 
   case 389:
-#line 660 "grammar.y"
+#line 668 "grammar.y"
                                          { p = (uint8_t *)realloc((yyvsp[-2].listexpr),((*((yyvsp[-2].listexpr)))+2)*sizeof(uint8_t)); p[p[0]+1] = (yyvsp[0].normal)&0x00FF; p[p[0]+2] = (yyvsp[0].normal)>>8; p[0] = p[0] + 2; (yyval.listexpr) = p; }
-#line 5159 "grammar.c"
+#line 5167 "grammar.c"
     break;
 
   case 390:
-#line 661 "grammar.y"
+#line 669 "grammar.y"
                                               { p = (uint8_t *)malloc(strlen((yyvsp[0].literal))+1); p[0] = strlen((yyvsp[0].literal)); for(int a=0;a<strlen((yyvsp[0].literal));a++) { p[a+1] = (yyvsp[0].literal)[a];  } (yyval.listexpr) = p; }
-#line 5165 "grammar.c"
+#line 5173 "grammar.c"
     break;
 
   case 391:
-#line 662 "grammar.y"
+#line 670 "grammar.y"
                                                {
 	                                        p = (uint8_t *)realloc((yyvsp[-2].listexpr),(yyvsp[-2].listexpr)[0]+strlen((yyvsp[0].literal))); 
 	                                        strcpy((char *)&p[p[0]+1],(char *)(yyvsp[0].literal)); p[0] = p[0] + strlen((yyvsp[0].literal)); (yyval.listexpr) = p; 
 	                                      }
-#line 5174 "grammar.c"
+#line 5182 "grammar.c"
     break;
 
   case 392:
-#line 669 "grammar.y"
+#line 677 "grammar.y"
                                               { p = (uint8_t *)malloc(5*sizeof(uint8_t)); p[0] = 4; p[1] = (yyvsp[0].normal)&0x000000FF; p[2] = ((yyvsp[0].normal)&0x0000FF00)>>8; p[3] = ((yyvsp[0].normal)&0x00FF0000)>>16; p[4] = ((yyvsp[0].normal)&0xFF000000)>>24; (yyval.listexpr) = p;  }
-#line 5180 "grammar.c"
+#line 5188 "grammar.c"
     break;
 
   case 393:
-#line 670 "grammar.y"
+#line 678 "grammar.y"
                                          { p = (uint8_t *)realloc((yyvsp[-2].listexpr),((*((yyvsp[-2].listexpr)))+4)*sizeof(uint8_t)); p[p[0]+1] = (yyvsp[0].normal)&&0x000000FF; p[p[0]+2] = ((yyvsp[0].normal)&0x0000FF00)>>8; p[p[0]+4] = ((yyvsp[0].normal)&0x00FF0000)>>18; p[p[0]+4] = ((yyvsp[0].normal)&0xFF000000)>>24; p[0] = p[0] + 4; (yyval.listexpr) = p; }
-#line 5186 "grammar.c"
+#line 5194 "grammar.c"
     break;
 
   case 394:
-#line 671 "grammar.y"
+#line 679 "grammar.y"
                                               { p = (uint8_t *)malloc(strlen((yyvsp[0].literal))+1); p[0] = strlen((yyvsp[0].literal)); for(int a=0;a<strlen((yyvsp[0].literal));a++) { p[a+1] = (yyvsp[0].literal)[a];  } (yyval.listexpr) = p; }
-#line 5192 "grammar.c"
+#line 5200 "grammar.c"
     break;
 
   case 395:
-#line 672 "grammar.y"
+#line 680 "grammar.y"
                                                {
 	                                        p = (uint8_t *)realloc((yyvsp[-2].listexpr),(yyvsp[-2].listexpr)[0]+strlen((yyvsp[0].literal))); 
 	                                        strcpy((char *)&p[p[0]+1],(char *)(yyvsp[0].literal)); p[0] = p[0] + strlen((yyvsp[0].literal)); (yyval.listexpr) = p; 
 	                                      }
-#line 5201 "grammar.c"
+#line 5209 "grammar.c"
     break;
 
   case 396:
-#line 679 "grammar.y"
+#line 687 "grammar.y"
                                              { p = (uint8_t *)malloc(2); p[0] = 1; p[1] = (yyvsp[0].normal); (yyval.listexpr) = p; }
-#line 5207 "grammar.c"
+#line 5215 "grammar.c"
     break;
 
   case 397:
-#line 680 "grammar.y"
+#line 688 "grammar.y"
                                              { p = (uint8_t *)malloc(strlen((yyvsp[0].literal))+1); p[0] = strlen((yyvsp[0].literal)); for(int a=0;a<strlen((yyvsp[0].literal));a++) { p[a+1] = (yyvsp[0].literal)[a];  } (yyval.listexpr) = p; }
-#line 5213 "grammar.c"
+#line 5221 "grammar.c"
     break;
 
   case 398:
-#line 681 "grammar.y"
+#line 689 "grammar.y"
                                         { 
 	                                       if (((uint16_t)(yyvsp[0].normal)) > 255) {
 	                                          p = (uint8_t *)realloc((yyvsp[-2].listexpr),((*((yyvsp[-2].listexpr)))+2)); p[p[0]+1] = (yyvsp[0].normal)&0x00FF; p[(*p)+2] = (yyvsp[0].normal)>>8; p[0] = p[0] + 2; (yyval.listexpr) = p; 
@@ -5222,371 +5230,371 @@ yyreduce:
 	                                          p = (uint8_t *)realloc((yyvsp[-2].listexpr),((*((yyvsp[-2].listexpr)))+1)); p[p[0]+1] = (yyvsp[0].normal); p[0] = p[0] + 1; (yyval.listexpr) = p; 
 	                                       }   
 	                                     }
-#line 5226 "grammar.c"
+#line 5234 "grammar.c"
     break;
 
   case 399:
-#line 689 "grammar.y"
+#line 697 "grammar.y"
                                               {
 	                                        p = (uint8_t *)realloc((yyvsp[-2].listexpr),(yyvsp[-2].listexpr)[0]+strlen((yyvsp[0].literal))); 
 	                                        strcpy((char *)&p[p[0]+1],(char *)(yyvsp[0].literal)); p[0] = p[0] + strlen((yyvsp[0].literal)); (yyval.listexpr) = p; 
 	                                      }
-#line 5235 "grammar.c"
+#line 5243 "grammar.c"
     break;
 
   case 400:
-#line 694 "grammar.y"
+#line 702 "grammar.y"
                                                  { (yyval.normal) = (yyvsp[0].normal);  }
-#line 5241 "grammar.c"
+#line 5249 "grammar.c"
     break;
 
   case 401:
-#line 695 "grammar.y"
+#line 703 "grammar.y"
                                                  { (yyval.normal)=((yyvsp[0].normal)==0)?1:0; }
-#line 5247 "grammar.c"
+#line 5255 "grammar.c"
     break;
 
   case 402:
-#line 696 "grammar.y"
+#line 704 "grammar.y"
                                                 { (yyval.normal) = (yyvsp[-1].normal);  }
-#line 5253 "grammar.c"
+#line 5261 "grammar.c"
     break;
 
   case 403:
-#line 697 "grammar.y"
+#line 705 "grammar.y"
                                                 { (yyval.normal)=-(yyvsp[0].normal); }
-#line 5259 "grammar.c"
+#line 5267 "grammar.c"
     break;
 
   case 404:
-#line 698 "grammar.y"
+#line 706 "grammar.y"
                                                         { (yyval.normal) = (yyvsp[-2].normal) + (yyvsp[0].normal); }
-#line 5265 "grammar.c"
+#line 5273 "grammar.c"
     break;
 
   case 405:
-#line 699 "grammar.y"
+#line 707 "grammar.y"
                                                         { (yyval.normal) = (yyvsp[-2].normal) - (yyvsp[0].normal); }
-#line 5271 "grammar.c"
+#line 5279 "grammar.c"
     break;
 
   case 406:
-#line 700 "grammar.y"
+#line 708 "grammar.y"
                                                         { (yyval.normal) = (yyvsp[-2].normal) * (yyvsp[0].normal); }
-#line 5277 "grammar.c"
+#line 5285 "grammar.c"
     break;
 
   case 407:
-#line 701 "grammar.y"
+#line 709 "grammar.y"
                                                         { (yyval.normal) = (yyvsp[-2].normal) / (yyvsp[0].normal); }
-#line 5283 "grammar.c"
+#line 5291 "grammar.c"
     break;
 
   case 408:
-#line 702 "grammar.y"
+#line 710 "grammar.y"
                                                         { (yyval.normal) = (yyvsp[-2].normal) & (yyvsp[0].normal); }
-#line 5289 "grammar.c"
+#line 5297 "grammar.c"
     break;
 
   case 409:
-#line 703 "grammar.y"
+#line 711 "grammar.y"
                                                         { (yyval.normal) = (yyvsp[-2].normal) | (yyvsp[0].normal); }
-#line 5295 "grammar.c"
+#line 5303 "grammar.c"
     break;
 
   case 410:
-#line 704 "grammar.y"
+#line 712 "grammar.y"
                                                         { (yyval.normal) = (yyvsp[-2].normal) << (yyvsp[0].normal); }
-#line 5301 "grammar.c"
+#line 5309 "grammar.c"
     break;
 
   case 411:
-#line 705 "grammar.y"
+#line 713 "grammar.y"
                                                         { (yyval.normal) = (yyvsp[-2].normal) >> (yyvsp[0].normal); }
-#line 5307 "grammar.c"
+#line 5315 "grammar.c"
     break;
 
   case 412:
-#line 706 "grammar.y"
+#line 714 "grammar.y"
                                                         { if ( (yyvsp[-2].normal) == (yyvsp[0].normal) )  { (yyval.normal) = 0; } else { (yyval.normal) = 1;  } }
-#line 5313 "grammar.c"
+#line 5321 "grammar.c"
     break;
 
   case 413:
-#line 707 "grammar.y"
+#line 715 "grammar.y"
                                                         { if ( (yyvsp[-2].normal) == (yyvsp[0].normal) )  { (yyval.normal) = 1; } else { (yyval.normal) = 0;  } }
-#line 5319 "grammar.c"
+#line 5327 "grammar.c"
     break;
 
   case 414:
-#line 708 "grammar.y"
+#line 716 "grammar.y"
                                                 { if ( (yyvsp[-2].normal) >= (yyvsp[0].normal) )  { (yyval.normal) = 1; } else { (yyval.normal) = 0;  } }
-#line 5325 "grammar.c"
+#line 5333 "grammar.c"
     break;
 
   case 415:
-#line 709 "grammar.y"
+#line 717 "grammar.y"
                                                 { if ( (yyvsp[-2].normal) > (yyvsp[0].normal) )  { (yyval.normal) = 1; } else { (yyval.normal) = 0;  } }
-#line 5331 "grammar.c"
+#line 5339 "grammar.c"
     break;
 
   case 416:
-#line 710 "grammar.y"
+#line 718 "grammar.y"
                                                 { if ( (yyvsp[-2].normal) <= (yyvsp[0].normal) )  { (yyval.normal) = 1; } else { (yyval.normal) = 0;  } }
-#line 5337 "grammar.c"
+#line 5345 "grammar.c"
     break;
 
   case 417:
-#line 711 "grammar.y"
+#line 719 "grammar.y"
                                                 { if ( (yyvsp[-2].normal) < (yyvsp[0].normal) )  { (yyval.normal) = 1; } else { (yyval.normal) = 0;  } }
-#line 5343 "grammar.c"
+#line 5351 "grammar.c"
     break;
 
   case 418:
-#line 712 "grammar.y"
+#line 720 "grammar.y"
                                                         { if ( (yyvsp[-2].normal) && (yyvsp[0].normal)) { (yyval.normal)=1; } else {(yyval.normal)=0; } }
-#line 5349 "grammar.c"
+#line 5357 "grammar.c"
     break;
 
   case 419:
-#line 713 "grammar.y"
+#line 721 "grammar.y"
                                                         { if ( (yyvsp[-2].normal) || (yyvsp[0].normal)) { (yyval.normal)=1; } else {(yyval.normal)=0; } }
-#line 5355 "grammar.c"
+#line 5363 "grammar.c"
     break;
 
   case 420:
-#line 715 "grammar.y"
+#line 723 "grammar.y"
                                         { int k; 
 	                                 if (getLabelValue((yyvsp[0].literal),&k) < 0)   { labelUndefinedError((yyvsp[0].literal)); (yyval.normal)=0; }                                  
 	                                 else { (yyval.normal)=k; }
 	                                }
-#line 5364 "grammar.c"
+#line 5372 "grammar.c"
     break;
 
   case 421:
-#line 719 "grammar.y"
+#line 727 "grammar.y"
                                     { (yyval.normal) = (yyvsp[0].normal); }
-#line 5370 "grammar.c"
+#line 5378 "grammar.c"
     break;
 
   case 422:
-#line 720 "grammar.y"
+#line 728 "grammar.y"
                                     { (yyval.normal) = (yyvsp[0].byte); }
-#line 5376 "grammar.c"
+#line 5384 "grammar.c"
     break;
 
   case 423:
-#line 721 "grammar.y"
+#line 729 "grammar.y"
                                     { (yyval.normal) = prepc; }
-#line 5382 "grammar.c"
+#line 5390 "grammar.c"
     break;
 
   case 424:
-#line 722 "grammar.y"
+#line 730 "grammar.y"
                                     { (yyval.normal) = (LookupTableLabels((yyvsp[0].literal))<0)?0:1; }
-#line 5388 "grammar.c"
+#line 5396 "grammar.c"
     break;
 
   case 425:
-#line 726 "grammar.y"
+#line 734 "grammar.y"
                         { (yyval.byte) = 7; }
-#line 5394 "grammar.c"
+#line 5402 "grammar.c"
     break;
 
   case 426:
-#line 727 "grammar.y"
+#line 735 "grammar.y"
                     { (yyval.byte) = 0; }
-#line 5400 "grammar.c"
+#line 5408 "grammar.c"
     break;
 
   case 427:
-#line 728 "grammar.y"
+#line 736 "grammar.y"
                     { (yyval.byte) = 1; }
-#line 5406 "grammar.c"
+#line 5414 "grammar.c"
     break;
 
   case 428:
-#line 729 "grammar.y"
+#line 737 "grammar.y"
                     { (yyval.byte) = 2; }
-#line 5412 "grammar.c"
+#line 5420 "grammar.c"
     break;
 
   case 429:
-#line 730 "grammar.y"
+#line 738 "grammar.y"
                     { (yyval.byte) = 3; }
-#line 5418 "grammar.c"
+#line 5426 "grammar.c"
     break;
 
   case 430:
-#line 731 "grammar.y"
+#line 739 "grammar.y"
                     { (yyval.byte) = 4; }
-#line 5424 "grammar.c"
+#line 5432 "grammar.c"
     break;
 
   case 431:
-#line 732 "grammar.y"
+#line 740 "grammar.y"
                     { (yyval.byte) = 5; }
-#line 5430 "grammar.c"
+#line 5438 "grammar.c"
     break;
 
   case 432:
-#line 734 "grammar.y"
+#line 742 "grammar.y"
                     { (yyval.normal) = 0xDD; }
-#line 5436 "grammar.c"
+#line 5444 "grammar.c"
     break;
 
   case 433:
-#line 735 "grammar.y"
+#line 743 "grammar.y"
                     { (yyval.normal) = 0xFD; }
-#line 5442 "grammar.c"
+#line 5450 "grammar.c"
     break;
 
   case 434:
-#line 737 "grammar.y"
+#line 745 "grammar.y"
                         { (yyval.byte) = 0; }
-#line 5448 "grammar.c"
+#line 5456 "grammar.c"
     break;
 
   case 435:
-#line 738 "grammar.y"
+#line 746 "grammar.y"
                      { (yyval.byte) = 1; }
-#line 5454 "grammar.c"
+#line 5462 "grammar.c"
     break;
 
   case 436:
-#line 739 "grammar.y"
+#line 747 "grammar.y"
                     { (yyval.byte) = 2; }
-#line 5460 "grammar.c"
+#line 5468 "grammar.c"
     break;
 
   case 437:
-#line 740 "grammar.y"
+#line 748 "grammar.y"
                      { (yyval.byte) = 3; }
-#line 5466 "grammar.c"
+#line 5474 "grammar.c"
     break;
 
   case 438:
-#line 742 "grammar.y"
+#line 750 "grammar.y"
                         { (yyval.byte) = 0; }
-#line 5472 "grammar.c"
+#line 5480 "grammar.c"
     break;
 
   case 439:
-#line 743 "grammar.y"
+#line 751 "grammar.y"
                      { (yyval.byte) = 1; }
-#line 5478 "grammar.c"
+#line 5486 "grammar.c"
     break;
 
   case 440:
-#line 744 "grammar.y"
+#line 752 "grammar.y"
                     { (yyval.byte) = 2; }
-#line 5484 "grammar.c"
+#line 5492 "grammar.c"
     break;
 
   case 441:
-#line 745 "grammar.y"
+#line 753 "grammar.y"
                      { (yyval.byte) = 3; }
-#line 5490 "grammar.c"
+#line 5498 "grammar.c"
     break;
 
   case 442:
-#line 748 "grammar.y"
+#line 756 "grammar.y"
                        { (yyval.byte) = 4; }
-#line 5496 "grammar.c"
+#line 5504 "grammar.c"
     break;
 
   case 443:
-#line 749 "grammar.y"
+#line 757 "grammar.y"
                      { (yyval.byte) = 5; }
-#line 5502 "grammar.c"
+#line 5510 "grammar.c"
     break;
 
   case 444:
-#line 751 "grammar.y"
+#line 759 "grammar.y"
                        { (yyval.byte) = 4; }
-#line 5508 "grammar.c"
+#line 5516 "grammar.c"
     break;
 
   case 445:
-#line 752 "grammar.y"
+#line 760 "grammar.y"
                      { (yyval.byte) = 5; }
-#line 5514 "grammar.c"
+#line 5522 "grammar.c"
     break;
 
   case 446:
-#line 754 "grammar.y"
+#line 762 "grammar.y"
                   { (yyval.byte) = 0; }
-#line 5520 "grammar.c"
+#line 5528 "grammar.c"
     break;
 
   case 447:
-#line 755 "grammar.y"
+#line 763 "grammar.y"
                  { (yyval.byte) = 1; }
-#line 5526 "grammar.c"
+#line 5534 "grammar.c"
     break;
 
   case 448:
-#line 756 "grammar.y"
+#line 764 "grammar.y"
                   { (yyval.byte) = 2; }
-#line 5532 "grammar.c"
+#line 5540 "grammar.c"
     break;
 
   case 449:
-#line 757 "grammar.y"
+#line 765 "grammar.y"
                  { (yyval.byte) = 3; }
-#line 5538 "grammar.c"
+#line 5546 "grammar.c"
     break;
 
   case 450:
-#line 758 "grammar.y"
+#line 766 "grammar.y"
                   { (yyval.byte) = 4; }
-#line 5544 "grammar.c"
+#line 5552 "grammar.c"
     break;
 
   case 451:
-#line 759 "grammar.y"
+#line 767 "grammar.y"
                    { (yyval.byte) = 5; }
-#line 5550 "grammar.c"
+#line 5558 "grammar.c"
     break;
 
   case 452:
-#line 760 "grammar.y"
+#line 768 "grammar.y"
                   { (yyval.byte) = 6; }
-#line 5556 "grammar.c"
+#line 5564 "grammar.c"
     break;
 
   case 453:
-#line 761 "grammar.y"
+#line 769 "grammar.y"
                  { (yyval.byte) = 7; }
-#line 5562 "grammar.c"
+#line 5570 "grammar.c"
     break;
 
   case 454:
-#line 763 "grammar.y"
+#line 771 "grammar.y"
                          { (yyval.byte) = 0; }
-#line 5568 "grammar.c"
+#line 5576 "grammar.c"
     break;
 
   case 455:
-#line 764 "grammar.y"
+#line 772 "grammar.y"
                  { (yyval.byte) = 1; }
-#line 5574 "grammar.c"
+#line 5582 "grammar.c"
     break;
 
   case 456:
-#line 765 "grammar.y"
+#line 773 "grammar.y"
                   { (yyval.byte) = 2; }
-#line 5580 "grammar.c"
+#line 5588 "grammar.c"
     break;
 
   case 457:
-#line 766 "grammar.y"
+#line 774 "grammar.y"
                  { (yyval.byte) = 3; }
-#line 5586 "grammar.c"
+#line 5594 "grammar.c"
     break;
 
 
-#line 5590 "grammar.c"
+#line 5598 "grammar.c"
 
       default: break;
     }
